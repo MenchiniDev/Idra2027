@@ -1,0 +1,12 @@
+diametro_mm: 50
+k: 1.4286
+interasse_occhi_mm: 94.0
+spostamento_vani_servo_y_mm: -13.93
+tirante_sup_mm: 70.5
+tirante_inf_mm: 77.4
+raggio_braccio_palpebre_mm: 27.9
+vite_snodo: M4
+inserto_snodo_foro_mm: 5.9
+fori_piastra_mm: 5.0
+perno_palpebra_mm: 5.7
+filo_occhio_mm: 1.5

@@ -1,0 +1,12 @@
+diametro_mm: 90
+k: 2.5714
+spostamento_vano_servo_y_mm: -39.07
+asse_servo_palpebre_yz: [-92.07, -15.5]
+tirante_sup_mm: 97.4
+tirante_inf_mm: 121.4
+raggio_braccio_palpebre_mm: 50.2
+vite_snodo: M8
+inserto_snodo_foro_mm: 10.5
+fori_piastra_mm: 9.0
+perno_palpebra_mm: 10.3
+filo_occhio_mm: 2.5

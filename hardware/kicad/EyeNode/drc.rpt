@@ -1,0 +1,47 @@
+** Drc report for EyeNode.kicad_pcb **
+** Created on 2026-10-01T20:14:42 **
+** Report includes: Errors, Warnings, Exclusions **
+
+** Found 7 DRC violations **
+[starved_thermal]: Raccordo termico alla zona incompleto (strato B.Cu; zona conteggio min raggi 2; effettivo 1)
+    Local override; error
+    @(0.5000 mm, 0.5000 mm): Zone [/GND] on B.Cu, priority 0
+    @(37.5400 mm, 24.7600 mm): PTH pad 29 [/GND] of A1
+[starved_thermal]: Raccordo termico alla zona incompleto (strato B.Cu; 2 raggi connessi a isola isolata)
+    Local override; error
+    @(0.5000 mm, 0.5000 mm): Zone [/GND] on B.Cu, priority 0
+    @(17.6200 mm, 70.0000 mm): PTH pad 8 [/GND] of SW1
+[track_dangling]: Track has unconnected end
+    Local override; warning
+    @(10.3244 mm, 27.5414 mm): Track [/ADDR1] on F.Cu, length 3.9313 mm
+[track_dangling]: Track has unconnected end
+    Local override; warning
+    @(10.3244 mm, 27.5414 mm): Track [/ADDR1] on B.Cu, length 3.9313 mm
+[silk_overlap]: Silkscreen clearance
+    Rule: vincoli impostazioni scheda serigrafia; warning
+    @(8.6200 mm, 67.3400 mm): Segment of SW1 on F.Silkscreen
+    @(8.0000 mm, 66.0000 mm): PCB text 'SERVO 5-6V
+1=+  2=GND' on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: vincoli impostazioni scheda serigrafia; warning
+    @(8.6200 mm, 67.3400 mm): Segment of SW1 on F.Silkscreen
+    @(8.0000 mm, 66.0000 mm): PCB text 'SERVO 5-6V
+1=+  2=GND' on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: vincoli impostazioni scheda serigrafia; warning
+    @(13.8100 mm, 66.5800 mm): Reference field of SW1
+    @(8.0000 mm, 66.0000 mm): PCB text 'SERVO 5-6V
+1=+  2=GND' on F.Silkscreen
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

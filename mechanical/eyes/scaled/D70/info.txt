@@ -1,0 +1,12 @@
+diametro_mm: 70
+k: 2.0
+spostamento_vano_servo_y_mm: -26.5
+asse_servo_palpebre_yz: [-79.5, -15.5]
+tirante_sup_mm: 83.9
+tirante_inf_mm: 99.0
+raggio_braccio_palpebre_mm: 39.1
+vite_snodo: M6
+inserto_snodo_foro_mm: 8.2
+fori_piastra_mm: 7.0
+perno_palpebra_mm: 8.0
+filo_occhio_mm: 2.0

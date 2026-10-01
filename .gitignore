@@ -1,0 +1,20 @@
+# KiCad
+*-backups/
+*.kicad_prl
+fp-info-cache
+*.lck
+_autosave-*
+*.bak
+# Produzione (rigenerabile)
+hardware/kicad/production/
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+__pycache__/
+# file intermedi autorouting / report
+*.dsn
+*.ses
+hardware/kicad/scripts/route.log
+hardware/kicad/scripts/__pycache__/
+fp-info-cache
