@@ -26,8 +26,6 @@ PLACE = {
     "C1": (45.0, 60.0, 0), "C2": (60.0, 60.0, 0),
     "R10": (72.0, 57.0, 0), "D3": (72.0, 61.0, 180),
     "R11": (79.0, 55.0, 90), "R12": (79.0, 61.0, 90), "C3": (83.0, 61.0, 90),
-    "U2": (70.0, 73.0, 0), "C6": (78.0, 73.0, 90), "R7": (62.0, 73.0, 90), "JP1": (55.0, 71.5, 0),
-    "J9": (58.0, 84.0, 0), "J10": (75.0, 84.0, 0),
     "SW1": (10.0, 70.0, 0), "J11": (24.0, 86.0, 90),
     "R13": (81.0, 45.0, 0), "D4": (86.0, 45.0, 180),
 }
@@ -37,9 +35,8 @@ for i, y in enumerate(SERVO_Y):
 HOLES = [(3.5, 3.5), (W - 3.5, 3.5), (3.5, H - 3.5), (W - 3.5, H - 3.5)]
 SILK = [("12V LOGICA\n1=+  2=GND", 8.0, 22.5), ("SERVO 5-6V\n1=+  2=GND", 8.0, 66.0),
         ("SIG V+ GND", 101.5, 5.5), ("OCCHIO A", 96.0, 30.0), ("OCCHIO B", 96.0, 55.0),
-        ("IN: A  B  GND", 63.0, 78.0), ("OUT: A  B  GND", 80.0, 78.0),
         ("ADDR", 14.0, 82.5), ("+5V SDA SCL A6 GND", 29.0, 82.5),
-        ("EyeNode v0.1 - Idra di Guerra", 60.0, 2.0)]
+        ("EyeNode v0.2 - Idra di Guerra", 60.0, 2.0)]
 
 
 def mm(v):
@@ -85,8 +82,6 @@ def main():
         fp.SetOrientationDegrees(r)
         fp.SetPath(pcbnew.KIID_PATH(f"/{U('sym', c['ref'])}"))
         fp.SetFPIDAsString(c["fp"])
-        if c["ref"] in ("J9", "J10"):
-            fp.Reference().SetVisible(False)
         if c["ref"] == "D4":
             fp.Reference().SetPosition(V(x, y - 2.2))
         for p in fp.Pads():

@@ -6,8 +6,8 @@ Architettura (vedi docs/electronics.md):
   * 12 V (batteria/alimentatore del carro) -> polyfuse -> diodo -> R-78E5.0 -> +5V logica
   * 5-6 V servo da DC-DC esterno dedicato  -> fusibile lama -> VSERVO -> 6 connettori servo
   * Arduino Nano: 6 PWM (D3 D5 D6 = occhio A, D9 D10 D11 = occhio B)
-  * MAX485 per bus RS-485 tra le schede (sincronizzazione teste), terminazione a jumper
-  * DIP switch 4 bit = indirizzo nodo; header ausiliario I2C/analogico; misura VSERVO su A7
+  * nessun bus tra le schede: ogni testa si muove in modo autonomo e casuale (firmware EyeNode_random)
+  * DIP switch 4 bit = indirizzo testa (tipo coppia/singolo, calibrazione, seme casuale); header ausiliario I2C/analogico; misura VSERVO su A7
 
 Coordinate schema in mm (griglia 2.54), PCB in mm.
 """
@@ -66,7 +66,7 @@ part("C3", "Device:C", "100nF", C1206, {"1": "VSENSE", "2": "GND"}, (147.32, 111
 # ---------------------------------------------------------------- MCU
 nano = {"D3": "PWM_A_LR", "D5": "PWM_A_UD", "D6": "PWM_A_LID",
         "D9": "PWM_B_LR", "D10": "PWM_B_UD", "D11": "PWM_B_LID",
-        "D4": "RS485_DE", "D7": "RS485_TX", "D8": "RS485_RX", "D12": "LED_STAT_D",
+        "D12": "LED_STAT_D", "D4": NC, "D7": NC, "D8": NC,
         "A0": "ADDR0", "A1": "ADDR1", "A2": "ADDR2", "A3": "ADDR3",
         "A4": "AUX_SDA", "A5": "AUX_SCL", "A6": "AUX_A6", "A7": "VSENSE",
         "+5V": "+5V", "4": "GND", "29": "GND",
@@ -83,19 +83,6 @@ for i, (pin, name) in enumerate(SERVO_PINS):
     part(f"J{i + 3}", "Connector_Generic:Conn_01x03", f"SERVO {name}", HDR.format(n=3),
          {"1": "GND", "2": "VSERVO", "3": f"SIG_{name}"},
          (320.04, y), (88.0, 6.5 + i * 8.0 + (i // 3) * 4.0, 90, "F"))
-
-# ---------------------------------------------------------------- RS-485
-part("U2", "Interface_UART:MAX485E", "MAX485E", "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
-     {"1": "RS485_RX", "2": "RS485_DE", "3": "RS485_DE", "4": "RS485_TX",
-      "5": "GND", "6": "RS485_A", "7": "RS485_B", "8": "+5V"}, (210.82, 165.1), (40.0, 76.0, 0, "F"))
-part("C6", "Device:C", "100nF", C1206, {"1": "+5V", "2": "GND"}, (233.68, 177.8), (47.0, 76.0, 90, "F"))
-part("R7", "Device:R", "120", R1206, {"1": "RS485_A", "2": "TERM"}, (254.0, 160.02, 90), (54.0, 82.0, 0, "F"))
-part("JP1", "Jumper:Jumper_2_Open", "TERM 120R", HDR.format(n=2),
-     {"1": "TERM", "2": "RS485_B"}, (274.32, 160.02), (60.0, 82.0, 90, "F"))
-part("J9", "Connector_Generic:Conn_01x03", "RS485 IN", TB.format(n=3),
-     {"1": "RS485_A", "2": "RS485_B", "3": "GND"}, (320.04, 154.94), (68.0, 90.0, 180, "F"))
-part("J10", "Connector_Generic:Conn_01x03", "RS485 OUT", TB.format(n=3),
-     {"1": "RS485_A", "2": "RS485_B", "3": "GND"}, (320.04, 175.26), (88.0, 90.0, 180, "F"))
 
 # ---------------------------------------------------------------- indirizzo / ausiliari
 part("SW1", "Switch:SW_DIP_x04", "ADDR", "Button_Switch_THT:SW_DIP_SPSTx04_Slide_9.78x12.34mm_W7.62mm_P2.54mm",
@@ -115,7 +102,6 @@ NOTES = [("ALIMENTAZIONE LOGICA 12V -> 5V", 25.4, 25.4),
          ("ALIMENTAZIONE SERVO 5-6V (da DC-DC esterno)", 25.4, 78.74),
          ("MCU", 190.5, 25.4),
          ("USCITE SERVO  (A = occhio sx, B = occhio dx)", 264.16, 22.86),
-         ("BUS RS-485 (sincronizzazione teste)", 190.5, 142.24),
          ("INDIRIZZO NODO / AUX", 129.54, 127.0)]
 HOLES = [("H1", (3.5, 3.5)), ("H2", (96.5, 3.5)), ("H3", (3.5, 96.5)), ("H4", (96.5, 96.5))]
 BOARD = (0.0, 0.0, 100.0, 100.0)   # x0, y0, x1, y1 [mm]

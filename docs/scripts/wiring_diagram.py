@@ -66,45 +66,43 @@ for hx, hy, bx, name, pair in heads:
     ax.text(hx, hy - 5.4, "12V anche a J1 (logica)", ha="center", fontsize=6.8, color=RED, zorder=7)
 
 # ------------------------------------------------------------------ vano tecnico nel corpo
-box(12, 7.5, 15, 9, "BATTERIA\nLiFePO4 12V 50Ah\n(o 2×25Ah in parallelo)", fc="#f4cccc", fs=8.5, bold=True)
-box(29.5, 12.2, 9, 4.3, "SEZIONATORE\ngenerale 50A", fc="#eeeeee", fs=7.5)
-box(29.5, 7.0, 9, 4.3, "FUSIBILE\nATO/MIDI 20A", fc="#eeeeee", fs=7.5)
-box(41, 7.0, 14, 9.5, "SCATOLA FUSIBILI\n(blocco 6 vie ATO)\n4 × 5A → teste\n1 × 3A → master", fc="#fff2cc", fs=8)
-box(58, 7.0, 14, 9.5, "MASTER (opz.)\nEyeNode ADDR 0000\no ESP32 + MAX485\n(telecomando, sincronia)", fc="#cfe2f3", fs=8)
-box(75, 7.0, 13, 9.5, "Presa ricarica\n+ caricabatterie\nLiFePO4 14.6V\n(a carro fermo)", fc="#eeeeee", fs=7.5)
+box(11.5, 7.5, 6.5, 9, "BATT. 1\n6V\npiombo\nAGM", fc="#f4cccc", fs=8, bold=True)
+box(20.5, 7.5, 6.5, 9, "BATT. 2\n6V\npiombo\nAGM", fc="#f4cccc", fs=8, bold=True)
+ax.text(19.25, 18.3, "2 × 6V in SERIE = 12V", ha="center", fontsize=9, fontweight="bold", color=RED, zorder=7)
+ax.text(19.25, 13.6, "+1 → −2", ha="center", fontsize=6.5, color="#555555", zorder=7)
+wire([(18, 12), (20.5, 12)], "#888888", 3.0)
+box(29.5, 12.2, 9, 4.3, "FUSIBILE gen.\n20A ≤30 cm dal +", fc="#eeeeee", fs=7.5)
+box(29.5, 7.0, 9, 4.3, "SEZIONATORE\ngenerale ≥30A", fc="#eeeeee", fs=7.5)
+box(54, 7.0, 14, 9.5, "FUSIBILI DI RAMO\n4 × 5A ATO\n(blocchetto 4–6 vie\no 4 portaf. in linea)", fc="#fff2cc", fs=8)
+box(41, 7.0, 10, 9.5, "LVD\nprotezione\nsottotensione\nstacca ~11.5V\nriattacca ~12.5V", fc="#eeeeee", fs=7.2)
+box(75, 7.0, 13, 9.5, "Presa ricarica\ncaricabatterie\npiombo/AGM 12V\n→ ai poli batteria\n(a carro fermo)", fc="#eeeeee", fs=7.5)
 wire([(27, 13), (29.5, 14.3)], RED, 3.5); wire([(34, 12.2), (34, 11.3)], RED, 3.5); wire([(38.5, 9.2), (41, 9.2)], RED, 3.5)
-wire([(27, 9), (28.2, 9), (28.2, 5.2), (48, 5.2), (48, 7.0)], BLK, 3.5)
-wire([(55, 12), (58, 12)], RED, 2.0)
-wire([(75, 11.5), (72, 11.5)], "#888888", 1.5, ls="--")
+wire([(14.75, 7.5), (14.75, 5.2), (61, 5.2), (61, 7.0)], BLK, 3.5)
+wire([(51, 11.7), (54, 11.7)], RED, 3.5)
 
 # ------------------------------------------------------------------ cavi su per i colli
 for i, (hx, hy, bx, name, pair) in enumerate(heads):
     c = bez((bx, 22), (bx, 38), (hx, hy - 22), (hx, hy - 6))
     # alimentazione 12V: scatola fusibili -> base del collo -> su per il collo -> DC-DC
-    fx = 43 + i * 3.2
+    fx = 56 + i * 3.2
     p = np.vstack([[(fx, 16.5), (fx, 19.5), (bx - 1.4, 21)], c + np.array([-1.4, 0]), [(hx - 6.2, hy - 3.2)]])
     wire(p, RED, 2.4, z=2.5)
     wire(p + np.array([0.7, 0]), BLK, 2.4, z=2.5)
-    # RS-485 (CAT5 con coppia IN e coppia OUT): master -> collo -> EyeNode
-    mx = 60 + i * 3.2
-    q = np.vstack([[(mx, 16.5), (mx, 19.0), (bx + 1.6, 21)], c + np.array([1.6, 0]), [(hx + 6.2, hy - 3.2)]])
-    wire(q, BLUE, 2.4, ls=(0, (5, 2)), z=2.6)
 
 # etichette dei cavi sul collo 2
 ax.annotate("Alimentazione 12V\n2 × 1.5 mm² (≤5 m)\n2 × 2.5 mm² (5–10 m)\nrosso/nero, guaina",
             xy=(42.6, 42), xytext=(22, 38), fontsize=8.5, color=RED,
             arrowprops=dict(arrowstyle="->", color=RED), zorder=9,
             bbox=dict(fc="white", ec=RED, boxstyle="round,pad=0.3"))
-ax.annotate("Bus RS-485: 1 cavo CAT5/CAT6 per collo\ncoppia 1 = IN (A/B), coppia 2 = OUT (A/B)\ncoppia 3 = GND riferimento\ncatena: master → T1 → T2 → T3 → T4",
-            xy=(46.3, 42), xytext=(80, 34), fontsize=8.5, color=BLUE,
-            arrowprops=dict(arrowstyle="->", color=BLUE), zorder=9,
-            bbox=dict(fc="white", ec=BLUE, boxstyle="round,pad=0.3"))
+ax.annotate("Nessun cavo dati tra le teste:\nogni EyeNode muove i propri occhi\nin modo autonomo e casuale",
+            xy=(71, 46), xytext=(80, 34), fontsize=8.5, color="#33502a", zorder=9,
+            arrowprops=dict(arrowstyle="->", color="#33502a"),
+            bbox=dict(fc="white", ec="#33502a", boxstyle="round,pad=0.3"))
 
 # ------------------------------------------------------------------ legenda e contenuti
 lx, ly = 112, 86
 ax.text(lx, ly, "LEGENDA", fontsize=12, fontweight="bold", va="top")
-for k, (col, ls, t) in enumerate([(RED, "-", "+12 V"), (BLK, "-", "GND (0 V)"), (BLUE, (0, (5, 2)), "RS-485 (CAT5)"),
-                                   (PUR, "-", "+6V servo (DC-DC → J2)"), (ORG, "-", "cavi servo (3 fili)")]):
+for k, (col, ls, t) in enumerate([(RED, "-", "+12 V"), (BLK, "-", "GND (0 V)"), (PUR, "-", "+6V servo (DC-DC → J2)"), (ORG, "-", "cavi servo (3 fili)")]):
     y = ly - 4 - k * 2.6
     ax.plot([lx, lx + 4], [y, y], color=col, lw=2.6, ls=ls)
     ax.text(lx + 5, y, t, va="center", fontsize=9.5)
@@ -115,19 +113,21 @@ txt = (
     "• 1 × DC-DC 12V→6V ≥8–10A (resinato)\n"
     "• 2 moduli occhio = 6 servo MG90S\n"
     "   (testa 4: 1 modulo = 3 servo)\n"
-    "• pressacavi: 12V in, CAT5 in/out,\n"
-    "   servo verso gli occhi (≤ 1 m)\n"
-    "• JP1 chiuso SOLO sull'ultima testa\n\n"
+    "• pressacavi: 12V in, servo verso\n"
+    "   gli occhi (≤ 1 m)\n"
+    "• movimento autonomo e casuale:\n"
+    "   nessuna sincronia tra le teste\n\n"
     "NEL CORPO (vano tecnico):\n"
-    "• batteria 12V LiFePO4 50Ah\n"
-    "• sezionatore + fusibile generale 20A\n"
-    "• scatola fusibili: 5A per ogni testa\n"
-    "• master RS-485 (opzionale, JP1 chiuso)\n"
+    "• 2 batterie 6V piombo in SERIE = 12V\n"
+    "• fusibile generale 20A + sezionatore\n"
+    "• fusibile 5A per ogni testa\n"
+    "• protezione sottotensione (LVD)\n"
     "• presa di ricarica\n\n"
     "CONSUMI (21 servo):\n"
     "• tipico ≈ 3 A a 12V (≈ 36 W)\n"
     "• picco ≈ 11 A a 12V\n"
-    "• autonomia 50Ah: ≈ 12–15 h tipiche\n\n"
+    "• 12V 30Ah piombo: ≈ 4–5 h\n"
+    "   (scarica al 50 %), max ≈ 7 h\n\n"
     "Cavi nei colli fissati con fascette\n"
     "ogni 20–30 cm, con un'ansa di\n"
     "scorta ai giunti mobili."

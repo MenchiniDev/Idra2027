@@ -18,3 +18,9 @@ __pycache__/
 hardware/kicad/scripts/route.log
 hardware/kicad/scripts/__pycache__/
 fp-info-cache
+
+# simulatore firmware
+firmware/sim/sim.exe
+firmware/sim/*.pdb
+firmware/sim/*.csv
+hardware/kicad/EyeNode/erc.rpt

@@ -160,8 +160,8 @@ def build():
                       [Sym("effects"), [Sym("font"), [Sym("size"), 2.0, 2.0], [Sym("bold"), Sym("yes")]],
                        [Sym("justify"), Sym("left"), Sym("bottom")]], [Sym("uuid"), U("txt", i)]])
     title = [Sym("title_block"), [Sym("title"), "EyeNode - controllo coppia occhi animatronici"],
-             [Sym("company"), "Idra di Guerra - Carnevale di Viareggio"], [Sym("rev"), "0.1"],
-             [Sym("comment"), 1, "6 servo MG90S, RS-485, Arduino Nano"]]
+             [Sym("company"), "Idra di Guerra - Carnevale di Viareggio"], [Sym("rev"), "0.2"],
+             [Sym("comment"), 1, "6 servo MG90S, Arduino Nano, movimento autonomo"]]
     sch = [Sym("kicad_sch"), [Sym("version"), 20250114], [Sym("generator"), "eeschema"],
            [Sym("generator_version"), "9.0"], [Sym("uuid"), ROOT_UUID], [Sym("paper"), "A3"], title,
            [Sym("lib_symbols")] + list(libs.values())] + items + \
