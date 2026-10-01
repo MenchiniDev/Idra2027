@@ -27,4 +27,6 @@
 ## Ambiente
 - Esterno, pioggia/umidità, vibrazioni: contenitori almeno IP54, PCB con conformal coating.
 
+Lista della spesa: [lista_spesa.md](lista_spesa.md)
+
 Dettagli completi (architettura, bilancio energetico, cavi, fusibili): [electronics.md](electronics.md)
