@@ -1,0 +1,12 @@
+diametro_mm: 90.0
+k: 2.5714
+interasse_occhi_mm: 169.2
+servo: 2 x MG995 (centrale = asse X, laterale sx = palpebre)
+asse_MG995_centrale_xyz: [84.6, -108.0, -2.0]
+asse_MG995_palpebre_yz: [-92.07, -15.5]
+braccio_XHorn_mm: 47.3
+tirante_X_lunghezza_mm: 96.4
+tirante_X_filo_mm: 2.5
+tirante_fisso_su_giu_mm: 67.4
+viti_MG995: 8 x M3 x 12 + dado
+perno_manovella_dx: vite M3 x 25 + dado autobloccante + rondelle

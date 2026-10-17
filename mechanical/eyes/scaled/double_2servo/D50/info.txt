@@ -1,0 +1,11 @@
+diametro_mm: 50
+k: 1.4286
+interasse_occhi_mm: 94.0
+servo_veri: 2 (occhio sx: sx/dx + palpebre)
+servo_finti: 4 (su/giu sx, su/giu dx, sx/dx dx, palpebre dx)
+asse_servo_palpebre_yz: [-66.93, -15.5]
+raggio_braccio_palpebre_mm: 27.9
+lunghezza_LidBail_mm: 131.1
+tirante_X_filo_mm: 1.5
+vite_LidBail: M2 x 16 (2 per lato)
+perni_servo_finti: vite M3 x 40 + dado M3 nel fondo (x4)

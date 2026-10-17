@@ -1,0 +1,5 @@
+This work is licensed under https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+Credit to @suzan_works for designing the open-source MAIGIFU board this one is based on: https://oshwlab.com/suzan_works/rp2040_pico-compatible_maigifu_2
+
+Contact enquiries@willcogley.com if you would like to use this design for a commercial application
