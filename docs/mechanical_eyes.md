@@ -129,6 +129,8 @@ dei pezzi grandi.
 | `LinkB_L`, `LinkB_R` | 1+1 | tirante nuovo, con supporto |
 | `PinB_x2`, `Washer_x2` | 2+2 | pezzi piccoli (Ø9): ugello 0.4, layer 0.12–0.16 |
 
+**Stampa** (`eyemech_D32_prova/bambu_A1/`, 5 piatti A1 già tagliati): **≈ 5 h 10 min e ≈ 118 g** di PLA.
+
 Viti: per lato 1 × M2×8 nel `PinB` (si filetta nel braccio) + 1 × M2×5 con la rondella; il resto come
 nella guida di Will. Montaggio: guida di Will + punti 2 e 3 della D85 (servo posteriore non montato).
 
