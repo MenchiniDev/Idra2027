@@ -70,6 +70,8 @@ mostrano i 4 servo (blu) con il resto trasparente.
 
 Orientamenti di stampa: quelli di Will (presi dal suo 3MF), solo ingranditi.
 `print_A1/`: P1 = `Base_L` + chiavette, P2 = `Base_R` + perni e rondelle, P3 = `XAxisA`, P4 = `XAxisB`.
+`bambu_A1/`: tutti i pezzi già tagliati in Bambu Studio su 9 piatti A1 (PLA, 0.20 mm): **≈ 37 h 30 min e
+≈ 1.24 kg di filamento** in totale; tempi e grammi per piatto in `bambu_A1/README.md`.
 
 ### Montaggio
 Come nella guida di Will (`mechanical/eyes/original/eyemech_e3.2/src/Assembly.pdf`), con queste differenze:
