@@ -897,7 +897,7 @@ def info_text(s, info, kin, files, worst):
         f"diametro_bulbo_mm: {s * D_WILL:.1f}",
         f"fattore_di_scala: {s:.5f} (pezzi di Will EyeMech e3.2, SG90 lettera A, print-in-place)",
         f"interasse_occhi_mm: {s * 2 * EYE_X:.1f}",
-        ("servo: 4 x SG90 o MG90S: X e Y nelle sedi originali di Will (telaio X, box del CoreY); palpebre sx/dx e Y "
+        ("servo: 4 x SG90 o MG90S: X nella sede originale di Will (telaio X, box del CoreY); palpebre sx/dx e Y "
          "in blocchi nuovi della base ridotta (parete 3 mm, 2 viti M2 per servo), senza fermi"
          if small else
          "servo: 4 x SG90 o MG90S veri (1:1): X, Y, palpebre sx, palpebre dx, in sedi 1:1 (base: Y + palpebre; XAxisA: X)"),
