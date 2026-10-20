@@ -25,7 +25,7 @@ pezzi (mm, X x Y x Z come esportati):
   LinkB_L: 90 x 106 x 29
   Washer_x2: 22 x 22 x 2
   PinB_x2: 22 x 22 x 18
-  Base_L: 194 x 253 x 70
-  Base_R: 194 x 253 x 70
+  Base_L: 194 x 253 x 67
+  Base_R: 194 x 253 x 67
   BaseKey_x3: 48 x 26 x 7
 interferenze_rilevate: nessuna

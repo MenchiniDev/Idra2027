@@ -278,6 +278,22 @@ def place_static():
     }
 
 
+# gruppi X/Y (print-in-place, posa neutra) nell'assieme, 1:1. Ricavati dai vincoli:
+#  * CoreY: perni (asse y -18.23, z -13.655 nel gruppo) sull'asse E dei supporti centrali;
+#  * XAxisA: anelli degli occhi (y -6.05) sotto i centri dei bulbi; in z il servo X sta dentro
+#    il box del CoreY con la faccia superiore quasi a filo del bordo (come nella guida di Will):
+#    quota cercata in modo che il telaio laterale di XAxisB passi sopra il box (gli incastri
+#    a scatto CoreY/XAxisA restano a contatto, come devono);
+#  * XAxisB: mozzo della CentralServoHorn (y -11.5, faccia z 2.0) sull'albero del servo X,
+#    5.1 sopra la faccia superiore del servo.
+# Verifica (check_xy): in posa neutra niente tocca, tranne gli incastri voluti.
+# Con questa posa il mozzo della VerticalHorn cade a y -22.4, z 11.2: sull'albero del servo Y.
+X_SHAFT_Y = 10.65 - SG_SHAFT - 0.75   # albero servo X in XAxisA: corpo 0.75 dal lato +y della finestra
+CORE_T = np.array([0.0, E[0] + 18.23, E[1] + 13.655])
+XA_T = np.array([0.0, E[0] + 6.05, CORE_T[2] - 22.0 - (4.8 + 2.5) + 6.25])
+XB_T = np.array([0.0, XA_T[1] + X_SHAFT_Y + 11.5, XA_T[2] + 4.8 + 6.8 + 5.1 - 2.0])
+
+
 # =====================================================================================
 # 3. cinematica palpebre (piano y-z, unita' 1:1)
 # =====================================================================================
@@ -637,22 +653,31 @@ def build(dia=85.0, small=False):
     # di Will viene riempito. Quote 1:1 delle sedi di Will (base: fessure orecchie e fondi tasca;
     # telaio X: finestra 12.8 x 25.6, corpo contro il lato +y, orecchie sulla faccia z = 4.8).
     top_lid = hx0 - s * WILL_HORN_FACE                    # faccia superiore servo palpebre (x)
+    cY = find_hub(W["core"]["VerticalHorn"])[0] + CORE_T   # mozzo squadretta Y nell'assieme (1:1)
     seats = {
         # palpebre: in piedi, albero verso l'esterno, corpo verso il basso, albero sul mozzo della
         # squadretta (= F; le fessure di Will darebbero 0.25 mm 1:1 piu' in basso e indietro)
         "LID_R": servo_frame([0, *(s * cA[1:])], [1, 0, 0], [0, 0, -1], top_lid),
         "LID_L": servo_frame([0, *(s * cA[1:])], [-1, 0, 0], [0, 0, -1], top_lid),
-        # Y: in piedi al centro, albero verso -x (squadretta VerticalHorn), fondo tasca z -4.6;
-        # orecchia nella fessura x -4.55..-1.65 con lo stesso scarto delle sedi palpebre
-        "Y": servo_frame([0, s * -22.45, s * (-4.55 + SG_L - SG_SHAFT)], [-1, 0, 0], [0, 0, -1],
-                         s * (2.94 + SG_H - SG_EAR[0] - (SG_EAR[1] - SG_EAR[0]) / 2)),
-        # X: nel telaio di XAxisA, albero in su, corpo verso -y (cavo nella tacca a -y)
-        "X": servo_frame([0, s * (10.65 - SG_SHAFT), 0], [0, 0, 1], [0, -1, 0], s * (4.8 + SG_H - SG_EAR[0])),
+        # Y: in piedi al centro, albero verso -x sul mozzo della VerticalHorn (CoreY in posa)
+        "Y": servo_frame([0, *(s * cY[1:])], [-1, 0, 0], [0, 0, -1],
+                         -s * (cY[0] + WILL_HORN_FACE)),
+        # X: nel telaio di XAxisA, albero in su, corpo verso -y (cavo nella tacca a -y); la
+        # finestra (25.6) e' piu' lunga del corpo: 0.75 dal lato +y, cosi' il telaio laterale di
+        # XAxisB passa dietro le orecchie dei servo palpebre
+        "X": servo_frame([0, s * X_SHAFT_Y, 0], [0, 0, 1], [0, -1, 0], s * (4.8 + SG_H - SG_EAR[0])),
     }
     asm["servo_R"] = tf(sg90_real(), seats["LID_R"])
+    asm["servo_Y"] = tf(sg90_real(), seats["Y"])
+    asm["servo_X"] = tf(sg90_real(), Tm(s * XA_T) @ seats["X"])
+    for g, T in (("CoreY_PIP", CORE_T), ("XAxisB_PIP", XB_T)):
+        for k, m in out[g].items():
+            asm[f"{g}:{k}"] = tf(m, Tm(s * T))
     base = sc(W["base"])
     if small:   # sedi e base di Will cosi' come sono; base intera (145 mm)
         asm["base"] = base
+        for k, m in out["XAxisA_PIP"].items():
+            asm[f"XAxisA_PIP:{k}"] = tf(m, Tm(s * XA_T))
         out["Base"] = base
         info = dict(s=s, P=P, small=True, JB=JB, PB=PB, Fs=Fs, seats=seats,
                     linkB_len=float(np.linalg.norm(PB - JB)))
@@ -673,6 +698,8 @@ def build(dia=85.0, small=False):
         xa["EyeCorePivotHolder"], seats["X"], s,
         [s1([-6.4, -14.95, fr.bounds[0, 2]], [6.4, 10.65, 4.8])], zmin=s * fr.bounds[0, 2])
     asm["base"] = base
+    for k, m in xa.items():
+        asm[f"XAxisA_PIP:{k}"] = tf(m, Tm(s * XA_T))
 
     # ---------------- base in due meta' ----------------
     out.update(split_base(base, s))
@@ -770,6 +797,35 @@ def check(asm, kin, s, with_servo=True):
                 if v > 1.0:
                     worst.append((round(float(d), 1), ks[i], ks[j], round(v)))
     return worst
+
+
+def check_xy(asm, with_servo=True):
+    """posa neutra: gruppi X/Y e servo X, Y contro base, bulbi, supporti e tra loro
+    (le parti dello stesso gruppo print-in-place non si confrontano)."""
+    keys = [k for k in asm if ":" in k] + ["base", "eye_1", "eye_2", "cpiv_1", "cpiv_2"]
+    if with_servo:
+        keys += ["servo_X", "servo_Y"]
+    grp = lambda k: k.split(":")[0]
+    # servo nelle loro sedi/squadrette: contatti voluti (spline nella sede, orecchie)
+    allowed = [{"servo_X", "XAxisA_PIP"}, {"servo_X", "XAxisB_PIP"}, {"servo_Y", "base"},
+               {"servo_Y", "CoreY_PIP"}, {"servo_X", "CoreY_PIP"}, {"XAxisA_PIP", "CoreY_PIP"},
+               # i perni del CoreY nei supporti centrali, gli adattatori nei bulbi
+               {"CoreY_PIP", "cpiv_1"}, {"CoreY_PIP", "cpiv_2"},
+               {"XAxisA_PIP", "eye_1"}, {"XAxisA_PIP", "eye_2"},
+               {"XAxisB_PIP", "eye_1"}, {"XAxisB_PIP", "eye_2"}]
+    bad = []
+    for i in range(len(keys)):
+        for j in range(i + 1, len(keys)):
+            a, b = keys[i], keys[j]
+            if grp(a) == grp(b) or {grp(a), grp(b)} in allowed:
+                continue
+            A, B = asm[a], asm[b]
+            if np.any(A.bounds[0] > B.bounds[1]) or np.any(B.bounds[0] > A.bounds[1]):
+                continue
+            v = vol_inter(A, B)
+            if v > 1.0:
+                bad.append((a, b, round(v)))
+    return bad
 
 
 def on_bed(m):
@@ -882,19 +938,40 @@ def render(asm, kin, s, path):
              (p["lidT"], col["lidT"]), (p["lidB"], col["lidB"]), (p["linkA"], col["link"]),
              (p["linkB"], "#d9822b"), (p["hornA"], col["horn"])]
         Lm = [(mirror_asm(m), c) for m, c in R[1:]]
-        return R + Lm
+        xy = [(m, "#8a5fb5" if k.startswith("CoreY") else "#c25a7c" if k.startswith("XAxisA")
+               else "#d89a3c") for k, m in asm.items() if ":" in k]
+        sv = [(asm[k], col["shell"]) for k in ("servo_X", "servo_Y")]
+        return R + Lm + xy + sv
 
-    views = [("riposo, palpebre a meta'", 0.0, (0.9, -1.6, 0.8)),
-             ("palpebre chiuse", DPHI_CLOSED, (0.15, -1.0, 0.25)),
-             ("palpebre aperte", DPHI_OPEN, (0.15, -1.0, 0.25)),
-             ("lato dx: tiranti A (giallo) e B (arancio)", 0.0, (1.0, -0.15, 0.1))]
-    pl = pv.Plotter(off_screen=True, shape=(2, 2), window_size=(1800, 1300))
-    for i, (title, d, v) in enumerate(views):
-        pl.subplot(i // 2, i % 2)
-        for m, c in scene(d):
-            pl.add_mesh(pv.wrap(m), color=c, smooth_shading=False)
+    SERVO = "#1f6fff"
+    servos = {id(asm[k]) for k in ("servo_R", "servo_X", "servo_Y")}
+
+    def is_servo(m):
+        return id(m) in servos
+
+    # (titolo, posa palpebre, direzione di vista, zoom, servo in evidenza)
+    views = [("riposo, palpebre a meta'", 0.0, (0.9, -1.6, 0.8), 1.6, False),
+             ("palpebre chiuse", DPHI_CLOSED, (0.15, -1.0, 0.25), 1.9, False),
+             ("palpebre aperte", DPHI_OPEN, (0.15, -1.0, 0.25), 1.9, False),
+             ("lato dx: tiranti A (giallo) e B (arancio)", 0.0, (1.0, -0.15, 0.1), 1.9, False),
+             ("i 4 servo (blu): X al centro, Y dietro, palpebre ai lati", 0.0, (0.6, -1.0, 1.1), 1.6, True),
+             ("i 4 servo (blu), da dietro", 0.0, (-0.5, 1.2, 0.9), 1.6, True)]
+    pl = pv.Plotter(off_screen=True, shape=(2, 3), window_size=(2700, 1300))
+    for i, (title, d, v, zoom, xray) in enumerate(views):
+        pl.subplot(i // 3, i % 3)
+        R = scene(d)
+        if xray:
+            R.append((mirror_asm(asm["servo_R"]), col["shell"]))
+            servos.add(id(R[-1][0]))
+        for m, c in R:
+            sv = is_servo(m)
+            if xray:
+                pl.add_mesh(pv.wrap(m), color=SERVO if sv else c, opacity=1.0 if sv else 0.18,
+                            smooth_shading=False)
+            else:
+                pl.add_mesh(pv.wrap(m), color=SERVO if sv else c, smooth_shading=False)
         pl.view_vector(v)
-        pl.camera.zoom(1.9 if i else 1.6)
+        pl.camera.zoom(zoom)
         pl.add_text(title, font_size=11)
     pl.screenshot(str(path))
 
@@ -917,6 +994,8 @@ def main():
     out, asm, info, kin = build(a.d, small=a.small)
     s = info["s"]
     worst = [] if a.no_check else check(asm, kin, s, with_servo=not a.small)
+    if not a.no_check:
+        worst += [("assi X/Y in posa neutra",) + w for w in check_xy(asm, with_servo=not a.small)]
     tag = "eyemech_D32_prova" if a.small else f"eyemech_D{a.d:.0f}"
     od = OUTROOT / tag
     files = export(out, od)

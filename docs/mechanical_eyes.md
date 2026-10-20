@@ -32,7 +32,7 @@ Cambia solo quello che non si può ingrandire o che riguarda le palpebre:
 | Squadrette (palpebre, X, Y) | mozzo rifatto: codolo Ø10 che scende di 8.7 mm fino allo scanalato del servo vero, sede Ø4.75×3 a pressione + vite M2×12 |
 | Palpebre | Will usa 2 servo per occhio. Resta solo il servo **anteriore** (quello della palpebra superiore, tirante corto originale). La sua squadretta ha un secondo braccio (r 35.1 mm, 58.8° avanti) con un perno; il nuovo tirante `LinkB` (interasse 104.9 mm) porta il moto all'orecchia della palpebra inferiore. Spingendo in avanti le due orecchie le palpebre si chiudono insieme |
 | Servo posteriore | eliminato, con la sua squadretta e il tirante lungo. La sua sede ingrandita resta vuota |
-| Base | 388 × 253 × 70 mm: divisa a metà (x = 0), unita da 3 chiavette a coda di rondine sotto, con 2 viti M3×10 svasate ciascuna |
+| Base | 388 × 253 × 67 mm: divisa a metà (x = 0), unita da 3 chiavette a coda di rondine sotto, con 2 viti M3×10 svasate ciascuna |
 | Porta-PCB | non inclusi: ingranditi terrebbero una scheda di Will 2.7 volte più grande |
 
 **Cinematica palpebre** (ottimizzata nello script): con 80° di corsa del servo la palpebra superiore fa
@@ -45,10 +45,17 @@ e rientra sul piano dell'orecchia a metà lunghezza, prima del supporto esterno.
 servo vero su tutta la corsa (da 4° oltre l'apertura fino a chiuse). I gruppi print-in-place
 modificati non si compenetrano. Il lato sinistro è lo specchio del destro.
 
+**Assieme X/Y**: nel 3MF di Will `CoreY`, `XAxisA` e `XAxisB` sono solo in posa di stampa; lo script li
+monta ricavando la posa dai vincoli (perni del `CoreY` sull'asse degli occhi, anelli di `XAxisA` sotto i
+centri dei bulbi, servo X dentro il box del `CoreY`, squadretta di `XAxisB` sull'albero). Con questa posa
+il mozzo della squadretta Y cade esattamente sull'asse degli alberi delle palpebre (z 11.2), e in posa
+neutra non c'è nessuna interferenza oltre agli incastri a scatto voluti. Nell'immagine le ultime due viste
+mostrano i 4 servo (blu) con il resto trasparente.
+
 ### Cosa stampare (D85)
 | File | Q.tà | Note |
 |---|---|---|
-| `Base_L`, `Base_R` | 1+1 | 194 × 253 × 70 mm ciascuna, piatto da 256. Contengono le sedi 1:1 dei servo Y e palpebre (la sede Y è a cavallo della giunzione) |
+| `Base_L`, `Base_R` | 1+1 | 194 × 253 × 67 mm ciascuna, piatto da 256. Contengono le sedi 1:1 dei servo Y e palpebre (la sede Y è a cavallo della giunzione) |
 | `BaseKey_x3` | 3 | chiavette sotto la giunzione, viti M3×10 svasate (6) |
 | `PivotCentral_x2`, `PivotOuter_L`, `PivotOuter_R` | 2+1+1 | supporti a L |
 | `Eyeball_x2` | 2 | bulbi di Will Ø85.3 (pochi perimetri, riempimento basso: pieni sarebbero ~200 g) |
@@ -81,8 +88,10 @@ Come nella guida di Will (`mechanical/eyes/original/eyemech_e3.2/src/Assembly.pd
 ### Da verificare
 - **Misure SG90** (`SG_*` e `SG_SPLINE_TOP`/`SG_BOSS_TOP` nello script, stimate da datasheet): provare
   una sede e una squadretta con un servo vero prima del resto.
-- **Sedi X e Y**: la posizione del servo lungo l'albero è ricavata dalle fessure di Will (la palpebra dal
-  mozzo della squadretta): controllare al montaggio che il codolo della squadretta non tocchi il mozzo ingranaggi.
+- **Sedi X e Y**: le sedi di palpebre e Y prendono l'asse dal mozzo della loro squadretta; il servo X sta
+  nella finestra di `XAxisA` (25.6 mm per un corpo di 22.8) a 0.75 mm dal lato posteriore, così il telaio
+  laterale di `XAxisB` passa dietro le orecchie dei servo palpebre. Controllare al montaggio che i codoli
+  delle squadrette non tocchino il mozzo ingranaggi.
 - **Coppia**: i pezzi sono 2.7 volte più grandi e circa 19 volte più pesanti dell'originale. Gli
   **MG90S** sono consigliati (stesse sedi), soprattutto per palpebre e Y; stampare palpebre e bulbi leggeri.
 
