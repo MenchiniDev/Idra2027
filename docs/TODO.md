@@ -1,4 +1,4 @@
-# TODO — occhi EyeMech (prova D32, poi D85)
+# TODO — occhi EyeMech (idra_version, poi D85)
 
 Obiettivo: verificare meccanica + codice degli occhi EyeMech a 4 servo SG90/MG90S (X, Y, palpebre sx,
 palpebre dx), prima nella versione di prova in scala di Will, poi nella D85; poi passare al PCB.
@@ -11,8 +11,8 @@ Dettagli: `docs/mechanical_eyes.md`.
 - [ ] Misurare un SG90/MG90S col calibro e confrontare con `SG_*` in `mechanical/scripts/generate_eyemech.py`
       (corpo 22.8 × 12.4, orecchie 32.6, fori 27.8, fondo → orecchie 15.9, fondo → faccia superiore 22.7)
 
-## 2. Versione di prova D32 (`mechanical/eyes/eyemech_D32_prova/`)
-- [ ] Stampare tutti i pezzi (lista in `docs/mechanical_eyes.md` → "Versione di prova D32")
+## 2. idra_version (`mechanical/eyes/idra_version/`)
+- [ ] Stampare tutti i pezzi (lista in `docs/mechanical_eyes.md` → "idra_version")
 - [ ] Viti: 2 × M2×8 (PinB) + 2 × M2×5 (rondelle) + quelle della guida di Will
 - [ ] Montare come nella guida di Will, solo i servo anteriori delle palpebre
 - [ ] Muovere a mano (servo staccati): palpebre che si chiudono insieme, niente punti duri

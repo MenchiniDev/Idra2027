@@ -1,4 +1,4 @@
-# Piatti Bambu Lab A1 — EyeMech D32 (versione di prova, scala di Will)
+# Piatti Bambu Lab A1 — idra_version (scala di Will)
 
 Tagliati con Bambu Studio 2.05: A1, ugello 0.4, `0.20mm Standard @BBL A1`, Bambu PLA Basic,
 supporti `tree(auto)` 30°, 2 pareti, riempimento 15%. Si aprono con File → Apri progetto.

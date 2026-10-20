@@ -1,4 +1,4 @@
-VERSIONE DI PROVA in scala di Will: stessi pezzi e stessa cinematica della D85, piu' piccoli
+IDRA_VERSION (scala di Will): stessi pezzi e stessa cinematica della D85, piu' piccoli
 diametro_bulbo_mm: 32.0
 fattore_di_scala: 1.00000 (pezzi di Will EyeMech e3.2, SG90 lettera A, print-in-place)
 interasse_occhi_mm: 75.0

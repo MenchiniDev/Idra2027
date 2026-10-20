@@ -7,7 +7,7 @@ Due modelli di partenza (in `mechanical/eyes/original/`) e una versione in uso, 
 | `original/eyemech_e3.2/` | **EyeMech ε3.2** di Will Cogley (3MF, PDF di montaggio, codice, scheda). Base della versione in uso |
 | `original/morganmanly/` | **Animatronic Eyes – Double and Single** di MorganManly (`single_v4`, `double_compact`). Da qui viene l'idea delle palpebre a 1 servo per occhio |
 | `eyemech_D85/` | **versione in uso**: EyeMech ingrandito, occhi a 200 mm tra i centri (bulbo Ø85.3), palpebre a 1 servo per occhio, sedi dei servo 1:1 |
-| `eyemech_D32_prova/` | **versione di prova**: gli stessi pezzi nella scala di Will (bulbo Ø32, occhi a 75 mm), da stampare per prima |
+| `idra_version/` | **idra_version**: gli stessi pezzi nella scala di Will (bulbo Ø32, occhi a 75 mm), palpebre a 1 servo per occhio, da stampare per prima per provare il meccanismo. File `idra_version_*.stl` |
 
 Generatore unico: `mechanical/scripts/generate_eyemech.py`.
 
@@ -98,11 +98,11 @@ Come nella guida di Will (`mechanical/eyes/original/eyemech_e3.2/src/Assembly.pd
 - **Coppia**: i pezzi sono 2.7 volte più grandi e circa 19 volte più pesanti dell'originale. Gli
   **MG90S** sono consigliati (stesse sedi), soprattutto per palpebre e Y; stampare palpebre e bulbi leggeri.
 
-## Versione di prova D32 — stessi pezzi, scala di Will
-File in `mechanical/eyes/eyemech_D32_prova/`. Da stampare **prima** della D85: costa poco filamento e
+## idra_version — stessi pezzi, scala di Will (versione di prova)
+File in `mechanical/eyes/idra_version/` (`idra_version_*.stl`). Da stampare **prima** della D85: costa poco filamento e
 qualche ora, e fa vedere se il meccanismo funziona davvero.
 
-![EyeMech D32 prova](img/eyemech_D32_prova.png)
+![idra_version](img/idra_version.png)
 
 È la D85 senza l'ingrandimento (s = 1): bulbo Ø32, occhi a 75 mm, base 145 × 95 mm in un pezzo solo.
 Siccome la scala è quella di Will, **sedi dei servo, squadrette, base e fermi sono i suoi originali**
@@ -116,7 +116,7 @@ assi X/Y, montaggio e firmware a 4 servo.
 **Cosa non prova**: le sedi 1:1 e i mozzi rifatti della D85 (qui sono quelli di Will) e il peso
 dei pezzi grandi.
 
-### Cosa stampare (D32 prova)
+### Cosa stampare (idra_version)
 | File | Q.tà | Note |
 |---|---|---|
 | `Base` | 1 | base di Will, 145 × 95 mm |
@@ -129,7 +129,7 @@ dei pezzi grandi.
 | `LinkB_L`, `LinkB_R` | 1+1 | tirante nuovo, con supporto |
 | `PinB_x2`, `Washer_x2` | 2+2 | pezzi piccoli (Ø9): ugello 0.4, layer 0.12–0.16 |
 
-**Stampa** (`eyemech_D32_prova/bambu_A1/`, 5 piatti A1 già tagliati): **≈ 5 h 10 min e ≈ 118 g** di PLA.
+**Stampa** (`idra_version/bambu_A1/`, 5 piatti A1 già tagliati): **≈ 5 h 10 min e ≈ 118 g** di PLA.
 
 Viti: per lato 1 × M2×8 nel `PinB` (si filetta nel braccio) + 1 × M2×5 con la rondella; il resto come
 nella guida di Will. Montaggio: guida di Will + punti 2 e 3 della D85 (servo posteriore non montato).

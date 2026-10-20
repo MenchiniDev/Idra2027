@@ -35,7 +35,7 @@ Uso:  python generate_eyemech.py                  (D85: interasse occhi 200 mm -
       python generate_eyemech.py --interasse 0 --d 90   (scala dal diametro del bulbo)
       python generate_eyemech.py --render         (immagine in docs/img)
 Uscita in mechanical/eyes/eyemech_D85 (+ print_A1 con i piatti dei pezzi grandi) o
-mechanical/eyes/eyemech_D32_prova.
+mechanical/eyes/idra_version (file idra_version_*.stl).
 """
 import argparse
 import re
@@ -864,7 +864,7 @@ def on_bed(m):
     return m
 
 
-def export(out, od):
+def export(out, od, prefix=""):
     od.mkdir(parents=True, exist_ok=True)
     for f in od.glob("*.stl"):
         f.unlink()
@@ -876,7 +876,7 @@ def export(out, od):
         if name in PRINT_ROT:
             m = tf(m, rot[PRINT_ROT[name]])
         m = on_bed(m)
-        m.export(od / f"{name}.stl")
+        m.export(od / f"{prefix}{name}.stl")
         files.append((name, m.extents))
     return files
 
@@ -887,7 +887,7 @@ def info_text(s, info, kin, files, worst):
     rng_bot = (k.bot(DPHI_OPEN), k.bot(DPHI_CLOSED))
     P, small = info["P"], info["small"]
     L = [
-        ("VERSIONE DI PROVA in scala di Will: stessi pezzi e stessa cinematica della D85, piu' piccoli"
+        ("IDRA_VERSION (scala di Will): stessi pezzi e stessa cinematica della D85, piu' piccoli"
          if small else "VERSIONE D85"),
         f"diametro_bulbo_mm: {s * D_WILL:.1f}",
         f"fattore_di_scala: {s:.5f} (pezzi di Will EyeMech e3.2, SG90 lettera A, print-in-place)",
@@ -1030,9 +1030,9 @@ def main():
     worst = [] if a.no_check else check(asm, kin, s, with_servo=not a.small)
     if not a.no_check:
         worst += [("assi X/Y in posa neutra",) + w for w in check_xy(asm, with_servo=not a.small)]
-    tag = "eyemech_D32_prova" if a.small else f"eyemech_D{a.d:.0f}"
+    tag = "idra_version" if a.small else f"eyemech_D{a.d:.0f}"
     od = OUTROOT / tag
-    files = export(out, od)
+    files = export(out, od, prefix="idra_version_" if a.small else "")
     if not a.small:
         a1_plates(od)
     txt = info_text(s, info, kin, files, worst)
