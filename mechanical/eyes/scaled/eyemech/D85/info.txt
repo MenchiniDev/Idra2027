@@ -1,0 +1,30 @@
+diametro_bulbo_mm: 85.3
+fattore_di_scala: 2.66667 (pezzi di Will EyeMech e3.2, SG90 lettera A, print-in-place)
+interasse_occhi_mm: 200.0
+servo: 4 x SG90 o MG90S veri (1:1): X, Y, palpebre sx, palpebre dx, in sedi 1:1 (base: Y + palpebre; XAxisA: X)
+palpebre: servo anteriore, 80 deg di corsa: superiore -35.5 .. +24.3 deg, inferiore +36.7 .. -21.4 deg
+secondo_braccio_squadretta: r = 35.1 mm, 58.8 deg avanti rispetto al braccio di Will
+tirante_B_interasse_mm: 104.9
+codolo_mozzo_mm: 8.7 (sede scanalato D4.75 x 3.0)
+viti: per squadretta 1 x M2x12 (nel codolo, nello scanalato); per tirante B: 1 x M3x20 nel PinB + 1 x M3x10 con rondella stampata sull'orecchia;
+      per servo 2 x M2x8 autofilettanti (orecchie -> sede); base: 6 x M3x10 svasate nelle chiavette
+pezzi (mm, X x Y x Z come esportati):
+  PivotOuter_L: 89 x 177 x 24
+  PivotOuter_R: 89 x 177 x 24
+  PivotCentral_x2: 89 x 177 x 15
+  Eyeball_x2: 85 x 85 x 53
+  CoreY_PIP: 117 x 171 x 112
+  XAxisA_PIP: 264 x 90 x 37
+  XAxisB_PIP: 93 x 264 x 30
+  LidTop_R_PIP: 81 x 179 x 109
+  LidTop_L_PIP: 81 x 179 x 109
+  LidBottom_R: 67 x 59 x 106
+  LidBottom_L: 67 x 59 x 106
+  LinkB_R: 90 x 106 x 29
+  LinkB_L: 90 x 106 x 29
+  Washer_x2: 22 x 22 x 2
+  PinB_x2: 22 x 22 x 18
+  Base_L: 194 x 253 x 70
+  Base_R: 194 x 253 x 70
+  BaseKey_x3: 48 x 26 x 7
+interferenze_rilevate: nessuna

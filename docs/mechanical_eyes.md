@@ -152,8 +152,94 @@ rigenerare con `python mechanical/scripts/generate_eyes.py --mg995`.
 per testa il picco è ~5 A a 6 V: il DC-DC da 10 A per testa basta, il fusibile a lama da 7.5 A
 sulla scheda pure.
 
-## Versione IBRIDA EyeMech + MorganManly (4 servo SG90)
-File in `mechanical/eyes/scaled/hybrid_eyemech/D85/` (baseline: bulbo **Ø 85 mm**).
+## Versione EyeMech D85 — pezzi originali di Will, palpebre a 1 servo (4 servo SG90/MG90S)
+File in `mechanical/eyes/scaled/eyemech/D85/`. Generatore: `mechanical/scripts/generate_eyemech_D85.py`.
+**Sostituisce l'ibrido** qui sotto (che aveva bulbi, base e sedi ridisegnati da zero).
+
+![EyeMech D85](img/eyemech_D85.png)
+
+Parte dai pezzi **originali** di EyeMech ε3.2 (`EyeMech e3.2 SG90 - A.3mf`, versione print-in-place,
+sedi SG90 lettera A) e li ingrandisce tutti dello stesso fattore **s = 200/75 = 2.667**, scelto perché i centri degli occhi
+siano a **200 mm** (in Will sono a 75 mm); il bulbo viene Ø85.3. Bulbi, base
+con gli incastri, supporti a L, telaio centrale X/Y, palpebre e tiranti. Un incastro
+a scatto ingrandito lavora con la stessa deformazione dell'originale; i giochi dei perni
+print-in-place passano da ~0.2 a ~0.5 mm (stessa proporzione).
+
+Cambia solo quello che non si può ingrandire o che riguarda le palpebre:
+
+| Cosa | Come |
+|---|---|
+| Sedi dei servo | **1:1**, per SG90/MG90S veri (22.8 × 12.4 mm, orecchie 32.6 mm, fori a 27.8 mm), ricavate direttamente nei pezzi: le sedi ingrandite di Will sono riempite e dentro c'è la sede del servo vero, con l'albero sull'asse della squadretta e la faccia superiore alla stessa quota (i mozzi delle squadrette non cambiano). Base: 3 sedi (Y al centro, palpebre sx e dx), il servo entra **di fianco, dal lato della squadretta**, le orecchie appoggiano sulla faccia del blocco, 2 viti M2×8 autofilettanti. `XAxisA`: sede del servo X nel telaio, il servo entra **dall'alto** come in Will, orecchie sul piano, 2 viti M2×8. Cavo: canale sotto il fondo del corpo, esce dall'altra parte del blocco. Niente più gusci né fermi di Will |
+| Squadrette (palpebre, X, Y) | mozzo rifatto: codolo Ø10 che scende di 8.7 mm fino allo scanalato del servo vero, sede Ø4.75×3 a pressione + vite M2×12 |
+| Palpebre | Will usa 2 servo per occhio. Resta solo il servo **anteriore** (quello della palpebra superiore, tirante corto originale). La sua squadretta ha un secondo braccio (r 35.1 mm, 58.8° avanti) con un perno; il nuovo tirante `LinkB` (interasse 104.9 mm) porta il moto all'orecchia della palpebra inferiore. Spingendo in avanti le due orecchie le palpebre si chiudono insieme |
+| Servo posteriore | eliminato, con la sua squadretta e il tirante lungo. La sua sede ingrandita resta vuota |
+| Base | 388 × 253 × 70 mm: divisa a metà (x = 0), unita da 3 chiavette a coda di rondine sotto, con 2 viti M3×10 svasate ciascuna |
+| Porta-PCB | non inclusi: ingranditi terrebbero una scheda di Will 2.7 volte più grande |
+
+**Cinematica palpebre** (ottimizzata nello script): con 80° di corsa del servo la palpebra superiore fa
+−35.5…+24.3° e l'inferiore +36.7…−21.4°: speculari entro 1°, come le due palpebre a servo separato
+di Will (bordi a circa ±60° da aperte, a ~0° da chiuse). Gli angoli di trasmissione restano tra 54° e 90°.
+Il `LinkB` parte dal lato esterno della squadretta (per non toccare il tirante originale vicino al giunto)
+e rientra sul piano dell'orecchia a metà lunghezza, prima del supporto esterno.
+
+**Verifica al computer**: nessuna interferenza tra palpebre, tiranti, squadretta, bulbo, supporti, base e
+servo vero su tutta la corsa (da 4° oltre l'apertura fino a chiuse). I gruppi print-in-place
+modificati non si compenetrano. Il lato sinistro è lo specchio del destro.
+
+### Cosa stampare (D85)
+| File | Q.tà | Note |
+|---|---|---|
+| `Base_L`, `Base_R` | 1+1 | 194 × 253 × 70 mm ciascuna, piatto da 256. Contengono le sedi 1:1 dei servo Y e palpebre (la sede Y è a cavallo della giunzione) |
+| `BaseKey_x3` | 3 | chiavette sotto la giunzione, viti M3×10 svasate (6) |
+| `PivotCentral_x2`, `PivotOuter_L`, `PivotOuter_R` | 2+1+1 | supporti a L |
+| `Eyeball_x2` | 2 | bulbi di Will Ø85.3 (pochi perimetri, riempimento basso: pieni sarebbero ~200 g) |
+| `CoreY_PIP` | 1 | telaio su/giù + squadretta Y (print-in-place) |
+| `XAxisA_PIP`, `XAxisB_PIP` | 1+1 | asse X (print-in-place), in `XAxisA` la sede 1:1 del servo X. Lunghi 264 mm: **in diagonale** sul piatto da 256 |
+| `LidTop_L_PIP`, `LidTop_R_PIP` | 1+1 | palpebra superiore + tirante originale + squadretta nuova (print-in-place) |
+| `LidBottom_L`, `LidBottom_R` | 1+1 | palpebra inferiore, perno dell'orecchia cilindrico Ø14 con foro per M3 |
+| `LinkB_L`, `LinkB_R` | 1+1 | tirante nuovo: ha un tratto obliquo, serve supporto |
+| `PinB_x2` | 2 | perno del secondo braccio (testa sul piatto), vite M3×20 |
+| `Washer_x2` | 2 | rondella sull'orecchia della palpebra inferiore, vite M3×10 |
+
+Orientamenti di stampa: quelli di Will (presi dal suo 3MF), solo ingranditi.
+
+### Montaggio
+Come nella guida di Will (`mechanical/eyes/original/eyemech_e3.2/src/Assembly.pdf`), con queste differenze:
+1. Servo X: dall'alto nella sede di `XAxisA` (cavo verso la tacca), 2 viti M2×8, poi si aggancia il `CoreY` sopra.
+   Servo Y e palpebre: si infilano nella base **prima** di `PivotCentral` / `PivotOuter`, di fianco dal lato
+   della squadretta, col cavo infilato prima nel canale sotto il corpo; 2 viti M2×8 nelle orecchie.
+   I fermi di Will (`Retainer_*`) non servono più.
+2. Palpebre: montare solo il servo anteriore di ogni lato (quello che Will chiama TOP LEFT / TOP RIGHT).
+   La sede del servo posteriore resta vuota.
+3. `LinkB`: anello esterno sul `PinB` (codolo nel foro del secondo braccio, vite M3×20 dall'esterno);
+   anello interno sul perno dell'orecchia della palpebra inferiore, con `Washer` e vite M3×10.
+4. Base: unire le due metà con le chiavette prima di montare il resto.
+
+**Calibrazione**: come Will, servo a 90° = palpebre chiuse. Aperte: destra 90° → 10°, sinistra
+90° → 170° (i canali TR/TL del suo codice; BR/BL non servono più). Il firmware deve gestire 4 servo
+(`EyeNode_2servo` ne gestisce 2).
+
+### Da verificare
+- **Misure SG90** (`SG_*` e `SG_SPLINE_TOP`/`SG_BOSS_TOP` nello script, stimate da datasheet): stampare un
+  pezzo di base con una sede e una squadretta e provarli con un servo vero prima del resto.
+- **Sedi X e Y**: la posizione del servo lungo l'albero è ricavata dalle fessure di Will (la palpebra dal
+  mozzo della squadretta): controllare al montaggio che il codolo della squadretta non tocchi il mozzo ingranaggi.
+- **Coppia**: i pezzi sono 2.7 volte più grandi e circa 19 volte più pesanti dell'originale. Gli
+  **MG90S** sono consigliati (stesse sedi), soprattutto per palpebre e Y; stampare palpebre e bulbi leggeri.
+- **Licenza**: tutti i pezzi derivano da EyeMech ε3.2 (CC BY-NC-SA 4.0): per il carro serve il permesso
+  di Will Cogley (enquiries@willcogley.com).
+
+### Rigenerare
+```bash
+python mechanical/scripts/generate_eyemech_D85.py                     # occhi a 200 mm (bulbo 85.3), con verifica
+python mechanical/scripts/generate_eyemech_D85.py --interasse 210     # altra distanza tra i centri degli occhi
+python mechanical/scripts/generate_eyemech_D85.py --interasse 0 --d 90  # scala dal diametro del bulbo
+python mechanical/scripts/generate_eyemech_D85.py --render   # immagine in docs/img
+```
+
+## Versione IBRIDA EyeMech + MorganManly (4 servo SG90) — superata
+Superata dalla versione EyeMech D85 qui sopra. File in `mechanical/eyes/scaled/hybrid_eyemech/D85/`
+(baseline: bulbo **Ø 85 mm**).
 Generatore: `mechanical/scripts/generate_hybrid.py`.
 
 ![ibrido D85](img/hybrid_D85.png)
