@@ -7,7 +7,7 @@ Due modelli di partenza (in `mechanical/eyes/original/`) e una versione in uso, 
 | `original/eyemech_e3.2/` | **EyeMech ε3.2** di Will Cogley (3MF, PDF di montaggio, codice, scheda). Base della versione in uso |
 | `original/morganmanly/` | **Animatronic Eyes – Double and Single** di MorganManly (`single_v4`, `double_compact`). Da qui viene l'idea delle palpebre a 1 servo per occhio |
 | `eyemech_D85/` | **versione in uso**: EyeMech ingrandito, occhi a 200 mm tra i centri (bulbo Ø85.3), palpebre a 1 servo per occhio, sedi dei servo 1:1 |
-| `idra_version/` | **idra_version**: gli stessi pezzi nella scala di Will (bulbo Ø32, occhi a 75 mm), palpebre a 1 servo per occhio, da stampare per prima per provare il meccanismo. File `idra_version_*.stl`, un piatto A1 pronto (≈ 5 h, 117 g) |
+| `idra_version/` | **idra_version**: gli stessi pezzi nella scala di Will (bulbo Ø32, occhi a 75 mm), palpebre a 1 servo per occhio, base ridotta, da stampare per prima per provare il meccanismo. File `idra_version_*.stl`, un piatto A1 pronto (≈ 3 h 50 min, 76 g) |
 
 Generatore unico: `mechanical/scripts/generate_eyemech.py`.
 
@@ -104,23 +104,25 @@ qualche ora, e fa vedere se il meccanismo funziona davvero.
 
 ![idra_version](img/idra_version.png)
 
-È la D85 senza l'ingrandimento (s = 1): bulbo Ø32, occhi a 75 mm, base 145 × 95 mm in un pezzo solo.
-Siccome la scala è quella di Will, **sedi dei servo, squadrette, base e fermi sono i suoi originali**
-(gli SG90/MG90S ci entrano come nel suo progetto). Cambiano, come nella D85, solo le palpebre:
+È la D85 senza l'ingrandimento (s = 1): bulbo Ø32, occhi a 75 mm, base ridotta in un pezzo solo.
+Siccome la scala è quella di Will, **squadrette, telaio X e box del `CoreY` sono i suoi originali** (gli
+SG90/MG90S ci entrano come nel suo progetto). Cambiano, come nella D85, la base e le palpebre. **Base**: ridotta a
+una striscia 145 × 30 × 28 mm (senza porta-PCB né sedi dei servo posteriori) con tre blocchi nuovi per i servo
+delle palpebre e dell'asse Y (parete 3 mm, servo fissato con 2 viti M2 alle orecchie, lato verso il telaio di
+`XAxisB` aperto): **senza i fermi di Will**. **Palpebre**:
 un servo per occhio, secondo braccio sulla squadretta, `LinkB`, `PinB`, perno cilindrico
 sull'orecchia della palpebra inferiore. Cinematica identica alla D85 (stessi angoli, interasse
 `LinkB` 39.3 mm). I pezzi nuovi hanno quote ridotte a circa 3/8 e **viti M2** (`DIM["small"]` nello script).
 
 **Cosa prova**: movimento delle palpebre a un servo (secondo braccio + `LinkB`), print-in-place,
 assi X/Y, montaggio e firmware a 4 servo.
-**Cosa non prova**: le sedi 1:1 e i mozzi rifatti della D85 (qui sono quelli di Will) e il peso
-dei pezzi grandi.
+**Cosa non prova**: i mozzi rifatti, il telaio X e il box del `CoreY` della D85 (qui sono quelli di Will) e il
+peso dei pezzi grandi. Le sedi dei servo nella base sono invece quelle della D85 (a scala 1:1).
 
 ### Cosa stampare (idra_version)
 | File | Q.tà | Note |
 |---|---|---|
-| `Base` | 1 | base di Will, 145 × 95 mm |
-| `Retainer_Single`, `Retainer_Double_A`, `Retainer_Double_B` | 1+1+1 | fermi dei servo di Will |
+| `Base` | 1 | base ridotta, 145 × 30 × 28 mm, con i blocchi per 3 servo |
 | `PivotCentral_x2`, `PivotOuter_L`, `PivotOuter_R` | 2+1+1 | supporti a L |
 | `Eyeball_x2` | 2 | bulbi di Will Ø32 |
 | `CoreY_PIP`, `XAxisA_PIP`, `XAxisB_PIP` | 1+1+1 | assi X/Y di Will (print-in-place) |
@@ -129,7 +131,7 @@ dei pezzi grandi.
 | `LinkB_L`, `LinkB_R` | 1+1 | tirante nuovo, con supporto |
 | `PinB_x2`, `Washer_x2` | 2+2 | pezzi piccoli (Ø9): ugello 0.4, layer 0.12–0.16 |
 
-**Stampa** (`idra_version/bambu_A1/`): tutti i 23 pezzi su **un solo piatto A1**, già tagliato: **≈ 5 h e ≈ 117 g** di PLA
+**Stampa** (`idra_version/bambu_A1/`): tutti i 20 pezzi su **un solo piatto A1**, già tagliato: **≈ 3 h 50 min e ≈ 76 g** di PLA
 (disposizione in `img/idra_version_piatto.png`; `mechanical/scripts/pack_plate.py` la rifà).
 
 Viti: per lato 1 × M2×8 nel `PinB` (si filetta nel braccio) + 1 × M2×5 con la rondella; il resto come
