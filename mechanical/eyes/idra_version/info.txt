@@ -13,9 +13,6 @@ pezzi (mm, X x Y x Z come esportati):
   PivotOuter_R: 33 x 66 x 9
   PivotCentral_x2: 33 x 66 x 6
   Eyeball_x2: 32 x 32 x 20
-  Retainer_Single: 34 x 27 x 10
-  Retainer_Double_A: 34 x 55 x 12
-  Retainer_Double_B: 34 x 55 x 12
   CoreY_PIP: 44 x 64 x 42
   XAxisA_PIP: 99 x 34 x 10
   XAxisB_PIP: 35 x 99 x 11
@@ -27,5 +24,5 @@ pezzi (mm, X x Y x Z come esportati):
   LinkB_L: 33 x 40 x 11
   Washer_x2: 9 x 9 x 1
   PinB_x2: 9 x 9 x 8
-  Base: 145 x 95 x 16
+  Base: 145 x 30 x 28
 interferenze_rilevate: nessuna

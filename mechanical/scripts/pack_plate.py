@@ -109,6 +109,27 @@ def profiles(tmp):
     return paths
 
 
+def layout_image(meshes, path, title):
+    """vista dall'alto del piatto (se pyvista e' installato)."""
+    try:
+        import pyvista as pv
+    except ImportError:
+        return
+    pl = pv.Plotter(off_screen=True, window_size=(1500, 1500))
+    pl.add_mesh(pv.Plane(center=(BED / 2, BED / 2, -0.2), direction=(0, 0, 1), i_size=BED, j_size=BED),
+                color="#e8e8e8", show_edges=True)
+    cols = ["#4f81bd", "#c0504d", "#9bbb59", "#8064a2", "#f79646", "#4bacc6"]
+    for k, m in enumerate(meshes):
+        pl.add_mesh(pv.wrap(m), color=cols[k % 6])
+    pl.view_vector((0, -0.05, 1))
+    pl.camera.zoom(1.35)
+    pl.add_text(f"{title}: piatto A1 (256 x 256 mm), {len(meshes)} pezzi", font_size=12)
+    try:
+        pl.screenshot(str(path))
+    except OSError:
+        pass
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("version", help="cartella in mechanical/eyes (idra_version, eyemech_D85)")
@@ -132,6 +153,7 @@ def main():
         for b in range(a.plates):
             sub = Path(tmp) / f"p{b + 1}"
             sub.mkdir()
+            placed = []
             for (i, bb, rot, x, y) in place:
                 if bb != b:
                     continue
@@ -141,6 +163,7 @@ def main():
                 lo = m.bounds[0]
                 m.apply_translation([x - lo[0], y - lo[1], -lo[2]])
                 m.export(sub / f"{i:02d}_{files[i].stem}.stl")
+                placed.append(m)
             out = d / "bambu_A1"
             out.mkdir(exist_ok=True)
             name = f"{a.version}_Piatto_unico.3mf" if a.plates == 1 else f"{a.version}_Piatto_{b + 1}.3mf"
@@ -155,6 +178,7 @@ def main():
             s = z.read("Metadata/slice_info.config").decode()
             t = int(re.search(r'key="prediction" value="(\d+)"', s).group(1))
             w = float(re.search(r'key="weight" value="([\d.]+)"', s).group(1))
+            layout_image(placed, ROOT / "docs" / "img" / f"{a.version}_piatto.png", a.version)
             print(f"piatto {b + 1}: {len(list(sub.glob('*.stl')))} pezzi, {t // 3600} h {(t % 3600) // 60:02d} min, {w:.0f} g -> {out / name}")
 
 

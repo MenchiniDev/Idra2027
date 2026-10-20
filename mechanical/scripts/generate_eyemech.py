@@ -375,7 +375,7 @@ def servo_frame(shaft_pt, shaft_dir, body_dir, top):
     return M
 
 
-def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None):
+def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None, wall=None, open_side=0):
     """sede 1:1 per SG90/MG90S vero dentro la sede ingrandita di Will.
     Mtop: locale servo -> pezzo con l'origine sull'asse, nel piano della faccia SUPERIORE
     (z locale = albero). Si riempie il volume del SG90 ingrandito (che era vuoto per costruzione)
@@ -385,7 +385,10 @@ def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None):
       * via d'ingresso: tutto libero sopra il piano orecchie, lungo l'albero.
     plugs: mesh (nel sistema del pezzo) che chiudono fessure di Will da riempire;
     zmin: il riempimento non scende sotto questa quota (fondo del pezzo, piano di stampa);
-    depth: il riempimento si ferma a questa distanza sotto il piano orecchie (None = tutto)."""
+    depth: il riempimento si ferma a questa distanza sotto il piano orecchie (None = tutto);
+    wall: scala originale (s = 1), dove la sede ingrandita coincide col servo e non lascia pareti:
+    il blocco e' una scatola attorno al servo vero, spessa wall su ogni lato tranne open_side
+    (-1/+1 = lato y locale senza parete: dietro il servo passa il telaio laterale di XAxisB)."""
     c = CL
     T = lambda m: tf(m, Mtop)
     Hs = s * SG_H                                    # fondo SG90 ingrandito a z = -Hs
@@ -394,7 +397,12 @@ def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None):
     hw = s * SG_W / 2 - 0.2
     # solo il corpo ingrandito (+1 dentro il fondo tasca): le fessure delle orecchie le chiudono
     # i plugs, l'orecchia ingrandita superiore non serve
-    body = box([xb0 + 0.2, -hw, -Hs], [xb1 + 1.0, hw, 0])
+    if wall is None:
+        body = box([xb0 + 0.2, -hw, -Hs], [xb1 + 1.0, hw, 0])
+    else:
+        body = box([-SG_SHAFT - c - wall, -SG_W / 2 - c - (0 if open_side < 0 else wall),
+                    ear - (SG_H - SG_EAR[0]) - wall],
+                   [SG_L - SG_SHAFT + c + wall, SG_W / 2 + c + (0 if open_side > 0 else wall), 0])
     fill = U([T(body)] + list(plugs))
     keep = T(box([-500, -500, -Hs - 500 if depth is None else ear - depth], [500, 500, ear]))
     fill = I(fill, keep)
@@ -561,11 +569,6 @@ def build(dia=85.0, small=False):
     for k in ("base", "cpiv_1", "cpiv_2", "opiv_R", "opiv_L", "eye_1", "eye_2"):
         asm[k] = tf(W[k], S @ st[k])
 
-    if small:   # fermi dei servo di Will: nella versione piccola le sedi sono le sue
-        out["Retainer_Single"] = sc(W["ret_single"])
-        out["Retainer_Double_A"] = sc(W["ret_double_1"])
-        out["Retainer_Double_B"] = sc(W["ret_double_2"])
-
     # ---------------- gruppi X/Y: solo mozzi delle squadrette (se ingrandite) ----------------
     core = {k: sc(v) for k, v in W["core"].items()}
     xb = {k: sc(v) for k, v in W["xB"].items()}
@@ -675,15 +678,6 @@ def build(dia=85.0, small=False):
         for k, m in out[g].items():
             asm[f"{g}:{k}"] = tf(m, Tm(s * T))
     base = sc(W["base"])
-    if small:   # sedi e base di Will cosi' come sono; base intera (145 mm)
-        asm["base"] = base
-        for k, m in out["XAxisA_PIP"].items():
-            asm[f"XAxisA_PIP:{k}"] = tf(m, Tm(s * XA_T))
-        out["Base"] = base
-        info = dict(s=s, P=P, small=True, JB=JB, PB=PB, Fs=Fs, seats=seats,
-                    linkB_len=float(np.linalg.norm(PB - JB)))
-        return out, asm, info, kin
-
     def s1(lo, hi, g=0.3):      # tappo: quote 1:1 scalate, allargato di g nel piano (si fonde ai bordi)
         lo, hi = s * np.asarray(lo, float), s * np.asarray(hi, float)
         return box(lo - [g, g, 0], hi + [g, g, 0])
@@ -698,13 +692,19 @@ def build(dia=85.0, small=False):
     base = D(base, [box([s * x0, s * -16.4, s * -3.15 + 0.01], [s * x1, s * BASE_Y[1] + 1, 1e3])
                     for x0, x1 in ((-56.0, -17.0), (17.0, 56.0))])
     for k in ("LID_R", "LID_L", "Y"):
-        base = servo_seat(base, seats[k], s, plugs[k], zmin=s * bz0, depth=SEAT_DEPTH)
+        base = servo_seat(base, seats[k], s, plugs[k], zmin=s * bz0, depth=SEAT_DEPTH,
+                          wall=SEAT_WALL if small else None, open_side=-1 if k == "LID_R" else 1)
+    # scarti staccati dal taglio (pezzetti d'angolo): si tiene solo il corpo principale
+    parts = base.split(only_watertight=False)
+    if len(parts) > 1:
+        base = max(parts, key=lambda m: abs(m.volume))
     fr = W["xA"]["EyeCorePivotHolder"]
     xa = out["XAxisA_PIP"]
-    xa["EyeCorePivotHolder"] = servo_seat(
-        xa["EyeCorePivotHolder"], seats["X"], s,
-        [s1([-6.4, -14.95, fr.bounds[0, 2]], [6.4, 10.65, 4.8])], zmin=s * fr.bounds[0, 2],
-        depth=SEAT_DEPTH)
+    if not small:   # a scala originale telaio X e box del CoreY sono gia' a misura di servo
+        xa["EyeCorePivotHolder"] = servo_seat(
+            xa["EyeCorePivotHolder"], seats["X"], s,
+            [s1([-6.4, -14.95, fr.bounds[0, 2]], [6.4, 10.65, 4.8])], zmin=s * fr.bounds[0, 2],
+            depth=SEAT_DEPTH)
     # box del CoreY sopra il servo X: in Will (1:1) ha una piastra con la finestra del servo
     # (x +-6.4, y -24.5..-0.47, z -12..-9 nel gruppo) e sotto la cavita' tra le pareti di testa
     # (y -29.2..3.3). Ingrandite sarebbero 2.7 volte il servo: si riempiono e si apre la finestra
@@ -720,18 +720,22 @@ def build(dia=85.0, small=False):
     heads = [cyl_axis(2.4, [rcx + sx * SG_EAR_HOLES / 2, 0, -SG_H + SG_EAR[1] - 0.5],
                       [rcx + sx * SG_EAR_HOLES / 2, 0, 60], n=32) for sx in (-1, 1)]   # teste viti M2
     core = out["CoreY_PIP"]
-    core["EyeCorePivotHolder"] = D(U([core["EyeCorePivotHolder"], fill]),
-                                   [tf(win, Mc)] + [tf(h, Mc) for h in heads])
+    if not small:
+        core["EyeCorePivotHolder"] = D(U([core["EyeCorePivotHolder"], fill]),
+                                       [tf(win, Mc)] + [tf(h, Mc) for h in heads])
     asm["CoreY_PIP:EyeCorePivotHolder"] = tf(core["EyeCorePivotHolder"], Tm(s * CORE_T))
 
     asm["base"] = base
     for k, m in xa.items():
         asm[f"XAxisA_PIP:{k}"] = tf(m, Tm(s * XA_T))
 
-    # ---------------- base in due meta' ----------------
-    out.update(split_base(base, s))
+    # ---------------- base in due meta' (D85) / intera (idra_version) ----------------
+    if small:
+        out["Base"] = base
+    else:
+        out.update(split_base(base, s))
 
-    info = dict(s=s, P=P, small=False, hx=(hx0, hx1), xo=(xo0, xo1), xr=(xr0, xr1), JB=JB, PB=PB, Fs=Fs,
+    info = dict(s=s, P=P, small=small, hx=(hx0, hx1), xo=(xo0, xo1), xr=(xr0, xr1), JB=JB, PB=PB, Fs=Fs,
                 MA=MA, MDb=MDb, seats=seats, linkB_len=float(np.linalg.norm(PB - JB)))
     return out, asm, info, kin
 
@@ -749,6 +753,7 @@ def bowtie(cx, cy, z0, z1, half_len=24.0, w_mid=14.0, w_end=26.0, grow=0.0):
 BASE_Y = (-38.0, -8.0)          # striscia di base tenuta (unita' 1:1)
 KEY_Y = (-31.0, -14.0)          # posizioni delle chiavette sotto la base (unita' 1:1)
 SEAT_DEPTH = SG_EAR[0] + 8.0    # blocchi delle sedi: corpo sotto le orecchie + cavo + parete
+SEAT_WALL = 3.0                 # idra_version: parete attorno al servo (mm)
 KEY_DEPTH = 7.0
 KEY_SCREW_X = 15.0
 
