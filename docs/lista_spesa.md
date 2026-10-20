@@ -85,10 +85,10 @@ generica: servono per farsi un'idea del budget, non sono preventivi.
 ## 5. Meccanica occhi (EyeMech D85, per coppia di occhi; dettagli in `docs/mechanical_eyes.md`)
 | # | Articolo | Specifica | Q.tà per coppia | Note |
 |---|---|---|---|---|
-| 54 | Filamento PETG (o PLA+) | — | ~1.5–2 kg | bulbi e palpebre leggeri (pochi perimetri, riempimento basso) |
+| 54 | Filamento PETG (o PLA+) | — | ~1 kg (0.86 kg in PLA, vedi `bambu_A1/README.md`) | bulbi e palpebre leggeri (pochi perimetri, riempimento basso) |
 | 55 | Viti M2 autofilettanti | 8 mm (servo) + 12 mm (squadrette) | 8 + 4 | 2 per servo nelle orecchie, 1 per squadretta |
 | 56 | Viti M3 | 20 mm (PinB) + 10 mm (rondelle palpebre) | 2 + 2 | |
-| 57 | Viti M3 svasate | 10 mm | 6 | chiavette della base |
+| 57 | Viti M3 svasate | 10 mm | 4 | chiavette della base |
 | 58 | Versione di prova D32 | viti M2 × 8 mm e × 5 mm | 2 + 2 | + filamento ~150 g |
 
 ## Riepilogo budget indicativo

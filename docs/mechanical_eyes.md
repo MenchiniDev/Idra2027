@@ -33,7 +33,7 @@ Cambia solo quello che non si può ingrandire o che riguarda le palpebre:
 | Squadrette (palpebre, X, Y) | mozzo rifatto: codolo Ø10 che scende di 8.7 mm fino allo scanalato del servo vero, sede Ø4.75×3 a pressione + vite M2×12 |
 | Palpebre | Will usa 2 servo per occhio. Resta solo il servo **anteriore** (quello della palpebra superiore, tirante corto originale). La sua squadretta ha un secondo braccio (r 35.1 mm, 58.8° avanti) con un perno; il nuovo tirante `LinkB` (interasse 104.9 mm) porta il moto all'orecchia della palpebra inferiore. Spingendo in avanti le due orecchie le palpebre si chiudono insieme |
 | Servo posteriore | eliminato, con la sua squadretta e il tirante lungo. La sua sede ingrandita resta vuota |
-| Base | 388 × 253 × 67 mm: divisa a metà (x = 0), unita da 3 chiavette a coda di rondine sotto, con 2 viti M3×10 svasate ciascuna |
+| Base | **ridotta** a 388 × 80 × 67 mm: in Will teneva anche la scheda e i servo posteriori, qui deve solo tenere i supporti a L e i 3 servo. Resta la striscia y −38…−8 (quote 1:1) con le fessure dei supporti e i blocchi delle sedi (accorciati a 24 mm sotto le orecchie). Divisa a metà (x = 0), unita da 2 chiavette a coda di rondine sotto, con 2 viti M3×10 svasate ciascuna |
 | Porta-PCB | non inclusi: ingranditi terrebbero una scheda di Will 2.7 volte più grande |
 
 **Cinematica palpebre** (ottimizzata nello script): con 80° di corsa del servo la palpebra superiore fa
@@ -56,12 +56,12 @@ mostrano i 4 servo (blu) con il resto trasparente.
 ### Cosa stampare (D85)
 | File | Q.tà | Note |
 |---|---|---|
-| `Base_L`, `Base_R` | 1+1 | 194 × 253 × 67 mm ciascuna, piatto da 256. Contengono le sedi 1:1 dei servo Y e palpebre (la sede Y è a cavallo della giunzione) |
-| `BaseKey_x3` | 3 | chiavette sotto la giunzione, viti M3×10 svasate (6) |
+| `Base_L`, `Base_R` | 1+1 | 194 × 80 × 67 mm ciascuna, stanno insieme su un piatto. Contengono le sedi 1:1 dei servo Y e palpebre (la sede Y è a cavallo della giunzione) |
+| `BaseKey_x2` | 2 | chiavette sotto la giunzione, viti M3×10 svasate (4) |
 | `PivotCentral_x2`, `PivotOuter_L`, `PivotOuter_R` | 2+1+1 | supporti a L |
 | `Eyeball_x2` | 2 | bulbi di Will Ø85.3 (pochi perimetri, riempimento basso: pieni sarebbero ~200 g) |
 | `CoreY_PIP` | 1 | telaio su/giù + squadretta Y (print-in-place); nel box la finestra 1:1 del servo X |
-| `XAxisA_PIP`, `XAxisB_PIP` | 1+1 | asse X (print-in-place), in `XAxisA` la sede 1:1 del servo X. Lunghi 264 mm: **in diagonale** sul piatto da 256 (già fatto in `print_A1/P3`, `P4`) |
+| `XAxisA_PIP`, `XAxisB_PIP` | 1+1 | asse X (print-in-place), in `XAxisA` la sede 1:1 del servo X. Lunghi 264 mm: **in diagonale** sul piatto da 256 (già fatto in `print_A1/P2`, `P3`) |
 | `LidTop_L_PIP`, `LidTop_R_PIP` | 1+1 | palpebra superiore + tirante originale + squadretta nuova (print-in-place) |
 | `LidBottom_L`, `LidBottom_R` | 1+1 | palpebra inferiore, perno dell'orecchia cilindrico Ø14 con foro per M3 |
 | `LinkB_L`, `LinkB_R` | 1+1 | tirante nuovo: ha un tratto obliquo, serve supporto |
@@ -69,9 +69,9 @@ mostrano i 4 servo (blu) con il resto trasparente.
 | `Washer_x2` | 2 | rondella sull'orecchia della palpebra inferiore, vite M3×10 |
 
 Orientamenti di stampa: quelli di Will (presi dal suo 3MF), solo ingranditi.
-`print_A1/`: P1 = `Base_L` + chiavette, P2 = `Base_R` + perni e rondelle, P3 = `XAxisA`, P4 = `XAxisB`.
-`bambu_A1/`: tutti i pezzi già tagliati in Bambu Studio su 9 piatti A1 (PLA, 0.20 mm): **≈ 37 h 30 min e
-≈ 1.24 kg di filamento** in totale; tempi e grammi per piatto in `bambu_A1/README.md`.
+`print_A1/`: P1 = `Base_L` + `Base_R` + chiavette, perni e rondelle, P2 = `XAxisA`, P3 = `XAxisB`.
+`bambu_A1/`: tutti i pezzi già tagliati in Bambu Studio su 8 piatti A1 (PLA, 0.20 mm): **≈ 30 h 20 min e
+≈ 0.86 kg di filamento** in totale; tempi e grammi per piatto in `bambu_A1/README.md`.
 
 ### Montaggio
 Come nella guida di Will (`mechanical/eyes/original/eyemech_e3.2/src/Assembly.pdf`), con queste differenze:

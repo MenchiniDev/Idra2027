@@ -20,7 +20,7 @@ Dettagli: `docs/mechanical_eyes.md`.
 
 ## 3. Versione D85 (`mechanical/eyes/eyemech_D85/`)
 - [ ] Prima: provare una sede 1:1 e una squadretta col servo vero
-- [ ] Stampare i piatti `print_A1/P1`…`P4` + gli altri pezzi
+- [ ] Stampare gli 8 piatti di `eyemech_D85/bambu_A1/` (≈ 30 h, ≈ 0.86 kg PLA)
 - [ ] Controllare al montaggio che i codoli delle squadrette X/Y non tocchino il mozzo ingranaggi
 - [ ] Prova di movimento: MG90S consigliati (pezzi ~19 volte più pesanti dell'originale)
 

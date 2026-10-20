@@ -375,7 +375,7 @@ def servo_frame(shaft_pt, shaft_dir, body_dir, top):
     return M
 
 
-def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0):
+def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None):
     """sede 1:1 per SG90/MG90S vero dentro la sede ingrandita di Will.
     Mtop: locale servo -> pezzo con l'origine sull'asse, nel piano della faccia SUPERIORE
     (z locale = albero). Si riempie il volume del SG90 ingrandito (che era vuoto per costruzione)
@@ -384,7 +384,8 @@ def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0):
       * appoggio piano per le orecchie + 2 fori M2 autofilettanti,
       * via d'ingresso: tutto libero sopra il piano orecchie, lungo l'albero.
     plugs: mesh (nel sistema del pezzo) che chiudono fessure di Will da riempire;
-    zmin: il riempimento non scende sotto questa quota (fondo del pezzo, piano di stampa)."""
+    zmin: il riempimento non scende sotto questa quota (fondo del pezzo, piano di stampa);
+    depth: il riempimento si ferma a questa distanza sotto il piano orecchie (None = tutto)."""
     c = CL
     T = lambda m: tf(m, Mtop)
     Hs = s * SG_H                                    # fondo SG90 ingrandito a z = -Hs
@@ -395,7 +396,7 @@ def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0):
     # i plugs, l'orecchia ingrandita superiore non serve
     body = box([xb0 + 0.2, -hw, -Hs], [xb1 + 1.0, hw, 0])
     fill = U([T(body)] + list(plugs))
-    keep = T(box([-500, -500, -Hs - 500], [500, 500, ear]))
+    keep = T(box([-500, -500, -Hs - 500 if depth is None else ear - depth], [500, 500, ear]))
     fill = I(fill, keep)
     if zmin is not None:
         fill = I(fill, box([-1e4, -1e4, zmin], [1e4, 1e4, 1e4]))
@@ -690,13 +691,20 @@ def build(dia=85.0, small=False):
     plugs = {"LID_R": [s1([43.8, -28.71, bz0], [46.6, -16.21, -3.15])],
              "LID_L": [s1([-46.6, -28.71, bz0], [-43.8, -16.21, -3.15])],
              "Y": [s1([-4.55, -28.86, bz0], [-1.65, -16.06, -3.15])]}
+    # base ridotta: serve solo a tenere i supporti a L (fessure y -32.6..-12.4) e i 3 servo.
+    # Si tiene la striscia y -38..-8 (1:1); via il resto (sedi dei servo posteriori, porta-PCB,
+    # blocchi rialzati dietro le sedi palpebre).
+    base = I(base, box([-1e4, s * BASE_Y[0], -1e4], [1e4, s * BASE_Y[1], 1e4]))
+    base = D(base, [box([s * x0, s * -16.4, s * -3.15 + 0.01], [s * x1, s * BASE_Y[1] + 1, 1e3])
+                    for x0, x1 in ((-56.0, -17.0), (17.0, 56.0))])
     for k in ("LID_R", "LID_L", "Y"):
-        base = servo_seat(base, seats[k], s, plugs[k], zmin=s * bz0)
+        base = servo_seat(base, seats[k], s, plugs[k], zmin=s * bz0, depth=SEAT_DEPTH)
     fr = W["xA"]["EyeCorePivotHolder"]
     xa = out["XAxisA_PIP"]
     xa["EyeCorePivotHolder"] = servo_seat(
         xa["EyeCorePivotHolder"], seats["X"], s,
-        [s1([-6.4, -14.95, fr.bounds[0, 2]], [6.4, 10.65, 4.8])], zmin=s * fr.bounds[0, 2])
+        [s1([-6.4, -14.95, fr.bounds[0, 2]], [6.4, 10.65, 4.8])], zmin=s * fr.bounds[0, 2],
+        depth=SEAT_DEPTH)
     # box del CoreY sopra il servo X: in Will (1:1) ha una piastra con la finestra del servo
     # (x +-6.4, y -24.5..-0.47, z -12..-9 nel gruppo) e sotto la cavita' tra le pareti di testa
     # (y -29.2..3.3). Ingrandite sarebbero 2.7 volte il servo: si riempiono e si apre la finestra
@@ -738,7 +746,9 @@ def bowtie(cx, cy, z0, z1, half_len=24.0, w_mid=14.0, w_end=26.0, grow=0.0):
     return m
 
 
-KEY_Y = (17.5, 41.5, -5.0)      # posizioni delle chiavette sotto la base (unita' 1:1)
+BASE_Y = (-38.0, -8.0)          # striscia di base tenuta (unita' 1:1)
+KEY_Y = (-31.0, -14.0)          # posizioni delle chiavette sotto la base (unita' 1:1)
+SEAT_DEPTH = SG_EAR[0] + 8.0    # blocchi delle sedi: corpo sotto le orecchie + cavo + parete
 KEY_DEPTH = 7.0
 KEY_SCREW_X = 15.0
 
@@ -764,7 +774,7 @@ def split_base(base, s):
         cone = trimesh.creation.cone(radius=3.4, height=3.4, sections=24)   # svasatura sotto
         cone.apply_translation([sx * KEY_SCREW_X, 0, -0.01])
         kc.append(cone)
-    return {"Base_L": L, "Base_R": R, "BaseKey_x3": D(key, kc)}
+    return {"Base_L": L, "Base_R": R, f"BaseKey_x{len(KEY_Y)}": D(key, kc)}
 
 
 # =====================================================================================
@@ -898,7 +908,7 @@ def info_text(s, info, kin, files, worst):
     else:
         L += [f"codolo_mozzo_mm: {s * WILL_HORN_FACE - SG_BOSS_TOP - 0.6:.1f} (sede scanalato D{SPLINE_D} x {SPLINE_DEPTH})",
               f"viti: per squadretta 1 x M2x12 (nel codolo, nello scanalato); {tb};",
-              "      per servo 2 x M2x8 autofilettanti (orecchie -> sede); base: 6 x M3x10 svasate nelle chiavette"]
+              f"      per servo 2 x M2x8 autofilettanti (orecchie -> sede); base: {2 * len(KEY_Y)} x M3x10 svasate nelle chiavette"]
     L.append("pezzi (mm, X x Y x Z come esportati):")
     for n, e in files:
         L.append(f"  {n}: {e[0]:.0f} x {e[1]:.0f} x {e[2]:.0f}")
@@ -909,17 +919,17 @@ def info_text(s, info, kin, files, worst):
 # piatti per Bambu A1 (256 x 256) dei pezzi grandi della D85: (pezzo, file, rotazione z,
 # posizione). "c": centro xy dell'ingombro; "min": angolo minimo xy.
 A1_PLATES = {
-    "P1": [("Base_L", "00_Base_L", 0, ("c", 98.935, 128.0)),
-           ("BaseKey_x3", "01_BaseKey0", 0, ("min", 203.0, 20.0)),
-           ("BaseKey_x3", "02_BaseKey1", 0, ("min", 203.0, 55.0)),
-           ("BaseKey_x3", "03_BaseKey2", 0, ("min", 203.0, 90.0))],
-    "P2": [("Base_R", "00_Base_R", 0, ("c", 98.935, 128.0)),
-           ("PinB_x2", "01_PinB1", 0, ("min", 210.0, 30.0)),
-           ("PinB_x2", "02_PinB2", 0, ("min", 210.0, 70.0)),
-           ("Washer_x2", "03_Washer1", 0, ("min", 210.0, 110.0)),
-           ("Washer_x2", "04_Washer2", 0, ("min", 210.0, 145.0))],
-    "P3": [("XAxisA_PIP", "00_XAxisA_PIP", 135, ("c", 128.0, 128.0))],   # 264 mm: in diagonale
-    "P4": [("XAxisB_PIP", "00_XAxisB_PIP", 135, ("c", 128.0, 128.0))],
+    # le due meta' della base (194 x 80) una sopra l'altra, minuteria nella fascia in alto
+    "P1": [("Base_L", "00_Base_L", 0, ("c", 128.0, 50.0)),
+           ("Base_R", "01_Base_R", 0, ("c", 128.0, 140.0)),
+           ("BaseKey_x2", "02_BaseKey1", 0, ("min", 10.0, 200.0)),
+           ("BaseKey_x2", "03_BaseKey2", 0, ("min", 66.0, 200.0)),
+           ("PinB_x2", "04_PinB1", 0, ("min", 124.0, 200.0)),
+           ("PinB_x2", "05_PinB2", 0, ("min", 154.0, 200.0)),
+           ("Washer_x2", "06_Washer1", 0, ("min", 184.0, 200.0)),
+           ("Washer_x2", "07_Washer2", 0, ("min", 214.0, 200.0))],
+    "P2": [("XAxisA_PIP", "00_XAxisA_PIP", 135, ("c", 128.0, 128.0))],   # 264 mm: in diagonale
+    "P3": [("XAxisB_PIP", "00_XAxisB_PIP", 135, ("c", 128.0, 128.0))],
 }
 
 
@@ -992,7 +1002,12 @@ def render(asm, kin, s, path):
         pl.view_vector(v)
         pl.camera.zoom(zoom)
         pl.add_text(title, font_size=11)
-    pl.screenshot(str(path))
+    try:
+        pl.screenshot(str(path))
+    except OSError:            # file aperto in un visualizzatore (Windows lo blocca)
+        alt = path.with_name(path.stem + "_nuova.png")
+        pl.screenshot(str(alt))
+        print(f"immagine bloccata, salvata in {alt}")
 
 
 def main():
