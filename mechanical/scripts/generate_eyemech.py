@@ -697,6 +697,25 @@ def build(dia=85.0, small=False):
     xa["EyeCorePivotHolder"] = servo_seat(
         xa["EyeCorePivotHolder"], seats["X"], s,
         [s1([-6.4, -14.95, fr.bounds[0, 2]], [6.4, 10.65, 4.8])], zmin=s * fr.bounds[0, 2])
+    # box del CoreY sopra il servo X: in Will (1:1) ha una piastra con la finestra del servo
+    # (x +-6.4, y -24.5..-0.47, z -12..-9 nel gruppo) e sotto la cavita' tra le pareti di testa
+    # (y -29.2..3.3). Ingrandite sarebbero 2.7 volte il servo: si riempiono e si apre la finestra
+    # 1:1 attorno al servo vero; il riempimento appoggia 0.2 sopra le orecchie (le trattiene).
+    Mc = Tm(-s * CORE_T) @ Tm(s * XA_T) @ seats["X"]        # servo X -> gruppo CoreY
+    z_ear = Mc[2, 3] - (SG_H - SG_EAR[1]) + 0.2
+    g = 0.3
+    fill = U([box([-8.4 * s - g, -29.2 * s - g, z_ear], [8.4 * s + g, 3.3 * s + g, -12.0 * s + 0.01]),
+              box([-6.4 * s - g, -24.5 * s - g, -12.0 * s - 0.01], [6.4 * s + g, -0.47 * s + g, -9.0 * s])])
+    rx0, rx1 = -SG_SHAFT, SG_L - SG_SHAFT
+    rcx = (rx0 + rx1) / 2
+    win = box([rx0 - CL, -SG_W / 2 - CL, -SG_H], [rx1 + CL, SG_W / 2 + CL, 60])
+    heads = [cyl_axis(2.4, [rcx + sx * SG_EAR_HOLES / 2, 0, -SG_H + SG_EAR[1] - 0.5],
+                      [rcx + sx * SG_EAR_HOLES / 2, 0, 60], n=32) for sx in (-1, 1)]   # teste viti M2
+    core = out["CoreY_PIP"]
+    core["EyeCorePivotHolder"] = D(U([core["EyeCorePivotHolder"], fill]),
+                                   [tf(win, Mc)] + [tf(h, Mc) for h in heads])
+    asm["CoreY_PIP:EyeCorePivotHolder"] = tf(core["EyeCorePivotHolder"], Tm(s * CORE_T))
+
     asm["base"] = base
     for k, m in xa.items():
         asm[f"XAxisA_PIP:{k}"] = tf(m, Tm(s * XA_T))
