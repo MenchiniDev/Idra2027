@@ -7,7 +7,7 @@ Due modelli di partenza (in `mechanical/eyes/original/`) e una versione in uso, 
 | `original/eyemech_e3.2/` | **EyeMech ε3.2** di Will Cogley (3MF, PDF di montaggio, codice, scheda). Base della versione in uso |
 | `original/morganmanly/` | **Animatronic Eyes – Double and Single** di MorganManly (`single_v4`, `double_compact`). Da qui viene l'idea delle palpebre a 1 servo per occhio |
 | `eyemech_D85/` | **versione in uso**: EyeMech ingrandito, occhi a 200 mm tra i centri (bulbo Ø85.3), palpebre a 1 servo per occhio, sedi dei servo 1:1 |
-| `idra_version/` | **idra_version**: gli stessi pezzi nella scala di Will (bulbo Ø32, occhi a 75 mm), palpebre a 1 servo per occhio, da stampare per prima per provare il meccanismo. File `idra_version_*.stl` |
+| `idra_version/` | **idra_version**: gli stessi pezzi nella scala di Will (bulbo Ø32, occhi a 75 mm), palpebre a 1 servo per occhio, da stampare per prima per provare il meccanismo. File `idra_version_*.stl`, un piatto A1 pronto (≈ 5 h, 117 g) |
 
 Generatore unico: `mechanical/scripts/generate_eyemech.py`.
 
@@ -129,7 +129,8 @@ dei pezzi grandi.
 | `LinkB_L`, `LinkB_R` | 1+1 | tirante nuovo, con supporto |
 | `PinB_x2`, `Washer_x2` | 2+2 | pezzi piccoli (Ø9): ugello 0.4, layer 0.12–0.16 |
 
-**Stampa** (`idra_version/bambu_A1/`, 5 piatti A1 già tagliati): **≈ 5 h 10 min e ≈ 118 g** di PLA.
+**Stampa** (`idra_version/bambu_A1/`): tutti i 23 pezzi su **un solo piatto A1**, già tagliato: **≈ 5 h e ≈ 117 g** di PLA
+(disposizione in `img/idra_version_piatto.png`; `mechanical/scripts/pack_plate.py` la rifà).
 
 Viti: per lato 1 × M2×8 nel `PinB` (si filetta nel braccio) + 1 × M2×5 con la rondella; il resto come
 nella guida di Will. Montaggio: guida di Will + punti 2 e 3 della D85 (servo posteriore non montato).
