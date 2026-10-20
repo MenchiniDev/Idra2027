@@ -82,14 +82,14 @@ generica: servono per farsi un'idea del budget, non sono preventivi.
 | 52 | Basette per fascette | adesive o a vite | 50 | punti di fissaggio sul telaio | 5 |
 | 53 | Cavo USB (mini-B o C, come i Nano) | — | 1 | programmazione | 3 |
 
-## 5. Meccanica occhi (dipende dalla taglia scelta)
-| # | Articolo | D50 | D70 | D90 | Q.tà |
-|---|---|---|---|---|---|
-| 54 | Filamento PETG (o PLA+) | ~1 kg | ~2 kg | ~3 kg | — |
-| 55 | Vite snodo + inserto filettato a caldo | M4 | M6 | M8 | 7 + 3 ricambi |
-| 56 | Filo armonico (acciaio) per tiranti occhio | Ø 1.5 mm | Ø 2.0 mm | Ø 2.5 mm | 2 m |
-| 57 | Viti M2 autofilettanti 8–12 mm | per LidCrank, HornExtender, tiranti palpebre | | | 100 |
-| 58 | Viti fissaggio piastre al telaio | Ø foro 5 / 7 / 9 mm | | | 30 |
+## 5. Meccanica occhi (EyeMech D85, per coppia di occhi; dettagli in `docs/mechanical_eyes.md`)
+| # | Articolo | Specifica | Q.tà per coppia | Note |
+|---|---|---|---|---|
+| 54 | Filamento PETG (o PLA+) | — | ~1.5–2 kg | bulbi e palpebre leggeri (pochi perimetri, riempimento basso) |
+| 55 | Viti M2 autofilettanti | 8 mm (servo) + 12 mm (squadrette) | 8 + 4 | 2 per servo nelle orecchie, 1 per squadretta |
+| 56 | Viti M3 | 20 mm (PinB) + 10 mm (rondelle palpebre) | 2 + 2 | |
+| 57 | Viti M3 svasate | 10 mm | 6 | chiavette della base |
+| 58 | Versione di prova D32 | viti M2 × 8 mm e × 5 mm | 2 + 2 | + filamento ~150 g |
 
 ## Riepilogo budget indicativo
 | Gruppo | € stima |
@@ -98,7 +98,7 @@ generica: servono per farsi un'idea del budget, non sono preventivi.
 | 2. Elettronica teste | ~175–245 |
 | 3. Scheda EyeNode × 5 | ~110–150 |
 | 4. Cavi e cablaggio | ~90–115 |
-| 5. Meccanica (D70) | ~50–80 |
+| 5. Meccanica (D85) | ~50–80 |
 | **Totale** | **~545–775 €** |
 
 ## Attrezzi (se mancano)

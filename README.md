@@ -14,7 +14,8 @@ Elettronica e meccanica per il carro **"Idra di Guerra"** — Carnevale di Viare
 docs/                  requisiti, budget energetico, cablaggio
 hardware/kicad/        progetto KiCad (schematico + PCB)
 hardware/datasheets/   datasheet componenti
-mechanical/eyes/       original/ = modelli sorgente, scaled/ = occhi ingranditi
+mechanical/eyes/       original/ = 2 modelli di partenza, eyemech_D85/ = occhi in uso, eyemech_D32_prova/ = prova in scala
+mechanical/legs/       pezzi delle gambe
 mechanical/enclosures/ chassis per l'elettronica
 mechanical/scripts/    script di generazione/scalatura dei modelli
 firmware/              codice delle schede EyeNode (movimento casuale autonomo)

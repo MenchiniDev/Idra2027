@@ -1,0 +1,31 @@
+VERSIONE DI PROVA in scala di Will: stessi pezzi e stessa cinematica della D85, piu' piccoli
+diametro_bulbo_mm: 32.0
+fattore_di_scala: 1.00000 (pezzi di Will EyeMech e3.2, SG90 lettera A, print-in-place)
+interasse_occhi_mm: 75.0
+servo: 4 x SG90 o MG90S: X, Y, palpebre sx, palpebre dx, nelle sedi originali di Will, con i suoi fermi
+palpebre: servo anteriore, 80 deg di corsa: superiore -35.5 .. +24.3 deg, inferiore +36.7 .. -21.4 deg
+secondo_braccio_squadretta: r = 13.2 mm, 58.8 deg avanti rispetto al braccio di Will
+tirante_B_interasse_mm: 39.3
+squadrette: quelle di Will, come nell'originale
+viti: per tirante B: 1 x M2x8 nel PinB + 1 x M2x5 con rondella stampata sull'orecchia; servo e squadrette come nella guida di Will
+pezzi (mm, X x Y x Z come esportati):
+  PivotOuter_L: 33 x 66 x 9
+  PivotOuter_R: 33 x 66 x 9
+  PivotCentral_x2: 33 x 66 x 6
+  Eyeball_x2: 32 x 32 x 20
+  Retainer_Single: 34 x 27 x 10
+  Retainer_Double_A: 34 x 55 x 12
+  Retainer_Double_B: 34 x 55 x 12
+  CoreY_PIP: 44 x 64 x 42
+  XAxisA_PIP: 99 x 34 x 10
+  XAxisB_PIP: 35 x 99 x 11
+  LidTop_R_PIP: 30 x 67 x 41
+  LidTop_L_PIP: 30 x 67 x 41
+  LidBottom_R: 25 x 22 x 40
+  LidBottom_L: 25 x 22 x 40
+  LinkB_R: 33 x 40 x 11
+  LinkB_L: 33 x 40 x 11
+  Washer_x2: 9 x 9 x 1
+  PinB_x2: 9 x 9 x 8
+  Base: 145 x 95 x 16
+interferenze_rilevate: nessuna
