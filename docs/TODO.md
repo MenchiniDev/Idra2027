@@ -13,14 +13,16 @@ Dettagli: `docs/mechanical_eyes.md`.
 
 ## 2. idra_version (`mechanical/eyes/idra_version/`)
 - [ ] Stampare tutti i pezzi (lista in `docs/mechanical_eyes.md` → "idra_version")
-- [ ] Viti: 2 × M2×8 (PinB) + 2 × M2×5 (rondelle) + quelle della guida di Will
-- [ ] Montare come nella guida di Will, solo i servo anteriori delle palpebre
+- [ ] Viti: 2 × M2×8 (PinB) + quelle della guida di Will (anche la vite di ogni squadretta a V, nel foro del mozzo)
+- [ ] Montare come nella guida di Will, solo i servo anteriori delle palpebre (fermi: `Retainer_Single` per Y, `Retainer_Lid` per le palpebre)
+- [ ] Verificare col calibro l'interasse dei fori del PCA9685 (nello script 55.9 × 19.0 mm) prima di stampare la base
+- [ ] Dopo la stampa sbloccare i giunti print-in-place (anche `LinkB` sulla palpebra inferiore) muovendoli a mano
 - [ ] Muovere a mano (servo staccati): palpebre che si chiudono insieme, niente punti duri
 - [ ] Prova col firmware a 4 servo: corse, calibrazione (90° = palpebre chiuse), 30 min di movimento casuale
 
 ## 3. Versione D85 (`mechanical/eyes/eyemech_D85/`)
 - [ ] Prima: provare una sede 1:1 e una squadretta col servo vero
-- [ ] Stampare gli 8 piatti di `eyemech_D85/bambu_A1/` (≈ 30 h, ≈ 0.86 kg PLA)
+- [ ] Stampare gli 8 piatti di `eyemech_D85/bambu_A1/` (≈ 31 h, ≈ 0.87 kg PLA)
 - [ ] Controllare al montaggio che i codoli delle squadrette X/Y non tocchino il mozzo ingranaggi
 - [ ] Prova di movimento: MG90S consigliati (pezzi ~19 volte più pesanti dell'originale)
 

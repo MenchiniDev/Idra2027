@@ -16,19 +16,21 @@ Cambia solo cio' che non puo' essere ingrandito o che riguarda le palpebre:
   * palpebre: Will usa 2 servo per occhio. Qui resta solo il servo ANTERIORE (quello della
     palpebra superiore, tirante corto originale). Sulla sua squadretta c'e' un secondo
     braccio con perno, e un tirante nuovo ("LinkB") porta il moto all'orecchia della
-    palpebra inferiore. Braccio e tirante sono ottimizzati perche' la palpebra inferiore
-    faccia la stessa corsa, speculare, di quella superiore (errore < 1.5 deg). Il servo
-    posteriore, la sua squadretta e il tirante lungo spariscono. Totale 4 servo: X, Y,
-    palpebre sx, palpebre dx;
+    palpebra inferiore; LinkB e palpebra inferiore si stampano insieme, col giunto print-in-place
+    originale di Will sull'orecchia (perno biconico). Braccio e tirante sono ottimizzati perche'
+    la palpebra inferiore faccia la stessa corsa, speculare, di quella superiore (errore
+    < 1.5 deg). Il servo posteriore, la sua squadretta e il tirante lungo spariscono. Totale
+    4 servo: X, Y, palpebre sx, palpebre dx;
   * la base ingrandita (386 x 252 mm) e' divisa in due meta' unite da chiavette a coda di
     rondine, per stare su un piatto da 256 mm.
 
 Licenza dei pezzi di partenza: CC BY-NC-SA 4.0 (Will Cogley / NM Robotics).
 
 Versione di prova (--small): gli stessi pezzi nella scala di Will (bulbo 32 mm, occhi a 75 mm):
-sedi dei servo, squadrette, base e fermi sono quelli originali di Will; cambiano solo le palpebre
-(1 servo per occhio, secondo braccio + tirante B, con quote ridotte e viti M2). Serve a provare
-il meccanismo delle palpebre prima di stampare la D85.
+sedi dei servo, squadrette e fermi sono quelli originali di Will; cambiano le palpebre
+(1 servo per occhio, secondo braccio + tirante B, con quote ridotte e viti M2) e la base, tagliata
+dietro i servo anteriori con una linguetta per un PCA9685 (il fermo doppio delle palpebre diventa
+un fermo singolo). Serve a provare il meccanismo delle palpebre prima di stampare la D85.
 
 Uso:  python generate_eyemech.py                  (D85: interasse occhi 200 mm -> bulbo 85.3 mm)
       python generate_eyemech.py --small          (versione di prova, scala di Will)
@@ -94,6 +96,15 @@ def D(a, bs):
 
 def I(a, b):
     return trimesh.boolean.intersection([a, b], engine="manifold")
+
+
+def dilate(m, r, n=12):
+    """m allargato di r (somma di Minkowski con una sfera)."""
+    import manifold3d as mf
+    a = mf.Manifold(mf.Mesh(vert_properties=np.asarray(m.vertices, np.float32),
+                            tri_verts=np.asarray(m.faces, np.uint32)))
+    o = a.minkowski_sum(mf.Manifold.sphere(r, n)).to_mesh64()
+    return trimesh.Trimesh(o.vert_properties[:, :3], o.tri_verts)
 
 
 def vol_inter(a, b):
@@ -214,10 +225,10 @@ def item_rotations(path=SRC3MF):
 
 
 # pezzo esportato -> oggetto di Will da cui prende l'orientamento di stampa
-PRINT_ROT = {"Retainer_Single": "4", "Retainer_Double_A": "6", "Retainer_Double_B": "8",
+PRINT_ROT = {"Retainer_Single": "4", "Retainer_Lid_x2": "6", "Retainer_Double_A": "6", "Retainer_Double_B": "8",
              "PivotCentral_x2": "10", "PivotOuter_L": "12", "PivotOuter_R": "14",
              "Eyeball_x2": "22", "CoreY_PIP": "28", "XAxisA_PIP": "47", "XAxisB_PIP": "52",
-             "LidTop_R_PIP": "36", "LidTop_L_PIP": "44", "LidBottom_R": "32", "LidBottom_L": "40"}
+             "LidTop_R_PIP": "36", "LidTop_L_PIP": "44", "LidBottom_R_PIP": "32", "LidBottom_L_PIP": "40"}
 
 
 def will_parts():
@@ -375,7 +386,7 @@ def servo_frame(shaft_pt, shaft_dir, body_dir, top):
     return M
 
 
-def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None, wall=None, open_side=0):
+def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None, extra=0.0):
     """sede 1:1 per SG90/MG90S vero dentro la sede ingrandita di Will.
     Mtop: locale servo -> pezzo con l'origine sull'asse, nel piano della faccia SUPERIORE
     (z locale = albero). Si riempie il volume del SG90 ingrandito (che era vuoto per costruzione)
@@ -386,9 +397,8 @@ def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None, wall=
     plugs: mesh (nel sistema del pezzo) che chiudono fessure di Will da riempire;
     zmin: il riempimento non scende sotto questa quota (fondo del pezzo, piano di stampa);
     depth: il riempimento si ferma a questa distanza sotto il piano orecchie (None = tutto);
-    wall: scala originale (s = 1), dove la sede ingrandita coincide col servo e non lascia pareti:
-    il blocco e' una scatola attorno al servo vero, spessa wall su ogni lato tranne open_side
-    (-1/+1 = lato y locale senza parete: dietro il servo passa il telaio laterale di XAxisB)."""
+    extra: tasca del corpo piu' lunga di tanto dal lato dell'albero (il fondo, dove appoggia il
+    servo, resta dov'e')."""
     c = CL
     T = lambda m: tf(m, Mtop)
     Hs = s * SG_H                                    # fondo SG90 ingrandito a z = -Hs
@@ -397,12 +407,7 @@ def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None, wall=
     hw = s * SG_W / 2 - 0.2
     # solo il corpo ingrandito (+1 dentro il fondo tasca): le fessure delle orecchie le chiudono
     # i plugs, l'orecchia ingrandita superiore non serve
-    if wall is None:
-        body = box([xb0 + 0.2, -hw, -Hs], [xb1 + 1.0, hw, 0])
-    else:
-        body = box([-SG_SHAFT - c - wall, -SG_W / 2 - c - (0 if open_side < 0 else wall),
-                    ear - (SG_H - SG_EAR[0]) - wall],
-                   [SG_L - SG_SHAFT + c + wall, SG_W / 2 + c + (0 if open_side > 0 else wall), 0])
+    body = box([xb0 + 0.2, -hw, -Hs], [xb1 + 1.0, hw, 0])
     fill = U([T(body)] + list(plugs))
     keep = T(box([-500, -500, -Hs - 500 if depth is None else ear - depth], [500, 500, ear]))
     fill = I(fill, keep)
@@ -411,7 +416,7 @@ def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None, wall=
     # servo vero (1:1)
     rx0, rx1 = -SG_SHAFT, SG_L - SG_SHAFT
     rcx = (rx0 + rx1) / 2
-    tunnel = box([rx0 - c, -SG_W / 2 - c, -Hs - 2], [rx1 + c, SG_W / 2 + c, ear + 0.01])
+    tunnel = box([rx0 - c - extra, -SG_W / 2 - c, -Hs - 2], [rx1 + c, SG_W / 2 + c, ear + 0.01])
     cable = box([rx1 - 1, -4.0, -Hs - 2], [rx1 + 4.5, 4.0, -SG_H + 5.0])
     free = box([rcx - SG_EAR_SPAN / 2 - 0.6, -SG_W / 2 - 0.6, ear],      # orecchie, sopra: libero
                [rcx + SG_EAR_SPAN / 2 + 0.6, SG_W / 2 + 0.6, sweep])
@@ -494,14 +499,6 @@ def mirror_x_mesh(m):
     return m
 
 
-def flat_link(m):
-    """tirante con le facce piane parallele al piatto (asse x del tirante -> z)."""
-    m = m.copy()
-    m.apply_transform(trimesh.transformations.rotation_matrix(-np.pi / 2, [0, 1, 0]))
-    m.apply_translation(-m.bounds[0])
-    return m
-
-
 # =====================================================================================
 # 5. costruzione
 # =====================================================================================
@@ -511,25 +508,20 @@ JOG = (12.0, 22.0)  # tratto obliquo del tirante B, lungo il tirante (unita' 1:1
 # palpebra inferiore). D85: viti M3. Piccola (scala di Will, bulbo 32): circa 3/8, viti M2.
 DIM = {
     "D85": dict(PIN_R=6.0,        # perno sul secondo braccio
-                EAR_R=7.0,        # perno sull'orecchia della palpebra inferiore (cilindrico)
                 LINK_T=9.5,       # spessore tirante B
                 BAR_R=6.5,        # mezza larghezza tirante B
                 RING=5.5,         # parete anelli tirante B
                 SPIGOT_R=4.0, SPIGOT_L=5.0,    # codolo del perno B nel braccio della squadretta
                 FLANGE_R=11.0, FLANGE_T=3.0,   # testa del perno B (trattiene il tirante)
-                WASHER_R=11.0, WASHER_T=2.5,
                 CLR=0.25,                      # gioco per lato perni/anelli
-                GAP_O=0.6, GAP_R=0.3, GAP_P=0.4,   # giochi assiali: braccio, orecchia, testa
-                EAR_IN=3.0, EAR_SCREW=12.0,    # perno orecchia: affondamento, foro vite
+                GAP_O=0.6, GAP_P=0.4,          # giochi assiali: braccio, testa
                 R_FREE=1.7, R_TAP=1.25, R_HEAD=3.1, HEAD_D=2.0,
-                PIN_SCREW="M3x20", EAR_SCREW_TXT="M3x10"),
-    "small": dict(PIN_R=2.5, EAR_R=2.8, LINK_T=3.6, BAR_R=2.6, RING=1.6,
+                PIN_SCREW="M3x20"),
+    "small": dict(PIN_R=2.5, LINK_T=3.6, BAR_R=2.6, RING=1.6,
                   SPIGOT_R=1.9, SPIGOT_L=2.5, FLANGE_R=4.4, FLANGE_T=1.2,
-                  WASHER_R=4.4, WASHER_T=1.2,
-                  CLR=0.2, GAP_O=0.4, GAP_R=0.3, GAP_P=0.3,
-                  EAR_IN=1.2, EAR_SCREW=5.0,
+                  CLR=0.2, GAP_O=0.4, GAP_P=0.3,
                   R_FREE=1.15, R_TAP=0.8, R_HEAD=2.1, HEAD_D=1.0,
-                  PIN_SCREW="M2x8", EAR_SCREW_TXT="M2x5"),
+                  PIN_SCREW="M2x8"),
 }
 
 
@@ -599,6 +591,9 @@ def build(dia=85.0, small=False):
     near_JA = linkA.vertices[np.linalg.norm(linkA.vertices[:, 1:] - JB, axis=1) < s * 8]
     armx0 = max(hx0, (near_JA[:, 0].max() if len(near_JA) else hx0) + 0.8)
     arm = hull([cyl_x(s * 4.0, armx0, hx1, *Fs), cyl_x(s * 4.0, armx0, hx1, *JB)])
+    # il braccio non tocca il mozzo: resta quello della squadretta (sede dello scanalato fino in
+    # fondo + foro passante per la vite, quelli di Will o quelli del codolo rifatto)
+    arm = D(arm, [cyl_x(s * 2.6, armx0 - 1, hx1 + 1, *Fs)])
     xo0, xo1 = hx1 + P["GAP_O"], hx1 + P["GAP_O"] + P["LINK_T"]
     # sede del perno B (pezzo a parte: nella posa di stampa di Will la faccia esterna della
     # squadretta e' sul piatto). Codolo nel braccio + foro da filettare, vite dall'esterno.
@@ -608,31 +603,38 @@ def build(dia=85.0, small=False):
                       cyl_x(P["R_TAP"], hx1 - 1.8 * sl, hx1, *JB, n=24)])
     pinB = pin_b(hx1, xo1, JB, P)
 
-    # palpebra inferiore nella posa dphi = 0: perno dell'orecchia cilindrico + vite
+    # palpebra inferiore nella posa dphi = 0, con il perno biconico originale di Will sull'orecchia
     MDb = Rx(kin.bot(0.0), E) @ MD
     gD = {k: tf(v, S @ MDb) for k, v in W["lidBot_R"].items()}
-    lidB, ring_old = gD["LidTR"], gD["2xBottomLidLever"]
+    lidB, lever = gD["LidTR"], gD["2xBottomLidLever"]
     PB = s * kin.PB(0.0)
-    near = ring_old.vertices[np.linalg.norm(ring_old.vertices[:, 1:] - PB, axis=1) < s * 6.0]
-    xe0 = near[:, 0].min()
-    xr0, xr1 = xe0 + P["GAP_R"], xe0 + P["GAP_R"] + P["LINK_T"]
-    lidB = D(lidB, [cyl_x(s * 3.9, xe0 - 0.05, xe0 + s * 8, *PB)])
-    lidB = U([lidB, cyl_x(P["EAR_R"], xe0 - P["EAR_IN"], xr1 + 0.5, *PB)])
-    lidB = D(lidB, [cyl_x(P["R_TAP"], xr1 + 0.5 - P["EAR_SCREW"], xr1 + 2, *PB, n=24)])
+    # giunto print-in-place come quello della palpebra superiore: l'anello del tirante B sull'orecchia
+    # e' l'anello originale della leva di Will (foro biconico attorno al perno, stessi giochi)
+    near = lever.vertices[np.linalg.norm(lever.vertices[:, 1:] - PB, axis=1) < s * 6.0]
+    ring = I(lever, cyl_x(s * 4.4, near[:, 0].min() - 1, near[:, 0].max() + 1, *PB))
+    xr0, xr1 = ring.bounds[:, 0]
 
     # tirante B: anello sul perno del braccio (strato esterno), tratto obliquo, anello sull'orecchia
     u = (PB - JB) / np.linalg.norm(PB - JB)
     Q1, Q2 = JB + u * (JOG[0] * s), JB + u * (JOG[1] * s)
-    br, pr, er, cl, rg = P["BAR_R"], P["PIN_R"], P["EAR_R"], P["CLR"], P["RING"]
+    br, pr, cl, rg = P["BAR_R"], P["PIN_R"], P["CLR"], P["RING"]
     linkB = U([hull([cyl_x(br, xo0, xo1, *JB), cyl_x(br, xo0, xo1, *Q1)]),
                hull([cyl_x(br, xo0, xo1, *Q1), cyl_x(br, xr0, xr1, *Q2)]),
                hull([cyl_x(br, xr0, xr1, *Q2), cyl_x(br, xr0, xr1, *PB)]),
-               cyl_x(pr + cl + rg, xo0, xo1, *JB), cyl_x(er + cl + rg, xr0, xr1, *PB)])
-    linkB = D(linkB, [cyl_x(pr + cl, xo0 - 1, xo1 + 1, *JB),
-                      cyl_x(er + cl, xr0 - 1, xr1 + 1, *PB)])
-
-    washer = D(trimesh.creation.cylinder(radius=P["WASHER_R"], height=P["WASHER_T"], sections=64),
-               [trimesh.creation.cylinder(radius=P["R_FREE"], height=4, sections=24)])
+               cyl_x(pr + cl + rg, xo0, xo1, *JB)])
+    linkB = D(linkB, [cyl_x(pr + cl, xo0 - 1, xo1 + 1, *JB), cyl_x(s * 4.0, xr0 - 1, xr1 + 1, *PB)])
+    linkB = U([linkB, ring])
+    # scarico sulla barra appena fuori dall'anello: verso la chiusura striscerebbe sul bordo rialzato
+    # della palpebra attorno all'orecchia. Si toglie il volume spazzato dalla palpebra nel moto
+    # relativo (corsa + margine), allargato di g (la leva di Will qui ne sta a 0.8 mm)
+    g = 0.5 * s
+    zone = D(cyl_x(s * 9.0, xr0 - 1, xr1 + 1, *PB), [cyl_x(s * 4.4, xr0 - 2, xr1 + 2, *PB)])
+    lid_near = dilate(I(lidB, cyl_x(s * 9.0 + g + 0.1, xr0 - 1 - g - 0.1, xr1 + 1 + g + 0.1, *PB)), g)
+    # vista dal tirante la palpebra ruota attorno al giunto: angolo relativo sulla corsa
+    rel = lambda d: (ang(kin.PB(d) - kin.JB(d)) - ang(kin.PB(0) - kin.JB(0))) - (kin.bot(d) - kin.bot(0.0))
+    a_all = [rel(d) for d in np.linspace(DPHI_OPEN - 6, DPHI_CLOSED + 6, 200)]
+    sweep = [tf(lid_near, Rx(-a, PB)) for a in np.arange(min(a_all) - 1, max(a_all) + 1.5, 1.0)]
+    linkB = D(linkB, [I(U(sweep), zone)])
 
     # ritorno alle pose di stampa di Will (scalate)
     backA = S @ np.linalg.inv(MA) @ Si
@@ -640,11 +642,9 @@ def build(dia=85.0, small=False):
     grpR = {"LidTop": tf(lidT, backA), "LinkA": tf(linkA, backA), "HornLid": tf(hornA, backA)}
     out["LidTop_R_PIP"] = grpR
     out["LidTop_L_PIP"] = {k: mirror_x_mesh(v) for k, v in grpR.items()}
-    out["LidBottom_R"] = tf(lidB, backD)
-    out["LidBottom_L"] = mirror_x_mesh(out["LidBottom_R"])
-    out["LinkB_R"] = flat_link(linkB)
-    out["LinkB_L"] = mirror_x_mesh(out["LinkB_R"])
-    out["Washer_x2"] = washer
+    grpD = {"LidBottom": tf(lidB, backD), "LinkB": tf(linkB, backD)}
+    out["LidBottom_R_PIP"] = grpD
+    out["LidBottom_L_PIP"] = {k: mirror_x_mesh(v) for k, v in grpD.items()}
     pb = pinB.copy()
     pb.apply_transform(trimesh.transformations.rotation_matrix(np.pi / 2, [0, 1, 0]))  # testa sul piatto
     out["PinB_x2"] = pb
@@ -678,26 +678,35 @@ def build(dia=85.0, small=False):
         for k, m in out[g].items():
             asm[f"{g}:{k}"] = tf(m, Tm(s * T))
     base = sc(W["base"])
-    def s1(lo, hi, g=0.3):      # tappo: quote 1:1 scalate, allargato di g nel piano (si fonde ai bordi)
-        lo, hi = s * np.asarray(lo, float), s * np.asarray(hi, float)
-        return box(lo - [g, g, 0], hi + [g, g, 0])
-    bz0 = W["base"].bounds[0, 2]
-    plugs = {"LID_R": [s1([43.8, -28.71, bz0], [46.6, -16.21, -3.15])],
-             "LID_L": [s1([-46.6, -28.71, bz0], [-43.8, -16.21, -3.15])],
-             "Y": [s1([-4.55, -28.86, bz0], [-1.65, -16.06, -3.15])]}
-    # base ridotta: serve solo a tenere i supporti a L (fessure y -32.6..-12.4) e i 3 servo.
-    # Si tiene la striscia y -38..-8 (1:1); via il resto (sedi dei servo posteriori, porta-PCB,
-    # blocchi rialzati dietro le sedi palpebre).
-    base = I(base, box([-1e4, s * BASE_Y[0], -1e4], [1e4, s * BASE_Y[1], 1e4]))
-    base = D(base, [box([s * x0, s * -16.4, s * -3.15 + 0.01], [s * x1, s * BASE_Y[1] + 1, 1e3])
-                    for x0, x1 in ((-56.0, -17.0), (17.0, 56.0))])
-    for k in ("LID_R", "LID_L", "Y"):
-        base = servo_seat(base, seats[k], s, plugs[k], zmin=s * bz0, depth=SEAT_DEPTH,
-                          wall=SEAT_WALL if small else None, open_side=-1 if k == "LID_R" else 1)
-    # scarti staccati dal taglio (pezzetti d'angolo): si tiene solo il corpo principale
-    parts = base.split(only_watertight=False)
-    if len(parts) > 1:
-        base = max(parts, key=lambda m: abs(m.volume))
+    if small:   # base, sedi e fermi di Will, base tagliata dietro i servo anteriori + spazio PCA9685
+        base = cut_base(base)
+        out["Retainer_Single"] = lift_retainer(W["ret_single"], RET_LIFT)
+        out["Retainer_Lid_x2"] = lift_retainer(short_retainer(W["ret_double_1"]), RET_LIFT)
+        mid = (TRAY_FRONT + CUT_Y) / 2
+        asm["ret_lid_R"] = tf(out["Retainer_Lid_x2"], Tm([RET_LID_X, mid, RET_Z]))
+        asm["ret_lid_L"] = mirror_x_mesh(asm["ret_lid_R"])
+        asm["ret_Y"] = tf(out["Retainer_Single"], Tm([*RET_Y_XY, RET_Z]))
+    else:
+        def s1(lo, hi, g=0.3):      # tappo: quote 1:1 scalate, allargato di g nel piano (si fonde ai bordi)
+            lo, hi = s * np.asarray(lo, float), s * np.asarray(hi, float)
+            return box(lo - [g, g, 0], hi + [g, g, 0])
+        bz0 = W["base"].bounds[0, 2]
+        plugs = {"LID_R": [s1([43.8, -28.71, bz0], [46.6, -16.21, -3.15])],
+                 "LID_L": [s1([-46.6, -28.71, bz0], [-43.8, -16.21, -3.15])],
+                 "Y": [s1([-4.55, -28.86, bz0], [-1.65, -16.06, -3.15])]}
+        # base ridotta: serve solo a tenere i supporti a L (fessure y -32.6..-12.4) e i 3 servo.
+        # Si tiene la striscia y -38..-8 (1:1); via il resto (sedi dei servo posteriori, porta-PCB,
+        # blocchi rialzati dietro le sedi palpebre).
+        base = I(base, box([-1e4, s * BASE_Y[0], -1e4], [1e4, s * BASE_Y[1], 1e4]))
+        base = D(base, [box([s * x0, s * -16.4, s * -3.15 + 0.01], [s * x1, s * BASE_Y[1] + 1, 1e3])
+                        for x0, x1 in ((-56.0, -17.0), (17.0, 56.0))])
+        for k in ("LID_R", "LID_L", "Y"):
+            base = servo_seat(base, seats[k], s, plugs[k], zmin=s * bz0, depth=SEAT_DEPTH,
+                              extra=SEAT_EXTRA)
+        # scarti staccati dal taglio (pezzetti d'angolo): si tiene solo il corpo principale
+        parts = base.split(only_watertight=False)
+        if len(parts) > 1:
+            base = max(parts, key=lambda m: abs(m.volume))
     fr = W["xA"]["EyeCorePivotHolder"]
     xa = out["XAxisA_PIP"]
     if not small:   # a scala originale telaio X e box del CoreY sono gia' a misura di servo
@@ -753,9 +762,87 @@ def bowtie(cx, cy, z0, z1, half_len=24.0, w_mid=14.0, w_end=26.0, grow=0.0):
 BASE_Y = (-38.0, -8.0)          # striscia di base tenuta (unita' 1:1)
 KEY_Y = (-31.0, -14.0)          # posizioni delle chiavette sotto la base (unita' 1:1)
 SEAT_DEPTH = SG_EAR[0] + 8.0    # blocchi delle sedi: corpo sotto le orecchie + cavo + parete
-SEAT_WALL = 3.0                 # idra_version: parete attorno al servo (mm)
+SEAT_EXTRA = 2.5                # sedi nella base: tasca del corpo 2.5 mm piu' lunga, dal lato albero
 KEY_DEPTH = 7.0
 KEY_SCREW_X = 15.0
+
+# --- idra_version: base di Will tagliata (1:1, mm) ---
+CUT_Y = -7.0                    # taglio dietro il dente dei servo anteriori (y -8.58) e i piedi dei
+                                # supporti a L sotto la base (y -7.47); al massimo -2.7 (fermo corto)
+TRAY_FRONT = -30.711            # bordo anteriore del vassoio dei servo palpebre: ci aggancia il fermo
+RET_IN = 24.87                  # fermo doppio di Will: faccia interna delle gambe (+-), nella sua posa
+RET_DY = -5.92                  # fermo doppio: y nella base = y nella posa + RET_DY (centro del vassoio)
+PCA = dict(L=62.5, W=25.4,      # scheda PCA9685 (16 canali): ingombro
+           HX=55.9, HY=19.0,    # interasse fori di fissaggio: VERIFICARE sulla scheda
+           y0=CUT_Y + 1.0,      # bordo anteriore della scheda
+           standoff_h=5.0, standoff_r=3.0, hole_r=1.1)   # distanziali, foro per vite M2.5 autofilettante
+PCA_TAB_X = 34.5                # mezza larghezza della linguetta per la scheda (i fermi palpebre da x 36.2)
+PCA_MARGIN = 2.5                # bordo della linguetta dietro la scheda
+PLATE_TOP = -3.15               # faccia superiore della piastra di Will
+# zona ribassata dei servo palpebre (dove entra l'estremita' inferiore del servo): in Will va da x 27.6
+# alla fessura dell'orecchia, 0.3 mm di gioco sul fondo del servo SG90 nominale. Si allunga di POCKET_EXTRA
+# verso il centro (l'altro lato e' fissato da orecchia e squadretta), stessa profondita' e larghezza
+POCKET_X0, POCKET_Y, POCKET_FLOOR = 27.6, (-29.21, -16.21), -5.4
+POCKET_EXTRA = 2.5
+# fermi dei servo: per il corpo (dal fondo del vassoio all'arco) la sede di Will lascia 23.0 mm (palpebre) e
+# 23.15 mm (Y). I servo usati sono piu' lunghi: la tasca da 23.3 mm della base ridotta era corta di 1-2 mm
+# (prova del 21/10). L'arco dei fermi si alza di RET_LIFT (gambe piu' lunghe), aggancio e fessure restano
+RET_LIFT = 2.5
+RET_Z = 5.5                     # fermi: z nella base = z nella posa + RET_Z (denti sotto il fondo, z -7.95)
+RET_LID_X = 42.45               # fermo palpebre dx: x nella base = x nella posa + questo (sx speculare)
+RET_Y_XY = (3.15, -22.46)       # fermo servo Y: centro in x (fessure x -1.85..8.15) e in y
+
+
+def cut_base(base):
+    """idra_version: base di Will con le sue sedi, senza la parte posteriore (servo palpebre
+    posteriori, porta-PCB). Dietro il taglio, al centro, una linguetta piatta con 4 distanziali per
+    una scheda PCA9685."""
+    lo = base.bounds[0, 2]
+    base = I(base, box([-1e3, -1e3, -1e3], [1e3, CUT_Y, 1e3]))
+    base = D(base, [box([sx * POCKET_X0 - (sx > 0) * POCKET_EXTRA - 0.01, POCKET_Y[0], POCKET_FLOOR],
+                        [sx * POCKET_X0 + (sx < 0) * POCKET_EXTRA + 0.01, POCKET_Y[1], 10.0])
+                    for sx in (-1, 1)])
+    from shapely.geometry import box as sbox
+    y1 = PCA["y0"] + PCA["W"] + PCA_MARGIN
+    tab = trimesh.creation.extrude_polygon(
+        sbox(-PCA_TAB_X, CUT_Y - 0.5, PCA_TAB_X, y1).buffer(-3.0).buffer(3.0), PLATE_TOP - lo)
+    tab.apply_translation([0, 0, lo])
+    yc = PCA["y0"] + PCA["W"] / 2
+    pts = [(sx * PCA["HX"] / 2, yc + sy * PCA["HY"] / 2) for sx in (-1, 1) for sy in (-1, 1)]
+    top = PLATE_TOP + PCA["standoff_h"]
+    posts = [cyl_axis(PCA["standoff_r"], [x, y, PLATE_TOP - 0.5], [x, y, top], n=32) for x, y in pts]
+    holes = [cyl_axis(PCA["hole_r"], [x, y, lo + 1.2], [x, y, top + 1], n=24) for x, y in pts]
+    return D(U([base, tab] + posts), holes)
+
+
+def lift_retainer(ret, e, z0=0.0):
+    """fermo con l'arco alzato di e: le gambe (sezione costante attorno a z0) si allungano di e."""
+    lo = I(ret, box([-1e3, -1e3, -1e3], [1e3, 1e3, z0]))
+    hi = I(ret, box([-1e3, -1e3, z0], [1e3, 1e3, 1e3]))
+    hi.apply_translation([0, 0, e])
+    sec = ret.section(plane_origin=[0, 0, z0], plane_normal=[0, 0, 1])
+    legs = []
+    for poly in sec.to_2D(to_2D=Tm([0, 0, -z0]))[0].polygons_full:
+        leg = trimesh.creation.extrude_polygon(poly, e + 0.02)
+        leg.apply_translation([0, 0, z0 - 0.01])
+        legs.append(leg)
+    return U([lo, hi] + legs)
+
+
+def short_retainer(ret):
+    """fermo dei servo palpebre per la base tagliata: il fermo doppio di Will teneva servo anteriore
+    e posteriore, con le gambe agganciate sotto i due bordi del vassoio (y -30.7 e +18.9). Si tiene
+    la gamba anteriore con l'arco sopra il servo anteriore e si specchia: la gamba nuova si aggancia
+    sotto il bordo del taglio (CUT_Y), con lo stesso gioco di quella anteriore."""
+    m = (TRAY_FRONT + CUT_Y) / 2 - RET_DY               # piano di simmetria, nella posa del fermo
+    half = I(ret, box([-1e3, -1e3, -1e3], [1e3, m, 1e3]))
+    other = half.copy()
+    other.apply_transform(Tm([0, 2 * m, 0]) @ Tm(fy=-1))
+    if other.volume < 0:
+        other.invert()
+    out = U([half, other])
+    out.apply_translation([0, -m, 0])
+    return out
 
 
 def split_base(base, s):
@@ -812,10 +899,12 @@ def check(asm, kin, s, with_servo=True):
     """interferenze del lato destro su tutta la corsa palpebre (il sinistro e' speculare).
     with_servo=False (versione piccola): sedi e squadrette sono quelle di Will, il servo
     stimato non si confronta con il suo CAD."""
-    static = {k: asm[k] for k in ("eye_1", "opiv_R", "cpiv_1", "base", "servo_R")}
+    static = {k: asm[k] for k in ("eye_1", "opiv_R", "cpiv_1", "base", "servo_R", "ret_lid_R") if k in asm}
     if not with_servo:
         del static["servo_R"]
-    allowed = [{"hornA", "linkA"}, {"lidT", "linkA"}, {"lidB", "linkB"}, {"hornA", "linkB"}]
+    # giunti: perni e anelli a contatto voluto. Il giunto print-in-place palpebra inferiore /
+    # tirante B ha gioco, quindi si verifica anche quella coppia
+    allowed = [{"hornA", "linkA"}, {"lidT", "linkA"}, {"hornA", "linkB"}, {"base", "ret_lid_R"}]
     worst = []
     for d in np.linspace(DPHI_OPEN - 4, DPHI_CLOSED, 9):
         m = {**lid_pose(asm, kin, s, d), **static}
@@ -837,6 +926,7 @@ def check_xy(asm, with_servo=True):
     """posa neutra: gruppi X/Y e servo X, Y contro base, bulbi, supporti e tra loro
     (le parti dello stesso gruppo print-in-place non si confrontano)."""
     keys = [k for k in asm if ":" in k] + ["base", "eye_1", "eye_2", "cpiv_1", "cpiv_2"]
+    keys += [k for k in ("ret_lid_R", "ret_lid_L", "ret_Y") if k in asm]
     if with_servo:
         keys += ["servo_X", "servo_Y"]
     grp = lambda k: k.split(":")[0]
@@ -846,7 +936,9 @@ def check_xy(asm, with_servo=True):
                # i perni del CoreY nei supporti centrali, gli adattatori nei bulbi
                {"CoreY_PIP", "cpiv_1"}, {"CoreY_PIP", "cpiv_2"},
                {"XAxisA_PIP", "eye_1"}, {"XAxisA_PIP", "eye_2"},
-               {"XAxisB_PIP", "eye_1"}, {"XAxisB_PIP", "eye_2"}]
+               {"XAxisB_PIP", "eye_1"}, {"XAxisB_PIP", "eye_2"},
+               # fermi agganciati alla base
+               {"ret_lid_R", "base"}, {"ret_lid_L", "base"}, {"ret_Y", "base"}]
     bad = []
     for i in range(len(keys)):
         for j in range(i + 1, len(keys)):
@@ -897,8 +989,10 @@ def info_text(s, info, kin, files, worst):
         f"diametro_bulbo_mm: {s * D_WILL:.1f}",
         f"fattore_di_scala: {s:.5f} (pezzi di Will EyeMech e3.2, SG90 lettera A, print-in-place)",
         f"interasse_occhi_mm: {s * 2 * EYE_X:.1f}",
-        ("servo: 4 x SG90 o MG90S: X nella sede originale di Will (telaio X, box del CoreY); palpebre sx/dx e Y "
-         "in blocchi nuovi della base ridotta (parete 3 mm, 2 viti M2 per servo), senza fermi"
+        ("servo: 4 x SG90 o MG90S, tutti nelle sedi originali di Will: X nel telaio X (box del CoreY), Y e "
+         "palpebre sx/dx nella base, con i fermi (Retainer_Single per Y, Retainer_Lid per le palpebre); "
+         f"arco dei fermi alzato di {RET_LIFT} mm: per il corpo {23.0 + RET_LIFT:.1f} mm (palpebre) e "
+         f"{23.15 + RET_LIFT:.1f} mm (Y) dal fondo del vassoio all'arco"
          if small else
          "servo: 4 x SG90 o MG90S veri (1:1): X, Y, palpebre sx, palpebre dx, in sedi 1:1 (base: Y + palpebre; XAxisA: X)"),
         f"palpebre: servo anteriore, {DPHI_CLOSED - DPHI_OPEN:.0f} deg di corsa: "
@@ -906,11 +1000,15 @@ def info_text(s, info, kin, files, worst):
         f"secondo_braccio_squadretta: r = {s * ARM_B_R:.1f} mm, {ARM_B_PSI:.1f} deg avanti rispetto al braccio di Will",
         f"tirante_B_interasse_mm: {s * LINK_B_L:.1f}",
     ]
-    tb = (f"per tirante B: 1 x {P['PIN_SCREW']} nel PinB + 1 x {P['EAR_SCREW_TXT']} con rondella "
-          "stampata sull'orecchia")
+    tb = (f"per tirante B: 1 x {P['PIN_SCREW']} nel PinB (sull'orecchia della palpebra inferiore il "
+          "giunto e' print-in-place)")
     if small:
-        L += ["squadrette: quelle di Will, come nell'originale",
-              f"viti: {tb}; servo e squadrette come nella guida di Will"]
+        L += ["squadrette: quelle di Will; quella delle palpebre ha il secondo braccio (a V) e il mozzo "
+              "originale: sede dello scanalato 2.6 mm + foro passante D2.6 per la vite",
+              f"viti: {tb}; servo e squadrette come nella guida di Will",
+              f"base: quella di Will tagliata a y = {CUT_Y} (via servo palpebre posteriori e porta-PCB); "
+              f"dietro, linguetta per PCA9685 {PCA['L']} x {PCA['W']} mm su 4 distanziali h {PCA['standoff_h']:.0f} mm, "
+              f"fori a {PCA['HX']} x {PCA['HY']} mm per 4 x M2.5x6 autofilettanti (interasse da VERIFICARE sulla scheda)"]
     else:
         L += [f"codolo_mozzo_mm: {s * WILL_HORN_FACE - SG_BOSS_TOP - 0.6:.1f} (sede scanalato D{SPLINE_D} x {SPLINE_DEPTH})",
               f"viti: per squadretta 1 x M2x12 (nel codolo, nello scanalato); {tb};",
@@ -931,9 +1029,7 @@ A1_PLATES = {
            ("BaseKey_x2", "02_BaseKey1", 0, ("min", 10.0, 200.0)),
            ("BaseKey_x2", "03_BaseKey2", 0, ("min", 66.0, 200.0)),
            ("PinB_x2", "04_PinB1", 0, ("min", 124.0, 200.0)),
-           ("PinB_x2", "05_PinB2", 0, ("min", 154.0, 200.0)),
-           ("Washer_x2", "06_Washer1", 0, ("min", 184.0, 200.0)),
-           ("Washer_x2", "07_Washer2", 0, ("min", 214.0, 200.0))],
+           ("PinB_x2", "05_PinB2", 0, ("min", 154.0, 200.0))],
     "P2": [("XAxisA_PIP", "00_XAxisA_PIP", 135, ("c", 128.0, 128.0))],   # 264 mm: in diagonale
     "P3": [("XAxisB_PIP", "00_XAxisB_PIP", 135, ("c", 128.0, 128.0))],
 }

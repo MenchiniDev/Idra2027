@@ -2,12 +2,13 @@ IDRA_VERSION (scala di Will): stessi pezzi e stessa cinematica della D85, piu' p
 diametro_bulbo_mm: 32.0
 fattore_di_scala: 1.00000 (pezzi di Will EyeMech e3.2, SG90 lettera A, print-in-place)
 interasse_occhi_mm: 75.0
-servo: 4 x SG90 o MG90S: X nella sede originale di Will (telaio X, box del CoreY); palpebre sx/dx e Y in blocchi nuovi della base ridotta (parete 3 mm, 2 viti M2 per servo), senza fermi
+servo: 4 x SG90 o MG90S, tutti nelle sedi originali di Will: X nel telaio X (box del CoreY), Y e palpebre sx/dx nella base, con i fermi (Retainer_Single per Y, Retainer_Lid per le palpebre); arco dei fermi alzato di 2.5 mm: per il corpo 25.5 mm (palpebre) e 25.6 mm (Y) dal fondo del vassoio all'arco
 palpebre: servo anteriore, 80 deg di corsa: superiore -35.5 .. +24.3 deg, inferiore +36.7 .. -21.4 deg
 secondo_braccio_squadretta: r = 13.2 mm, 58.8 deg avanti rispetto al braccio di Will
 tirante_B_interasse_mm: 39.3
-squadrette: quelle di Will, come nell'originale
-viti: per tirante B: 1 x M2x8 nel PinB + 1 x M2x5 con rondella stampata sull'orecchia; servo e squadrette come nella guida di Will
+squadrette: quelle di Will; quella delle palpebre ha il secondo braccio (a V) e il mozzo originale: sede dello scanalato 2.6 mm + foro passante D2.6 per la vite
+viti: per tirante B: 1 x M2x8 nel PinB (sull'orecchia della palpebra inferiore il giunto e' print-in-place); servo e squadrette come nella guida di Will
+base: quella di Will tagliata a y = -7.0 (via servo palpebre posteriori e porta-PCB); dietro, linguetta per PCA9685 62.5 x 25.4 mm su 4 distanziali h 5 mm, fori a 55.9 x 19.0 mm per 4 x M2.5x6 autofilettanti (interasse da VERIFICARE sulla scheda)
 pezzi (mm, X x Y x Z come esportati):
   PivotOuter_L: 33 x 66 x 9
   PivotOuter_R: 33 x 66 x 9
@@ -18,11 +19,10 @@ pezzi (mm, X x Y x Z come esportati):
   XAxisB_PIP: 35 x 99 x 11
   LidTop_R_PIP: 30 x 67 x 41
   LidTop_L_PIP: 30 x 67 x 41
-  LidBottom_R: 25 x 22 x 40
-  LidBottom_L: 25 x 22 x 40
-  LinkB_R: 33 x 40 x 11
-  LinkB_L: 33 x 40 x 11
-  Washer_x2: 9 x 9 x 1
+  LidBottom_R_PIP: 30 x 57 x 46
+  LidBottom_L_PIP: 30 x 57 x 46
   PinB_x2: 9 x 9 x 8
-  Base: 145 x 30 x 28
-interferenze_rilevate: nessuna
+  Retainer_Single: 36 x 27 x 10
+  Retainer_Lid_x2: 37 x 29 x 12
+  Base: 145 x 69 x 16
+interferenze_rilevate: [('assi X/Y in posa neutra', 'XAxisB_PIP:LateralFrame', 'ret_lid_R', 24), ('assi X/Y in posa neutra', 'XAxisB_PIP:LateralFrame', 'ret_lid_L', 24), ('assi X/Y in posa neutra', 'XAxisB_PIP:LateralFrame', 'ret_Y', 194)]

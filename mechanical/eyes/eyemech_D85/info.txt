@@ -7,7 +7,7 @@ palpebre: servo anteriore, 80 deg di corsa: superiore -35.5 .. +24.3 deg, inferi
 secondo_braccio_squadretta: r = 35.1 mm, 58.8 deg avanti rispetto al braccio di Will
 tirante_B_interasse_mm: 104.9
 codolo_mozzo_mm: 8.7 (sede scanalato D4.75 x 3.0)
-viti: per squadretta 1 x M2x12 (nel codolo, nello scanalato); per tirante B: 1 x M3x20 nel PinB + 1 x M3x10 con rondella stampata sull'orecchia;
+viti: per squadretta 1 x M2x12 (nel codolo, nello scanalato); per tirante B: 1 x M3x20 nel PinB (sull'orecchia della palpebra inferiore il giunto e' print-in-place);
       per servo 2 x M2x8 autofilettanti (orecchie -> sede); base: 4 x M3x10 svasate nelle chiavette
 pezzi (mm, X x Y x Z come esportati):
   PivotOuter_L: 89 x 177 x 24
@@ -19,11 +19,8 @@ pezzi (mm, X x Y x Z come esportati):
   XAxisB_PIP: 93 x 264 x 30
   LidTop_R_PIP: 81 x 179 x 109
   LidTop_L_PIP: 81 x 179 x 109
-  LidBottom_R: 67 x 59 x 106
-  LidBottom_L: 67 x 59 x 106
-  LinkB_R: 90 x 106 x 29
-  LinkB_L: 90 x 106 x 29
-  Washer_x2: 22 x 22 x 2
+  LidBottom_R_PIP: 81 x 152 x 121
+  LidBottom_L_PIP: 81 x 152 x 121
   PinB_x2: 22 x 22 x 18
   Base_L: 194 x 80 x 67
   Base_R: 194 x 80 x 67
