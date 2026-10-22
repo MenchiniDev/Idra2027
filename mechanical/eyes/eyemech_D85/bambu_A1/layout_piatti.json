@@ -1,0 +1,126 @@
+[
+ [
+  {
+   "pezzo": "LidBottom_L_PIP",
+   "rot_z": 0,
+   "x": 4,
+   "y": 4
+  },
+  {
+   "pezzo": "LidBottom_R_PIP",
+   "rot_z": 0,
+   "x": 93,
+   "y": 4
+  },
+  {
+   "pezzo": "Eyeball_x2",
+   "rot_z": 0,
+   "x": 4,
+   "y": 166
+  },
+  {
+   "pezzo": "Eyeball_x2",
+   "rot_z": 0,
+   "x": 97,
+   "y": 166
+  },
+  {
+   "pezzo": "BaseKey_x2",
+   "rot_z": 0,
+   "x": 195,
+   "y": 6
+  },
+  {
+   "pezzo": "BaseKey_x2",
+   "rot_z": 0,
+   "x": 195,
+   "y": 40
+  },
+  {
+   "pezzo": "PinB_x2",
+   "rot_z": 0,
+   "x": 195,
+   "y": 76
+  },
+  {
+   "pezzo": "PinB_x2",
+   "rot_z": 0,
+   "x": 225,
+   "y": 76
+  }
+ ],
+ [
+  {
+   "pezzo": "Base_L",
+   "rot_z": 0,
+   "x": 3.0,
+   "y": 3.0
+  },
+  {
+   "pezzo": "Base_R",
+   "rot_z": 195,
+   "x": 24.0,
+   "y": 114.0
+  }
+ ],
+ [
+  {
+   "pezzo": "XAxisA_PIP",
+   "rot_z": 30,
+   "x": 3.0,
+   "y": 3.0
+  },
+  {
+   "pezzo": "CoreY_PIP",
+   "rot_z": 300,
+   "x": 3.0,
+   "y": 87.0
+  },
+  {
+   "pezzo": "PivotOuter_L",
+   "rot_z": 285,
+   "x": 54.0,
+   "y": 3.0
+  }
+ ],
+ [
+  {
+   "pezzo": "XAxisB_PIP",
+   "rot_z": 30,
+   "x": 3.0,
+   "y": 3.0
+  },
+  {
+   "pezzo": "LidTop_R_PIP",
+   "rot_z": 15,
+   "x": 162.0,
+   "y": 3.0
+  }
+ ],
+ [
+  {
+   "pezzo": "LidTop_L_PIP",
+   "rot_z": 0,
+   "x": 3.0,
+   "y": 3.0
+  },
+  {
+   "pezzo": "PivotOuter_R",
+   "rot_z": 225,
+   "x": 27.0,
+   "y": 3.0
+  },
+  {
+   "pezzo": "PivotCentral_x2",
+   "rot_z": 180,
+   "x": 162.0,
+   "y": 15.0
+  },
+  {
+   "pezzo": "PivotCentral_x2",
+   "rot_z": 210,
+   "x": 33.0,
+   "y": 87.0
+  }
+ ]
+]

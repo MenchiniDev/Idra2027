@@ -22,7 +22,9 @@ Dettagli: `docs/mechanical_eyes.md`.
 
 ## 3. Versione D85 (`mechanical/eyes/eyemech_D85/`)
 - [ ] Prima: provare una sede 1:1 e una squadretta col servo vero
-- [ ] Stampare gli 8 piatti di `eyemech_D85/bambu_A1/` (≈ 31 h, ≈ 0.87 kg PLA)
+- [ ] Stampare i 5 piatti di `eyemech_D85/bambu_A1/` (≈ 32 h 30 min, ≈ 0.92 kg PLA; piatto 0 avviato il 22/10)
+- [ ] Misurare la squadretta originale del servo (`STOCK_HORN`) e rifare i piatti 2–4 (`plates_D85.py 2 3 4`)
+- [ ] Servo X con l'albero verso gli occhi (cavo nella tacca davanti); verificare l'interasse dei fori del PCA9685
 - [ ] Controllare al montaggio che i codoli delle squadrette X/Y non tocchino il mozzo ingranaggi
 - [ ] Prova di movimento: MG90S consigliati (pezzi ~19 volte più pesanti dell'originale)
 

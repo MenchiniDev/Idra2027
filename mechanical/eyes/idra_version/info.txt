@@ -25,4 +25,4 @@ pezzi (mm, X x Y x Z come esportati):
   Retainer_Single: 36 x 27 x 10
   Retainer_Lid_x2: 37 x 29 x 12
   Base: 145 x 69 x 16
-interferenze_rilevate: [('assi X/Y in posa neutra', 'XAxisB_PIP:LateralFrame', 'ret_lid_R', 24), ('assi X/Y in posa neutra', 'XAxisB_PIP:LateralFrame', 'ret_lid_L', 24), ('assi X/Y in posa neutra', 'XAxisB_PIP:LateralFrame', 'ret_Y', 194)]
+interferenze_rilevate: nessuna

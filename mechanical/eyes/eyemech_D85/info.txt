@@ -6,23 +6,25 @@ servo: 4 x SG90 o MG90S veri (1:1): X, Y, palpebre sx, palpebre dx, in sedi 1:1 
 palpebre: servo anteriore, 80 deg di corsa: superiore -35.5 .. +24.3 deg, inferiore +36.7 .. -21.4 deg
 secondo_braccio_squadretta: r = 35.1 mm, 58.8 deg avanti rispetto al braccio di Will
 tirante_B_interasse_mm: 104.9
-codolo_mozzo_mm: 8.7 (sede scanalato D4.75 x 3.0)
-viti: per squadretta 1 x M2x12 (nel codolo, nello scanalato); per tirante B: 1 x M3x20 nel PinB (sull'orecchia della palpebra inferiore il giunto e' print-in-place);
+squadrette stampate (palpebre, X, Y): sotto il mozzo una costola con la tasca per la squadretta originale del servo a un braccio (mozzo D7.0, alta 4.0, braccio 17.0 x 6.0/4.0 x 1.6, faccia inferiore 4.9 sopra il servo: MISURE DA VERIFICARE), gioco 0.15 per lato
+viti: per squadretta 1 x M2x16 al centro (attraverso la squadretta originale nell'albero) + 2 viti del kit opzionali nei fori pilota a 9.0 e 13.0 mm dal centro; per tirante B: 1 x M3x20 nel PinB (sull'orecchia della palpebra inferiore il giunto e' print-in-place);
       per servo 2 x M2x8 autofilettanti (orecchie -> sede); base: 4 x M3x10 svasate nelle chiavette
+base: quella di Will ingrandita, tagliata a y = -18.7 (via servo palpebre posteriori e porta-PCB), in due meta' unite da chiavette; dietro, linguetta 1:1 per PCA9685 62.5 x 25.4 mm su 4 distanziali h 5 mm, fori a 55.9 x 19.0 mm per 4 x M2.5x6 autofilettanti (interasse da VERIFICARE sulla scheda)
+servo X: albero verso gli occhi, sulla linea dei perni dei bulbi; cavo nella tacca davanti
 pezzi (mm, X x Y x Z come esportati):
   PivotOuter_L: 89 x 177 x 24
   PivotOuter_R: 89 x 177 x 24
   PivotCentral_x2: 89 x 177 x 15
   Eyeball_x2: 85 x 85 x 53
   CoreY_PIP: 117 x 171 x 112
-  XAxisA_PIP: 264 x 90 x 37
+  XAxisA_PIP: 264 x 90 x 30
   XAxisB_PIP: 93 x 264 x 30
   LidTop_R_PIP: 81 x 179 x 109
   LidTop_L_PIP: 81 x 179 x 109
   LidBottom_R_PIP: 81 x 152 x 121
   LidBottom_L_PIP: 81 x 152 x 121
   PinB_x2: 22 x 22 x 18
-  Base_L: 194 x 80 x 67
-  Base_R: 194 x 80 x 67
+  Base_L: 194 x 137 x 67
+  Base_R: 194 x 137 x 67
   BaseKey_x2: 48 x 26 x 7
 interferenze_rilevate: nessuna

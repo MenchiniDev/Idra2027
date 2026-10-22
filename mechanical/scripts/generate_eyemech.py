@@ -21,8 +21,10 @@ Cambia solo cio' che non puo' essere ingrandito o che riguarda le palpebre:
     la palpebra inferiore faccia la stessa corsa, speculare, di quella superiore (errore
     < 1.5 deg). Il servo posteriore, la sua squadretta e il tirante lungo spariscono. Totale
     4 servo: X, Y, palpebre sx, palpebre dx;
-  * la base ingrandita (386 x 252 mm) e' divisa in due meta' unite da chiavette a coda di
-    rondine, per stare su un piatto da 256 mm.
+  * la base ingrandita e' tagliata dietro i servo anteriori (come nella versione di prova), con una
+    linguetta 1:1 per un PCA9685, ed e' divisa in due meta' unite da chiavette a coda di rondine,
+    per stare su un piatto da 256 mm;
+  * il servo X e' montato con l'albero verso gli occhi, sulla linea dei perni dei bulbi.
 
 Licenza dei pezzi di partenza: CC BY-NC-SA 4.0 (Will Cogley / NM Robotics).
 
@@ -36,7 +38,8 @@ Uso:  python generate_eyemech.py                  (D85: interasse occhi 200 mm -
       python generate_eyemech.py --small          (versione di prova, scala di Will)
       python generate_eyemech.py --interasse 0 --d 90   (scala dal diametro del bulbo)
       python generate_eyemech.py --render         (immagine in docs/img)
-Uscita in mechanical/eyes/eyemech_D85 (+ print_A1 con i piatti dei pezzi grandi) o
+Uscita in mechanical/eyes/eyemech_D85 (+ print_A1 con i piatti dei pezzi grandi: P1 Base_L, P2 Base_R,
+P3 XAxisA, P4 XAxisB) o
 mechanical/eyes/idra_version (file idra_version_*.stl).
 """
 import argparse
@@ -69,6 +72,21 @@ SPLINE_DEPTH = 3.0
 WILL_HORN_FACE = 5.1                   # faccia superiore servo -> squadretta, nel modello di Will
 
 CL = 0.25                              # gioco per lato dei pezzi nuovi
+
+# --- squadretta originale del servo (a un braccio) incastrata nelle squadrette stampate (D85) ---------
+# Misure da prendere col calibro sulla squadretta usata: VALORI TIPICI, DA VERIFICARE.
+# Braccio piatto (faccia inferiore piana) con il mozzo che sporge sopra; lo scanalato e' nel mozzo.
+STOCK_HORN = dict(
+    hub_d=7.0,       # diametro del mozzo
+    H=4.0,           # altezza totale: faccia inferiore del braccio -> cima del mozzo
+    T=1.6,           # spessore del braccio
+    L=17.0,          # dal centro del mozzo alla punta del braccio
+    W0=6.0, W1=4.0,  # larghezza del braccio vicino al mozzo / in punta
+    Zb=4.9,          # montata: faccia superiore del servo -> faccia inferiore del braccio
+    holes=(9.0, 13.0),   # distanza dal centro dei 2 fori usati per le viti (0 = nessuna)
+)
+STOCK_CL = 0.15      # gioco per lato nella tasca
+STOCK_WALL = 2.4     # parete attorno alla tasca
 
 # --- geometria ricostruita dell'assieme originale (1:1, mm) -------------------------
 # assi: x = destra, y = avanti negativo (gli occhi guardano verso -y), z = alto
@@ -291,18 +309,22 @@ def place_static():
 
 # gruppi X/Y (print-in-place, posa neutra) nell'assieme, 1:1. Ricavati dai vincoli:
 #  * CoreY: perni (asse y -18.23, z -13.655 nel gruppo) sull'asse E dei supporti centrali;
-#  * XAxisA: anelli degli occhi (y -6.05) sotto i centri dei bulbi; in z il servo X sta dentro
-#    il box del CoreY con la faccia superiore quasi a filo del bordo (come nella guida di Will):
-#    quota cercata in modo che il telaio laterale di XAxisB passi sopra il box (gli incastri
-#    a scatto CoreY/XAxisA restano a contatto, come devono);
+#  * XAxisA: anelli degli occhi (y -6.05) sotto i centri dei bulbi; in z la linguetta del suo
+#    adattatore (z -4.8..0.3 nel gruppo) sta nella tasca inferiore sul retro del bulbo (z E-8.2..E-2.95);
+#  * servo X nella finestra di XAxisA: albero verso gli occhi, sulla linea dei perni degli occhi
+#    (y -6.05 nel gruppo), corpo verso +y, cavo nella tacca a -y (il cavo esce dal lato albero);
+#    orecchie sulla piastra della finestra (z 2.1 nel gruppo);
 #  * XAxisB: mozzo della CentralServoHorn (y -11.5, faccia z 2.0) sull'albero del servo X,
-#    5.1 sopra la faccia superiore del servo.
-# Verifica (check_xy): in posa neutra niente tocca, tranne gli incastri voluti.
+#    5.1 sopra la faccia superiore del servo. Cosi' la sua linguetta cade nella tasca superiore
+#    del bulbo e squadretta e adattatori degli occhi fanno un parallelogramma (bracci da 15).
+# Verifica: le linguette nelle tasche, il servo X nella finestra del CoreY (y -24.5..-0.47 nel
+# gruppo), asse X libero tra -45 e +45 gradi di squadretta.
 # Con questa posa il mozzo della VerticalHorn cade a y -22.4, z 11.2: sull'albero del servo Y.
-X_SHAFT_Y = 10.65 - SG_SHAFT - 0.75   # albero servo X in XAxisA: corpo 0.75 dal lato +y della finestra
+X_SHAFT_Y = -6.05                     # albero servo X nel gruppo XAxisA
+X_EAR_Z = 2.1                         # appoggio delle orecchie del servo X nel gruppo XAxisA
 CORE_T = np.array([0.0, E[0] + 18.23, E[1] + 13.655])
-XA_T = np.array([0.0, E[0] + 6.05, CORE_T[2] - 22.0 - (4.8 + 2.5) + 6.25])
-XB_T = np.array([0.0, XA_T[1] + X_SHAFT_Y + 11.5, XA_T[2] + 4.8 + 6.8 + 5.1 - 2.0])
+XA_T = np.array([0.0, E[0] + 6.05, E[1] - 5.575 + 2.25])
+XB_T = np.array([0.0, XA_T[1] + X_SHAFT_Y + 11.5, XA_T[2] + X_EAR_Z + (SG_H - SG_EAR[0]) + WILL_HORN_FACE - 2.0])
 
 
 # =====================================================================================
@@ -425,10 +447,32 @@ def servo_seat(part, Mtop, s, plugs=(), zmin=None, sweep=40.0, depth=None, extra
     return D(U([part, fill]), [T(tunnel), T(cable), T(free)] + [T(h) for h in holes])
 
 
-def hub_boss(axis_pt, axis_dir, face_offset_out, s):
+def stock_horn_shape(c, a, u, grow=0.0, z0=0.0, z1=None):
+    """squadretta originale (a un braccio) con il centro del mozzo in c, faccia inferiore del braccio
+    nel piano per c perpendicolare ad a, braccio verso u. grow: allargamento nel piano; z0/z1: estremi
+    lungo a dalla faccia inferiore (z1 None = cima del mozzo / del braccio)."""
+    from shapely.geometry import Polygon
+    h = STOCK_HORN
+    v = np.cross(a, u)
+    arm2d = Polygon([(0, -h["W0"] / 2), (h["L"] - h["W1"] / 2, -h["W1"] / 2),
+                     (h["L"] - h["W1"] / 2, h["W1"] / 2), (0, h["W0"] / 2)]).union(
+        Polygon([(h["L"] - h["W1"] / 2 + h["W1"] / 2 * np.cos(t), h["W1"] / 2 * np.sin(t))
+                 for t in np.linspace(-np.pi / 2, np.pi / 2, 16)])).buffer(grow, join_style=2)
+    za1 = h["T"] if z1 is None else z1
+    arm = trimesh.creation.extrude_polygon(arm2d, za1 - z0)
+    arm.apply_translation([0, 0, z0])
+    M = np.eye(4)
+    M[:3, 0], M[:3, 1], M[:3, 2], M[:3, 3] = u, v, a, c
+    hub = cyl_axis(h["hub_d"] / 2 + grow, c + a * z0, c + a * (h["H"] if z1 is None else z1), n=48)
+    return U([tf(arm, M), hub])
+
+
+def hub_boss(axis_pt, axis_dir, face_offset_out, s, arm_dir=None):
     """codolo del mozzo per una squadretta ingrandita.
     axis_pt: punto sull'asse sulla faccia lato servo della squadretta (assieme scalato);
-    axis_dir: versore dal servo verso la squadretta; face_offset_out: spessore squadretta.
+    axis_dir: versore dal servo verso la squadretta; face_offset_out: spessore squadretta;
+    arm_dir: se dato, al posto della sede dello scanalato c'e' la tasca per la squadretta originale
+    del servo (braccio verso arm_dir), dentro una costola che scende dalla squadretta stampata.
     Ritorna (da_unire, da_togliere)."""
     a = np.asarray(axis_dir, float) / np.linalg.norm(axis_dir)
     p = np.asarray(axis_pt, float)
@@ -437,13 +481,26 @@ def hub_boss(axis_pt, axis_dir, face_offset_out, s):
     boss_bottom = SG_BOSS_TOP + 0.6                     # sopra la cima del mozzo ingranaggi
     Lb = horn_above_top - boss_bottom
     pb = p - a * Lb                                      # fondo del codolo
-    add = [cyl_axis(5.0, pb, p + a * 0.5)]
     # riempi la vecchia sede ingrandita e il controforo
     fill = cyl_axis(s * 2.6, p - a * 0.01, p + a * (face_offset_out + 0.01))
-    cut = [cyl_axis(SPLINE_D / 2, pb - a * 0.5, pb + a * SPLINE_DEPTH, n=48),
-           cyl_axis(1.15, pb - a, p + a * (face_offset_out + 1), n=24),           # vite M2
-           cyl_axis(2.4, p + a * (face_offset_out - 3.0), p + a * (face_offset_out + 1), n=48)]
-    return [fill] + add, cut, Lb
+    screw = [cyl_axis(1.15, pb - a * 30, p + a * (face_offset_out + 1), n=24),           # vite M2
+             cyl_axis(2.4, p + a * (face_offset_out - 3.0), p + a * (face_offset_out + 1), n=48)]
+    if arm_dir is None:
+        add = [cyl_axis(5.0, pb, p + a * 0.5)]
+        cut = [cyl_axis(SPLINE_D / 2, pb - a * 0.5, pb + a * SPLINE_DEPTH, n=48)] + screw
+        return [fill] + add, cut, Lb
+    u = np.asarray(arm_dir, float); u = u - a * np.dot(u, a); u /= np.linalg.norm(u)
+    h = STOCK_HORN
+    cb = p - a * (horn_above_top - h["Zb"])              # centro della faccia inferiore del braccio
+    top = horn_above_top - h["Zb"] + 0.5                 # la costola sale fino dentro la squadretta stampata
+    add = [stock_horn_shape(cb, a, u, grow=STOCK_CL + STOCK_WALL, z0=0.0, z1=top)]
+    cut = [stock_horn_shape(cb, a, u, grow=STOCK_CL, z0=-5.0, z1=h["T"] + 0.2),
+           cyl_axis(h["hub_d"] / 2 + STOCK_CL, cb - a * 5, cb + a * (h["H"] + 0.3), n=48)] + screw
+    for r in h["holes"]:
+        if r > 0:
+            q = cb + u * r
+            cut.append(cyl_axis(0.75, q - a, q + a * (h["T"] + 6.0), n=16))    # foro pilota vite del kit
+    return [fill] + add, cut, horn_above_top - h["Zb"]
 
 
 def find_hub(horn):
@@ -485,9 +542,12 @@ def find_hub(horn):
     raise RuntimeError("mozzo non trovato")
 
 
-def rehub(horn_s, s, centre1, dir_, thick1):
-    """squadretta gia' scalata di s -> mozzo per servo vero."""
-    add, cut, _ = hub_boss(centre1 * s, dir_, thick1 * s, s)
+def rehub(horn_s, s, centre1, dir_, thick1, stock=True):
+    """squadretta gia' scalata di s -> mozzo per servo vero. stock: tasca per la squadretta originale
+    del servo, col braccio verso il baricentro della squadretta stampata (sotto il suo braccio)."""
+    c = centre1 * s
+    arm = (horn_s.center_mass - c) if stock else None
+    add, cut, _ = hub_boss(c, dir_, thick1 * s, s, arm_dir=arm)
     return D(U([horn_s] + add), cut)
 
 
@@ -655,7 +715,7 @@ def build(dia=85.0, small=False):
     # Ogni servo vero ha l'albero sull'asse di quello ingrandito e la faccia superiore alla
     # stessa quota (i mozzi delle squadrette sono fatti cosi'). Il resto della sede ingrandita
     # di Will viene riempito. Quote 1:1 delle sedi di Will (base: fessure orecchie e fondi tasca;
-    # telaio X: finestra 12.8 x 25.6, corpo contro il lato +y, orecchie sulla faccia z = 4.8).
+    # telaio X: finestra 12.8 x 25.6, albero sulla linea dei perni degli occhi, orecchie a z = 2.1).
     top_lid = hx0 - s * WILL_HORN_FACE                    # faccia superiore servo palpebre (x)
     cY = find_hub(W["core"]["VerticalHorn"])[0] + CORE_T   # mozzo squadretta Y nell'assieme (1:1)
     seats = {
@@ -666,10 +726,8 @@ def build(dia=85.0, small=False):
         # Y: in piedi al centro, albero verso -x sul mozzo della VerticalHorn (CoreY in posa)
         "Y": servo_frame([0, *(s * cY[1:])], [-1, 0, 0], [0, 0, -1],
                          -s * (cY[0] + WILL_HORN_FACE)),
-        # X: nel telaio di XAxisA, albero in su, corpo verso -y (cavo nella tacca a -y); la
-        # finestra (25.6) e' piu' lunga del corpo: 0.75 dal lato +y, cosi' il telaio laterale di
-        # XAxisB passa dietro le orecchie dei servo palpebre
-        "X": servo_frame([0, s * X_SHAFT_Y, 0], [0, 0, 1], [0, -1, 0], s * (4.8 + SG_H - SG_EAR[0])),
+        # X: nel telaio di XAxisA, albero in su sulla linea dei perni degli occhi, corpo verso +y
+        "X": servo_frame([0, s * X_SHAFT_Y, 0], [0, 0, 1], [0, 1, 0], s * (X_EAR_Z + SG_H - SG_EAR[0])),
     }
     asm["servo_R"] = tf(sg90_real(), seats["LID_R"])
     asm["servo_Y"] = tf(sg90_real(), seats["Y"])
@@ -694,11 +752,10 @@ def build(dia=85.0, small=False):
         plugs = {"LID_R": [s1([43.8, -28.71, bz0], [46.6, -16.21, -3.15])],
                  "LID_L": [s1([-46.6, -28.71, bz0], [-43.8, -16.21, -3.15])],
                  "Y": [s1([-4.55, -28.86, bz0], [-1.65, -16.06, -3.15])]}
-        # base ridotta: serve solo a tenere i supporti a L (fessure y -32.6..-12.4) e i 3 servo.
-        # Si tiene la striscia y -38..-8 (1:1); via il resto (sedi dei servo posteriori, porta-PCB,
-        # blocchi rialzati dietro le sedi palpebre).
-        base = I(base, box([-1e4, s * BASE_Y[0], -1e4], [1e4, s * BASE_Y[1], 1e4]))
-        base = D(base, [box([s * x0, s * -16.4, s * -3.15 + 0.01], [s * x1, s * BASE_Y[1] + 1, 1e3])
+        # base di Will tagliata come nella idra_version (taglio e linguetta PCA9685 1:1); via anche
+        # i blocchi rialzati dietro le sedi palpebre (battuta del servo di Will, qui c'e' la sede 1:1)
+        base = cut_base(base, s, pocket=False)
+        base = D(base, [box([s * x0, s * -16.4, s * -3.15 + 0.01], [s * x1, s * CUT_Y + 1, 1e3])
                         for x0, x1 in ((-56.0, -17.0), (17.0, 56.0))])
         for k in ("LID_R", "LID_L", "Y"):
             base = servo_seat(base, seats[k], s, plugs[k], zmin=s * bz0, depth=SEAT_DEPTH,
@@ -709,29 +766,44 @@ def build(dia=85.0, small=False):
             base = max(parts, key=lambda m: abs(m.volume))
     fr = W["xA"]["EyeCorePivotHolder"]
     xa = out["XAxisA_PIP"]
+    xa_block = None
     if not small:   # a scala originale telaio X e box del CoreY sono gia' a misura di servo
+        xa0 = xa["EyeCorePivotHolder"]
         xa["EyeCorePivotHolder"] = servo_seat(
             xa["EyeCorePivotHolder"], seats["X"], s,
-            [s1([-6.4, -14.95, fr.bounds[0, 2]], [6.4, 10.65, 4.8])], zmin=s * fr.bounds[0, 2],
-            depth=SEAT_DEPTH)
+            [s1([-6.4, -14.95, fr.bounds[0, 2]], [6.4, 10.65, X_EAR_Z])], zmin=s * fr.bounds[0, 2],
+            depth=SEAT_DEPTH, extra=SEAT_EXTRA)
+        # blocco aggiunto dalla sede (sotto le orecchie del servo vero): sale dentro la finestra
+        # ingrandita del CoreY, che qui deve lasciargli posto
+        xa_block = D(xa["EyeCorePivotHolder"], [xa0])
     # box del CoreY sopra il servo X: in Will (1:1) ha una piastra con la finestra del servo
-    # (x +-6.4, y -24.5..-0.47, z -12..-9 nel gruppo) e sotto la cavita' tra le pareti di testa
-    # (y -29.2..3.3). Ingrandite sarebbero 2.7 volte il servo: si riempiono e si apre la finestra
-    # 1:1 attorno al servo vero; il riempimento appoggia 0.2 sopra le orecchie (le trattiene).
+    # (x +-6.4, y -24.5..-0.47, z -12..-9 nel gruppo), appena sopra le orecchie, e sotto la cavita'
+    # tra le pareti di testa (y -29.2..3.3). Ingrandita la finestra sarebbe 2.7 volte il servo: si
+    # riempie e si apre la finestra 1:1 attorno al servo vero. Le orecchie del servo vero cadono
+    # dentro lo spessore della piastra ingrandita: incavo dal basso fino a 0.2 sopra le orecchie (il
+    # CoreY scende sul servo e le trattiene), fori per le teste delle viti M2. Se le orecchie
+    # restassero sotto la piastra, si riempie anche la cavita' fino a 0.2 sopra le orecchie.
     Mc = Tm(-s * CORE_T) @ Tm(s * XA_T) @ seats["X"]        # servo X -> gruppo CoreY
     z_ear = Mc[2, 3] - (SG_H - SG_EAR[1]) + 0.2
     g = 0.3
-    fill = U([box([-8.4 * s - g, -29.2 * s - g, z_ear], [8.4 * s + g, 3.3 * s + g, -12.0 * s + 0.01]),
-              box([-6.4 * s - g, -24.5 * s - g, -12.0 * s - 0.01], [6.4 * s + g, -0.47 * s + g, -9.0 * s])])
+    fill = [box([-6.4 * s - g, -24.5 * s - g, -12.0 * s], [6.4 * s + g, -0.47 * s + g, -9.0 * s])]
+    if z_ear < -12.0 * s:
+        fill.append(box([-8.4 * s - g, -29.2 * s - g, z_ear], [8.4 * s + g, 3.3 * s + g, -12.0 * s + 0.01]))
     rx0, rx1 = -SG_SHAFT, SG_L - SG_SHAFT
     rcx = (rx0 + rx1) / 2
     win = box([rx0 - CL, -SG_W / 2 - CL, -SG_H], [rx1 + CL, SG_W / 2 + CL, 60])
+    ears = box([rcx - SG_EAR_SPAN / 2 - 0.4, -SG_W / 2 - 0.4, -SG_H - 40],
+               [rcx + SG_EAR_SPAN / 2 + 0.4, SG_W / 2 + 0.4, -SG_H + SG_EAR[1] + 0.2])
     heads = [cyl_axis(2.4, [rcx + sx * SG_EAR_HOLES / 2, 0, -SG_H + SG_EAR[1] - 0.5],
                       [rcx + sx * SG_EAR_HOLES / 2, 0, 60], n=32) for sx in (-1, 1)]   # teste viti M2
     core = out["CoreY_PIP"]
     if not small:
-        core["EyeCorePivotHolder"] = D(U([core["EyeCorePivotHolder"], fill]),
-                                       [tf(win, Mc)] + [tf(h, Mc) for h in heads])
+        cut = [tf(win, Mc), tf(ears, Mc)] + [tf(h, Mc) for h in heads]
+        if xa_block is not None:
+            blk = dilate(xa_block.convex_hull, 0.3, n=8)
+            blk = blk if blk.is_volume else xa_block.convex_hull
+            cut.append(tf(blk, Tm(-s * CORE_T) @ Tm(s * XA_T)))
+        core["EyeCorePivotHolder"] = D(U([core["EyeCorePivotHolder"]] + fill), cut)
     asm["CoreY_PIP:EyeCorePivotHolder"] = tf(core["EyeCorePivotHolder"], Tm(s * CORE_T))
 
     asm["base"] = base
@@ -759,7 +831,6 @@ def bowtie(cx, cy, z0, z1, half_len=24.0, w_mid=14.0, w_end=26.0, grow=0.0):
     return m
 
 
-BASE_Y = (-38.0, -8.0)          # striscia di base tenuta (unita' 1:1)
 KEY_Y = (-31.0, -14.0)          # posizioni delle chiavette sotto la base (unita' 1:1)
 SEAT_DEPTH = SG_EAR[0] + 8.0    # blocchi delle sedi: corpo sotto le orecchie + cavo + parete
 SEAT_EXTRA = 2.5                # sedi nella base: tasca del corpo 2.5 mm piu' lunga, dal lato albero
@@ -774,11 +845,11 @@ RET_IN = 24.87                  # fermo doppio di Will: faccia interna delle gam
 RET_DY = -5.92                  # fermo doppio: y nella base = y nella posa + RET_DY (centro del vassoio)
 PCA = dict(L=62.5, W=25.4,      # scheda PCA9685 (16 canali): ingombro
            HX=55.9, HY=19.0,    # interasse fori di fissaggio: VERIFICARE sulla scheda
-           y0=CUT_Y + 1.0,      # bordo anteriore della scheda
+           dy=1.0,              # bordo anteriore della scheda dietro il taglio
            standoff_h=5.0, standoff_r=3.0, hole_r=1.1)   # distanziali, foro per vite M2.5 autofilettante
 PCA_TAB_X = 34.5                # mezza larghezza della linguetta per la scheda (i fermi palpebre da x 36.2)
 PCA_MARGIN = 2.5                # bordo della linguetta dietro la scheda
-PLATE_TOP = -3.15               # faccia superiore della piastra di Will
+PLATE_T = 4.8                   # spessore della piastra di Will (1:1) = spessore della linguetta PCA9685
 # zona ribassata dei servo palpebre (dove entra l'estremita' inferiore del servo): in Will va da x 27.6
 # alla fessura dell'orecchia, 0.3 mm di gioco sul fondo del servo SG90 nominale. Si allunga di POCKET_EXTRA
 # verso il centro (l'altro lato e' fissato da orecchia e squadretta), stessa profondita' e larghezza
@@ -793,24 +864,29 @@ RET_LID_X = 42.45               # fermo palpebre dx: x nella base = x nella posa
 RET_Y_XY = (3.15, -22.46)       # fermo servo Y: centro in x (fessure x -1.85..8.15) e in y
 
 
-def cut_base(base):
-    """idra_version: base di Will con le sue sedi, senza la parte posteriore (servo palpebre
-    posteriori, porta-PCB). Dietro il taglio, al centro, una linguetta piatta con 4 distanziali per
-    una scheda PCA9685."""
+def cut_base(base, s=1.0, pocket=True):
+    """base di Will (scalata di s) senza la parte posteriore (servo palpebre posteriori, porta-PCB).
+    Dietro il taglio, al centro, una linguetta piatta con 4 distanziali per una scheda PCA9685: scheda,
+    linguetta (spessa come la piastra di Will 1:1, sul piano di stampa) e distanziali non si scalano.
+    pocket: zona ribassata dei servo palpebre allungata (solo con le sedi di Will, s = 1)."""
     lo = base.bounds[0, 2]
-    base = I(base, box([-1e3, -1e3, -1e3], [1e3, CUT_Y, 1e3]))
-    base = D(base, [box([sx * POCKET_X0 - (sx > 0) * POCKET_EXTRA - 0.01, POCKET_Y[0], POCKET_FLOOR],
-                        [sx * POCKET_X0 + (sx < 0) * POCKET_EXTRA + 0.01, POCKET_Y[1], 10.0])
-                    for sx in (-1, 1)])
+    cut = s * CUT_Y
+    base = I(base, box([-1e4, -1e4, -1e4], [1e4, cut, 1e4]))
+    if pocket:
+        base = D(base, [box([sx * POCKET_X0 - (sx > 0) * POCKET_EXTRA - 0.01, POCKET_Y[0], POCKET_FLOOR],
+                            [sx * POCKET_X0 + (sx < 0) * POCKET_EXTRA + 0.01, POCKET_Y[1], 10.0])
+                        for sx in (-1, 1)])
     from shapely.geometry import box as sbox
-    y1 = PCA["y0"] + PCA["W"] + PCA_MARGIN
+    y0 = cut + PCA["dy"]
+    y1 = y0 + PCA["W"] + PCA_MARGIN
+    plate = lo + PLATE_T
     tab = trimesh.creation.extrude_polygon(
-        sbox(-PCA_TAB_X, CUT_Y - 0.5, PCA_TAB_X, y1).buffer(-3.0).buffer(3.0), PLATE_TOP - lo)
+        sbox(-PCA_TAB_X, cut - 0.5, PCA_TAB_X, y1).buffer(-3.0).buffer(3.0), PLATE_T)
     tab.apply_translation([0, 0, lo])
-    yc = PCA["y0"] + PCA["W"] / 2
+    yc = y0 + PCA["W"] / 2
     pts = [(sx * PCA["HX"] / 2, yc + sy * PCA["HY"] / 2) for sx in (-1, 1) for sy in (-1, 1)]
-    top = PLATE_TOP + PCA["standoff_h"]
-    posts = [cyl_axis(PCA["standoff_r"], [x, y, PLATE_TOP - 0.5], [x, y, top], n=32) for x, y in pts]
+    top = plate + PCA["standoff_h"]
+    posts = [cyl_axis(PCA["standoff_r"], [x, y, plate - 0.5], [x, y, top], n=32) for x, y in pts]
     holes = [cyl_axis(PCA["hole_r"], [x, y, lo + 1.2], [x, y, top + 1], n=24) for x, y in pts]
     return D(U([base, tab] + posts), holes)
 
@@ -1010,9 +1086,19 @@ def info_text(s, info, kin, files, worst):
               f"dietro, linguetta per PCA9685 {PCA['L']} x {PCA['W']} mm su 4 distanziali h {PCA['standoff_h']:.0f} mm, "
               f"fori a {PCA['HX']} x {PCA['HY']} mm per 4 x M2.5x6 autofilettanti (interasse da VERIFICARE sulla scheda)"]
     else:
-        L += [f"codolo_mozzo_mm: {s * WILL_HORN_FACE - SG_BOSS_TOP - 0.6:.1f} (sede scanalato D{SPLINE_D} x {SPLINE_DEPTH})",
-              f"viti: per squadretta 1 x M2x12 (nel codolo, nello scanalato); {tb};",
-              f"      per servo 2 x M2x8 autofilettanti (orecchie -> sede); base: {2 * len(KEY_Y)} x M3x10 svasate nelle chiavette"]
+        h = STOCK_HORN
+        L += ["squadrette stampate (palpebre, X, Y): sotto il mozzo una costola con la tasca per la squadretta "
+              f"originale del servo a un braccio (mozzo D{h['hub_d']}, alta {h['H']}, braccio {h['L']} x "
+              f"{h['W0']}/{h['W1']} x {h['T']}, faccia inferiore {h['Zb']} sopra il servo: MISURE DA VERIFICARE), "
+              f"gioco {STOCK_CL} per lato",
+              f"viti: per squadretta 1 x M2x16 al centro (attraverso la squadretta originale nell'albero) + 2 viti del "
+              f"kit opzionali nei fori pilota a {h['holes'][0]} e {h['holes'][1]} mm dal centro; {tb};",
+              f"      per servo 2 x M2x8 autofilettanti (orecchie -> sede); base: {2 * len(KEY_Y)} x M3x10 svasate nelle chiavette",
+              f"base: quella di Will ingrandita, tagliata a y = {s * CUT_Y:.1f} (via servo palpebre posteriori e porta-PCB), "
+              "in due meta' unite da chiavette; dietro, linguetta 1:1 per PCA9685 "
+              f"{PCA['L']} x {PCA['W']} mm su 4 distanziali h {PCA['standoff_h']:.0f} mm, fori a {PCA['HX']} x {PCA['HY']} mm "
+              "per 4 x M2.5x6 autofilettanti (interasse da VERIFICARE sulla scheda)",
+              "servo X: albero verso gli occhi, sulla linea dei perni dei bulbi; cavo nella tacca davanti"]
     L.append("pezzi (mm, X x Y x Z come esportati):")
     for n, e in files:
         L.append(f"  {n}: {e[0]:.0f} x {e[1]:.0f} x {e[2]:.0f}")
@@ -1023,15 +1109,15 @@ def info_text(s, info, kin, files, worst):
 # piatti per Bambu A1 (256 x 256) dei pezzi grandi della D85: (pezzo, file, rotazione z,
 # posizione). "c": centro xy dell'ingombro; "min": angolo minimo xy.
 A1_PLATES = {
-    # le due meta' della base (194 x 80) una sopra l'altra, minuteria nella fascia in alto
-    "P1": [("Base_L", "00_Base_L", 0, ("c", 128.0, 50.0)),
-           ("Base_R", "01_Base_R", 0, ("c", 128.0, 140.0)),
-           ("BaseKey_x2", "02_BaseKey1", 0, ("min", 10.0, 200.0)),
-           ("BaseKey_x2", "03_BaseKey2", 0, ("min", 66.0, 200.0)),
-           ("PinB_x2", "04_PinB1", 0, ("min", 124.0, 200.0)),
-           ("PinB_x2", "05_PinB2", 0, ("min", 154.0, 200.0))],
-    "P2": [("XAxisA_PIP", "00_XAxisA_PIP", 135, ("c", 128.0, 128.0))],   # 264 mm: in diagonale
-    "P3": [("XAxisB_PIP", "00_XAxisB_PIP", 135, ("c", 128.0, 128.0))],
+    # base di Will tagliata, due meta' da 194 x 137: una per piatto, minuteria accanto alla sinistra
+    "P1": [("Base_L", "00_Base_L", 0, ("c", 128.0, 82.0)),
+           ("BaseKey_x2", "01_BaseKey1", 0, ("min", 10.0, 200.0)),
+           ("BaseKey_x2", "02_BaseKey2", 0, ("min", 66.0, 200.0)),
+           ("PinB_x2", "03_PinB1", 0, ("min", 124.0, 200.0)),
+           ("PinB_x2", "04_PinB2", 0, ("min", 154.0, 200.0))],
+    "P2": [("Base_R", "00_Base_R", 0, ("c", 128.0, 128.0))],
+    "P3": [("XAxisA_PIP", "00_XAxisA_PIP", 135, ("c", 128.0, 128.0))],   # 264 mm: in diagonale
+    "P4": [("XAxisB_PIP", "00_XAxisB_PIP", 135, ("c", 128.0, 128.0))],
 }
 
 
