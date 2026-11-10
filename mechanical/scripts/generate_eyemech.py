@@ -38,9 +38,8 @@ Uso:  python generate_eyemech.py                  (D85: interasse occhi 200 mm -
       python generate_eyemech.py --small          (versione di prova, scala di Will)
       python generate_eyemech.py --interasse 0 --d 90   (scala dal diametro del bulbo)
       python generate_eyemech.py --render         (immagine in docs/img)
-Uscita in mechanical/eyes/eyemech_D85 (+ print_A1 con i piatti dei pezzi grandi: P1 Base_L, P2 Base_R,
-P3 XAxisA, P4 XAxisB) o
-mechanical/eyes/idra_version (file idra_version_*.stl).
+Uscita: un STL per pezzo in mechanical/eyes/eyemech_D85/pezzi (+ info.txt in eyemech_D85; i piatti delle
+teste si rifanno con teste_D85.py) o mechanical/eyes/idra_version (file idra_version_*.stl).
 """
 import argparse
 import re
@@ -1106,39 +1105,6 @@ def info_text(s, info, kin, files, worst):
     return "\n".join(L) + "\n"
 
 
-# piatti per Bambu A1 (256 x 256) dei pezzi grandi della D85: (pezzo, file, rotazione z,
-# posizione). "c": centro xy dell'ingombro; "min": angolo minimo xy.
-A1_PLATES = {
-    # base di Will tagliata, due meta' da 194 x 137: una per piatto, minuteria accanto alla sinistra
-    "P1": [("Base_L", "00_Base_L", 0, ("c", 128.0, 82.0)),
-           ("BaseKey_x2", "01_BaseKey1", 0, ("min", 10.0, 200.0)),
-           ("BaseKey_x2", "02_BaseKey2", 0, ("min", 66.0, 200.0)),
-           ("PinB_x2", "03_PinB1", 0, ("min", 124.0, 200.0)),
-           ("PinB_x2", "04_PinB2", 0, ("min", 154.0, 200.0))],
-    "P2": [("Base_R", "00_Base_R", 0, ("c", 128.0, 128.0))],
-    "P3": [("XAxisA_PIP", "00_XAxisA_PIP", 135, ("c", 128.0, 128.0))],   # 264 mm: in diagonale
-    "P4": [("XAxisB_PIP", "00_XAxisB_PIP", 135, ("c", 128.0, 128.0))],
-}
-
-
-def a1_plates(od):
-    """copie dei pezzi grandi gia' posizionate sui piatti A1 (od/print_A1/P1..P4)."""
-    import shutil
-    pd = od / "print_A1"
-    if pd.exists():
-        shutil.rmtree(pd)
-    for plate, items in A1_PLATES.items():
-        (pd / plate).mkdir(parents=True)
-        for name, fname, rot, (mode, x, y) in items:
-            m = trimesh.load(od / f"{name}.stl")
-            if rot:
-                m.apply_transform(trimesh.transformations.rotation_matrix(np.radians(rot), [0, 0, 1]))
-            b = m.bounds
-            ref = (b[0, :2] + b[1, :2]) / 2 if mode == "c" else b[0, :2]
-            m.apply_translation([x - ref[0], y - ref[1], -b[0, 2]])
-            m.export(pd / plate / f"{fname}.stl")
-
-
 def mirror_asm(m):
     return mirror_x_mesh(m)
 
@@ -1220,9 +1186,7 @@ def main():
         worst += [("assi X/Y in posa neutra",) + w for w in check_xy(asm, with_servo=not a.small)]
     tag = "idra_version" if a.small else f"eyemech_D{a.d:.0f}"
     od = OUTROOT / tag
-    files = export(out, od, prefix="idra_version_" if a.small else "")
-    if not a.small:
-        a1_plates(od)
+    files = export(out, od if a.small else od / "pezzi", prefix="idra_version_" if a.small else "")
     txt = info_text(s, info, kin, files, worst)
     (od / "info.txt").write_text(txt, encoding="utf-8")
     print(txt)

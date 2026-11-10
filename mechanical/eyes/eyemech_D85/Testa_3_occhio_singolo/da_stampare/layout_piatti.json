@@ -1,0 +1,145 @@
+{
+ "testa": "Testa3",
+ "piatti": [
+  {
+   "nome": "Piatto_1_basi",
+   "pezzi": [
+    {
+     "pezzo": "Base_L",
+     "rot_z": 0,
+     "x": 3.0,
+     "y": 3.0
+    },
+    {
+     "pezzo": "Base_R",
+     "rot_z": 195,
+     "x": 24.0,
+     "y": 114.0
+    }
+   ]
+  },
+  {
+   "nome": "Piatto_A",
+   "pezzi": [
+    {
+     "pezzo": "XAxisA_PIP",
+     "rot_z": 30,
+     "x": 3.01,
+     "y": 2.98
+    },
+    {
+     "pezzo": "CoreY_PIP",
+     "rot_z": 300,
+     "x": 2.96,
+     "y": 86.49
+    },
+    {
+     "pezzo": "Eyeball_x2",
+     "rot_z": 0,
+     "x": 159.98,
+     "y": 3.01
+    },
+    {
+     "pezzo": "Eyeball_x2",
+     "rot_z": 0,
+     "x": 166.98,
+     "y": 164.01
+    },
+    {
+     "pezzo": "BaseKey_x2",
+     "rot_z": 0,
+     "x": 58.0,
+     "y": 3.01
+    },
+    {
+     "pezzo": "BaseKey_x2",
+     "rot_z": 0,
+     "x": 109.5,
+     "y": 3.01
+    },
+    {
+     "pezzo": "BaseKey_x2",
+     "rot_z": 165,
+     "x": 43.01,
+     "y": 37.01
+    },
+    {
+     "pezzo": "BaseKey_x2",
+     "rot_z": 120,
+     "x": 129.01,
+     "y": 71.01
+    },
+    {
+     "pezzo": "PinB_x2",
+     "rot_z": 0,
+     "x": 230.99,
+     "y": 77.49
+    },
+    {
+     "pezzo": "PinB_x2",
+     "rot_z": 0,
+     "x": 229.99,
+     "y": 103.49
+    }
+   ]
+  },
+  {
+   "nome": "Piatto_B",
+   "pezzi": [
+    {
+     "pezzo": "XAxisB_PIP",
+     "rot_z": 60,
+     "x": 3.01,
+     "y": 3.0
+    },
+    {
+     "pezzo": "LidTop_L_PIP",
+     "rot_z": 240,
+     "x": 81.01,
+     "y": 114.96
+    },
+    {
+     "pezzo": "PivotCentral_x2",
+     "rot_z": 75,
+     "x": 2.99,
+     "y": 3.0
+    }
+   ]
+  },
+  {
+   "nome": "Piatto_C",
+   "pezzi": [
+    {
+     "pezzo": "PivotOuter_L",
+     "rot_z": 105,
+     "x": 3.01,
+     "y": 3.01
+    },
+    {
+     "pezzo": "PivotCentral_x2",
+     "rot_z": 225,
+     "x": 69.01,
+     "y": 9.01
+    },
+    {
+     "pezzo": "PivotCentral_x2",
+     "rot_z": 270,
+     "x": 5.98,
+     "y": 76.48
+    },
+    {
+     "pezzo": "LidBottom_L_PIP",
+     "rot_z": 45,
+     "x": 116.47,
+     "y": 108.0
+    },
+    {
+     "pezzo": "LidBottom_L_PIP",
+     "rot_z": 255,
+     "x": 3.01,
+     "y": 171.01
+    }
+   ]
+  }
+ ]
+}

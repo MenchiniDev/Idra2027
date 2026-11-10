@@ -1,0 +1,110 @@
+{
+ "testa": "Testa2",
+ "piatti": [
+  {
+   "nome": "Piatto_A",
+   "pezzi": [
+    {
+     "pezzo": "XAxisA_PIP",
+     "rot_z": 45,
+     "x": 2.99,
+     "y": 3.01
+    },
+    {
+     "pezzo": "LidTop_R_PIP",
+     "rot_z": 315,
+     "x": 59.51,
+     "y": 3.01
+    },
+    {
+     "pezzo": "LidTop_L_PIP",
+     "rot_z": 285,
+     "x": 25.01,
+     "y": 149.99
+    },
+    {
+     "pezzo": "PivotOuter_L",
+     "rot_z": 0,
+     "x": 161.01,
+     "y": 8.0
+    },
+    {
+     "pezzo": "BaseKey_x2",
+     "rot_z": 45,
+     "x": 23.51,
+     "y": 39.01
+    },
+    {
+     "pezzo": "BaseKey_x2",
+     "rot_z": 45,
+     "x": 3.01,
+     "y": 91.01
+    },
+    {
+     "pezzo": "PinB_x2",
+     "rot_z": 0,
+     "x": 116.99,
+     "y": 116.49
+    },
+    {
+     "pezzo": "PinB_x2",
+     "rot_z": 0,
+     "x": 2.99,
+     "y": 123.99
+    }
+   ]
+  },
+  {
+   "nome": "Piatto_B",
+   "pezzi": [
+    {
+     "pezzo": "XAxisB_PIP",
+     "rot_z": 45,
+     "x": 3.0,
+     "y": 3.0
+    },
+    {
+     "pezzo": "CoreY_PIP",
+     "rot_z": 225,
+     "x": 80.49,
+     "y": 108.5
+    },
+    {
+     "pezzo": "LidBottom_R_PIP",
+     "rot_z": 60,
+     "x": 3.01,
+     "y": 3.01
+    }
+   ]
+  },
+  {
+   "nome": "Piatto_C",
+   "pezzi": [
+    {
+     "pezzo": "PivotOuter_R",
+     "rot_z": 15,
+     "x": 2.95,
+     "y": 3.0
+    },
+    {
+     "pezzo": "PivotCentral_x2",
+     "rot_z": 195,
+     "x": 49.98,
+     "y": 18.49
+    },
+    {
+     "pezzo": "PivotCentral_x2",
+     "rot_z": 195,
+     "x": 88.48,
+     "y": 56.99
+    },
+    {
+     "pezzo": "LidBottom_L_PIP",
+     "rot_z": 60,
+     "x": 98.51,
+     "y": 180.5
+    }
+   ]
+  }
+ ]
+}

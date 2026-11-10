@@ -1,0 +1,68 @@
+{
+ "testa": "Testa4",
+ "piatti": [
+  {
+   "nome": "Piatto_1_basi",
+   "pezzi": [
+    {
+     "pezzo": "Base_L",
+     "rot_z": 0,
+     "x": 3.0,
+     "y": 3.0
+    },
+    {
+     "pezzo": "Base_R",
+     "rot_z": 195,
+     "x": 24.0,
+     "y": 114.0
+    }
+   ]
+  },
+  {
+   "nome": "Piatto_D",
+   "pezzi": [
+    {
+     "pezzo": "XAxisA_PIP",
+     "rot_z": 30,
+     "x": 3.01,
+     "y": 2.98
+    },
+    {
+     "pezzo": "CoreY_PIP",
+     "rot_z": 300,
+     "x": 2.96,
+     "y": 86.49
+    },
+    {
+     "pezzo": "PivotOuter_L",
+     "rot_z": 285,
+     "x": 54.51,
+     "y": 3.0
+    }
+   ]
+  },
+  {
+   "nome": "Piatto_E",
+   "pezzi": [
+    {
+     "pezzo": "XAxisB_PIP",
+     "rot_z": 60,
+     "x": 3.01,
+     "y": 3.0
+    },
+    {
+     "pezzo": "LidTop_L_PIP",
+     "rot_z": 240,
+     "x": 81.01,
+     "y": 114.96
+    },
+    {
+     "pezzo": "PivotCentral_x2",
+     "rot_z": 75,
+     "x": 2.99,
+     "y": 3.0
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "testa": "Testa2",
+ "piatti": [
+  {
+   "nome": "Piatto_1_basi",
+   "pezzi": [
+    {
+     "pezzo": "Base_L",
+     "rot_z": 0,
+     "x": 3.0,
+     "y": 3.0
+    },
+    {
+     "pezzo": "Base_R",
+     "rot_z": 195,
+     "x": 24.0,
+     "y": 114.0
+    }
+   ]
+  }
+ ]
+}

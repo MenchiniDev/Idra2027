@@ -12,8 +12,8 @@ Due modelli di partenza (in `mechanical/eyes/original/`) e una versione in uso, 
 Generatore unico: `mechanical/scripts/generate_eyemech.py`.
 
 ## Versione EyeMech D85 — pezzi originali di Will, palpebre a 1 servo (4 servo SG90/MG90S)
-File in `mechanical/eyes/eyemech_D85/`; in `print_A1/` gli stessi pezzi grandi già disposti sui
-piatti della Bambu A1 (256 × 256).
+Un STL per pezzo in `mechanical/eyes/eyemech_D85/pezzi/`; i piatti della Bambu A1 (256 × 256), una cartella per
+testa (`Testa_1` … `Testa_4`), con lo stato di ogni testa in `mechanical/eyes/eyemech_D85/README.md`.
 
 ![EyeMech D85](img/eyemech_D85.png)
 
@@ -70,17 +70,29 @@ mostrano i 4 servo (blu) con il resto trasparente.
 | `PivotCentral_x2`, `PivotOuter_L`, `PivotOuter_R` | 2+1+1 | supporti a L |
 | `Eyeball_x2` | 2 | bulbi di Will Ø85.3 (pochi perimetri, riempimento basso: pieni sarebbero ~200 g) |
 | `CoreY_PIP` | 1 | telaio su/giù + squadretta Y (print-in-place); nel box la finestra 1:1 del servo X con l'incavo per le orecchie |
-| `XAxisA_PIP`, `XAxisB_PIP` | 1+1 | asse X (print-in-place), in `XAxisA` la sede 1:1 del servo X. Lunghi 264 mm: **in diagonale** sul piatto da 256 (già fatto in `print_A1/P3`, `P4`) |
+| `XAxisA_PIP`, `XAxisB_PIP` | 1+1 | asse X (print-in-place), in `XAxisA` la sede 1:1 del servo X. Lunghi 264 mm: **in diagonale** sul piatto da 256 (già fatto nei piatti delle teste) |
 | `LidTop_L_PIP`, `LidTop_R_PIP` | 1+1 | palpebra superiore + tirante originale + squadretta nuova (print-in-place) |
 | `LidBottom_L_PIP`, `LidBottom_R_PIP` | 1+1 | palpebra inferiore + `LinkB` (print-in-place, giunto di Will sull'orecchia), 81 × 152 × 121 mm; il tratto obliquo del tirante va sostenuto |
 | `PinB_x2` | 2 | perno del secondo braccio (testa sul piatto), vite M3×20 |
 
 Orientamenti di stampa: quelli di Will (presi dal suo 3MF), solo ingranditi.
-`print_A1/`: P1 = `Base_L` + chiavette e perni, P2 = `Base_R`, P3 = `XAxisA`, P4 = `XAxisB`.
-`bambu_A1/`: tutti i pezzi già tagliati in Bambu Studio su **5 piatti A1** (PLA, 0.20 mm), incastrati sulle
-impronte reali dei pezzi (`mechanical/scripts/plates_D85.py`): **≈ 32 h 30 min e ≈ 0.92 kg di filamento** in
-totale; tempi e grammi per piatto in `bambu_A1/README.md`. Aprendoli in Bambu Studio vanno riattivati i supporti
-prima di tagliare di nuovo.
+**Piatti A1: una cartella per testa** in `eyemech_D85/`, stato e totali in `eyemech_D85/README.md`. Pezzi
+incastrati sulle impronte reali (`mechanical/scripts/teste_D85.py`), ≥ 4 mm tra i pezzi:
+- `Testa_1/`: i 5 piatti già tagliati con cui è stata stampata la testa 1 (**≈ 32 h 30 min, ≈ 0.92 kg**; aprendoli
+  in Bambu Studio vanno riattivati i supporti prima di tagliare di nuovo);
+- `Testa_2/`: basi già stampate, bulbi già pronti, il resto in 3 piatti (~22 h 45 min, ~0.58 kg);
+- `Testa_3_occhio_singolo/`, `Testa_4_occhio_singolo/`: le due teste a un occhio, incastrate insieme in 7 piatti
+  (~50 h 30 min, ~1.45 kg).
+
+I piatti nuovi sono progetti Bambu Studio non tagliati, con supporti tree(auto) 30° già impostati.
+
+### Testa a occhio singolo (teste 3 e 4)
+Stessi pezzi e stesso meccanismo della coppia, montati con **un solo occhio (il sinistro)**: base intera con le
+chiavette, i 2 `PivotCentral` (perni del `CoreY`), `CoreY`, `XAxisA`, `XAxisB`, e del lato sinistro 1 `Eyeball`,
+`PivotOuter_L`, `LidTop_L`, `LidBottom_L`, 1 `PinB`. Non si stampano `PivotOuter_R`, `LidTop_R`, `LidBottom_R`, il
+secondo bulbo e il secondo `PinB`. **3 servo** (X, Y, palpebre sx): la sede delle palpebre dx resta vuota; il
+parallelogramma dell'asse X lavora col solo occhio sinistro e le estremità destre di `XAxisA`/`XAxisB` restano
+libere. Ingombro uguale alla coppia (base 388 mm), occhio a 100 mm dal centro del meccanismo.
 
 ### Montaggio
 Come nella guida di Will (`mechanical/eyes/original/eyemech_e3.2/src/Assembly.pdf`), con queste differenze:
@@ -173,7 +185,7 @@ esterno va sul `PinB` (codolo nel foro del secondo braccio, vite M2×8 dall'este
 ## Rigenerare
 ```bash
 pip install trimesh manifold3d numpy scipy shapely pyvista
-python mechanical/scripts/generate_eyemech.py                       # D85: occhi a 200 mm (bulbo 85.3) + print_A1, con verifica
+python mechanical/scripts/generate_eyemech.py                       # D85: occhi a 200 mm (bulbo 85.3), con verifica (STL in eyemech_D85/pezzi)
 python mechanical/scripts/generate_eyemech.py --small               # versione di prova in scala di Will
 python mechanical/scripts/generate_eyemech.py --interasse 210       # altra distanza tra i centri degli occhi
 python mechanical/scripts/generate_eyemech.py --interasse 0 --d 90  # scala dal diametro del bulbo

@@ -4,8 +4,7 @@ e li taglia con Bambu Studio da riga di comando: stampa in meno piatti possibile
 
 Uso:  python pack_plate.py idra_version            (tutti i pezzi su 1 piatto)
       python pack_plate.py idra_version --gap 8     (piu' spazio tra i pezzi, per supporti larghi)
-      python pack_plate.py eyemech_D85 --plates 8   (D85: i pezzi grandi hanno gia' i loro piatti in
-                                                     bambu_A1, qui solo come prova di impacchettamento)
+      (D85: i piatti delle teste si fanno con teste_D85.py, che incastra i pezzi sulle impronte reali)
 
 Impacchettamento: rettangoli degli ingombri xy (rotazioni di 90 gradi consentite), ordine per
 area decrescente con scambi casuali finche' ci stanno. Il risultato (3MF gia' tagliato, con tempo e
