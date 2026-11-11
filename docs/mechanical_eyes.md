@@ -111,6 +111,11 @@ Come nella guida di Will (`mechanical/eyes/original/eyemech_e3.2/src/Assembly.pd
 4. Base: unire le due metà con le chiavette prima di montare il resto. PCA9685 sulla linguetta dietro, 4 viti
    M2.5×6 autofilettanti.
 
+**Giunto `PinB`** (secondo braccio della squadretta ↔ `LinkB`): vite autofilettante da 3 mm (M3 o 2.9) lunga 19–20 mm,
+testa bombata/cilindrica fino a Ø6: attraversa il perno (foro Ø3.4, sede testa Ø6.2 × 2) e si avvita nel braccio
+della squadretta (spesso 7.85 mm, foro Ø2.5 passante negli ultimi 2.9 mm). Disegni: `img/giunto_PinB_sezione.png`,
+`img/giunto_PinB_esploso.png`. Servo della mandibola: `mechanical/mandibola/`.
+
 **Calibrazione**: come Will, servo a 90° = palpebre chiuse. Aperte: destra 90° → 10°, sinistra
 90° → 170° (i canali TR/TL del suo codice; BR/BL non servono più). Il firmware deve gestire 4 servo
 (`EyeNode_2servo` ne gestisce 2).

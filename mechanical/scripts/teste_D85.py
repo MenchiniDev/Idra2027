@@ -249,9 +249,10 @@ def check(items):
 TEMPLATE_SETTINGS = None
 
 
-def project_settings():
+def project_settings(over=None):
     """impostazioni di progetto: A1 0.4 / 0.20mm Standard / PLA Basic con supporti tree(auto) 30 gradi,
-    prese dal progetto gia' tagliato della testa 1 e segnate come modifiche al profilo di sistema."""
+    prese dal progetto gia' tagliato della testa 1 e segnate come modifiche al profilo di sistema;
+    over = altre impostazioni di processo (es. {"wall_loops": "4"})."""
     src = D85 / "Testa_1" / "Piatto_3" / "Piatto_3.3mf"
     with zipfile.ZipFile(src) as z:
         d = json.loads(z.read("Metadata/project_settings.config"))
@@ -260,12 +261,17 @@ def project_settings():
     diff = list(d.get("different_settings_to_system", ["", "", ""]))
     while len(diff) < 3:
         diff.append("")
-    diff[0] = "enable_support;support_threshold_angle;support_type"
+    keys = ["enable_support", "support_threshold_angle", "support_type"]
+    for k, v in (over or {}).items():
+        d[k] = v
+        if k not in keys:
+            keys.append(k)
+    diff[0] = ";".join(sorted(keys))
     d["different_settings_to_system"] = diff
     return json.dumps(d, indent=4, ensure_ascii=False)
 
 
-def write_3mf(path, items, meshes, title, png=None):
+def write_3mf(path, items, meshes, title, png=None, impostazioni=None):
     U = lambda a, b: f"{a:08x}-{b}"
     objs, comps, items_xml, model_cfg, rels, cut = [], [], [], [], [], []
     files = {}
@@ -324,7 +330,7 @@ def write_3mf(path, items, meshes, title, png=None):
         '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n' + "\n".join(model_cfg) +
         '\n  <plate>\n    <metadata key="plater_id" value="1"/>\n    <metadata key="plater_name" value=""/>\n'
         '    <metadata key="locked" value="false"/>\n' + thumb + '  </plate>\n  <assemble>\n  </assemble>\n</config>\n')
-    files["Metadata/project_settings.config"] = project_settings()
+    files["Metadata/project_settings.config"] = project_settings(impostazioni)
     files["Metadata/cut_information.xml"] = ('<?xml version="1.0" encoding="utf-8"?>\n<objects>\n'
                                               + "\n".join(cut) + "\n</objects>\n")
     files["Metadata/slice_info.config"] = (

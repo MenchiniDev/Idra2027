@@ -14,6 +14,8 @@ Licenza dei modelli di partenza **CC BY-NC-SA 4.0** → vedi `docs/mechanical_ey
 | `scripts/generate_eyemech.py` | generatore di entrambe (`--small`, `--interasse`, `--d`, verifica interferenze, `--render`) |
 | `scripts/teste_D85.py` | piatti A1 delle teste D85: incastra i pezzi sulle impronte reali e scrive per ogni piatto progetto Bambu Studio (3MF), STL posizionati e immagine (`--taglia` sul PC: anche lo slicing) |
 | `scripts/pack_plate.py` | dispone i pezzi della idra_version su un piatto A1 e lo taglia con Bambu Studio (tempo e filamento) |
+| `mandibola/` | **supporto regolabile del servo della mandibola** (DS3225 25 kg) appeso alla base degli occhi D85: pezzi, piatto A1 con 2 set, viti e montaggio nel suo `README.md` |
+| `scripts/mandibola_DS3225.py` | genera i pezzi del supporto mandibola e il loro piatto A1 |
 | `legs/` | pezzi delle gambe (ginocchio, snodi) |
 | `enclosures/` | chassis elettronica (da fare) |
 
