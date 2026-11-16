@@ -54,12 +54,12 @@ ROTS = list(range(0, 360, 15))
 
 # pezzi per kit (i nomi sono gli STL in pezzi/; i _x2 vanno stampati 2 volte e compaiono 2 volte)
 KIT = {
-    "coppia": ["Base_L", "Base_R", "BaseKey_x2", "BaseKey_x2", "PinB_x2", "PinB_x2", "Eyeball_x2", "Eyeball_x2",
-               "LidBottom_L_PIP", "LidBottom_R_PIP", "LidTop_L_PIP", "LidTop_R_PIP", "PivotOuter_L", "PivotOuter_R",
+    "coppia": ["Base_L", "Base_R", "BaseKey_x2", "BaseKey_x2", "Eyeball_x2", "Eyeball_x2",
+               "Palpebre_L_PIP", "Palpebre_R_PIP", "PivotOuter_L", "PivotOuter_R",
                "PivotCentral_x2", "PivotCentral_x2", "CoreY_PIP", "XAxisA_PIP", "XAxisB_PIP"],
     # occhio singolo (sinistro): tutto il meccanismo centrale, i pezzi del solo lato sx
-    "singolo": ["Base_L", "Base_R", "BaseKey_x2", "BaseKey_x2", "PinB_x2", "Eyeball_x2",
-                "LidBottom_L_PIP", "LidTop_L_PIP", "PivotOuter_L", "PivotCentral_x2", "PivotCentral_x2",
+    "singolo": ["Base_L", "Base_R", "BaseKey_x2", "BaseKey_x2", "Eyeball_x2",
+                "Palpebre_L_PIP", "PivotOuter_L", "PivotCentral_x2", "PivotCentral_x2",
                 "CoreY_PIP", "XAxisA_PIP", "XAxisB_PIP"],
 }
 KIT["coppia_senza_basi_occhi"] = [n for n in KIT["coppia"] if n not in ("Base_L", "Base_R", "Eyeball_x2")]
@@ -75,6 +75,8 @@ STIMA = {
     "LidTop_L_PIP": (63.2, 2.68), "LidTop_R_PIP": (63.2, 2.68), "PivotOuter_L": (19.9, 0.75),
     "PivotOuter_R": (19.9, 0.75), "PivotCentral_x2": (25.0, 0.71), "CoreY_PIP": (92.9, 3.75),
     "XAxisA_PIP": (79.0, 3.32), "XAxisB_PIP": (71.1, 2.93),
+    # palpebre di un lato in un pezzo (sup. + inf. + tiranti + squadretta): somma dei due gruppi + supporti piu' alti
+    "Palpebre_L_PIP": (125.0, 5.0), "Palpebre_R_PIP": (125.0, 5.0),
 }
 NOME = {  # descrizione breve per i README
     "Base_L": "base sx", "Base_R": "base dx", "BaseKey_x2": "chiavetta base", "PinB_x2": "perno PinB",
@@ -82,6 +84,7 @@ NOME = {  # descrizione breve per i README
     "LidTop_L_PIP": "palpebra sup. sx", "LidTop_R_PIP": "palpebra sup. dx", "PivotOuter_L": "supporto esterno sx",
     "PivotOuter_R": "supporto esterno dx", "PivotCentral_x2": "supporto centrale", "CoreY_PIP": "telaio Y (CoreY)",
     "XAxisA_PIP": "asse X A (sede servo X)", "XAxisB_PIP": "asse X B (squadretta X)",
+    "Palpebre_L_PIP": "palpebre sx complete", "Palpebre_R_PIP": "palpebre dx complete",
 }
 
 
@@ -363,6 +366,9 @@ def write_3mf(path, items, meshes, title, png=None, impostazioni=None):
 
 # ---------------------------------------------------------------------------------------- costruzione
 def stima(names):
+    """grammi e ore stimati, None se manca la stima di qualche pezzo (es. idra_version)."""
+    if any(n not in STIMA for n in names):
+        return None, None
     g = sum(STIMA[n][0] for n in names)
     h = sum(STIMA[n][1] for n in names)
     return g, h
@@ -376,12 +382,17 @@ def contenuto(names):
     cnt = {}
     for n in names:
         cnt[n] = cnt.get(n, 0) + 1
-    return " + ".join((f"{c} " if c > 1 else "") + f"`{n.replace('_x2', '')}`" for n, c in cnt.items())
+    return " + ".join((f"{c} " if c > 1 else "") + f"`{n.replace('_x2', '').replace('idra_version_', '')}`"
+                      for n, c in cnt.items())
 
 
 def build(folder, slicer=False):
     folder = Path(folder)
     lay = json.load(open(folder / "layout_piatti.json", encoding="utf-8"))
+    global PEZZI
+    if lay.get("cartella_pezzi"):            # pezzi presi da un'altra cartella (es. idra_version)
+        PEZZI = (folder / lay["cartella_pezzi"]).resolve()
+        _mesh.clear()
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -407,12 +418,13 @@ def build(folder, slicer=False):
             for gg in getattr(f, "geoms", [f]):
                 ax.fill(*gg.exterior.xy, alpha=.75)
             c = f.representative_point()
-            ax.text(c.x, c.y, n.replace("_PIP", "").replace("_x2", ""), ha="center", fontsize=8)
+            ax.text(c.x, c.y, n.replace("_PIP", "").replace("_x2", "").replace("idra_version_", ""), ha="center",
+                    fontsize=8)
         ax.set_xlim(-5, BED + 5)
         ax.set_ylim(-5, BED + 5)
         ax.set_aspect("equal")
         ax.axis("off")
-        ax.set_title(f"{testa} - {pl['nome']}: {len(items)} pezzi, ~{hm(h)}, ~{g:.0f} g")
+        ax.set_title(f"{testa} - {pl['nome']}: {len(items)} pezzi" + (f", ~{hm(h)}, ~{g:.0f} g" if g else ""))
         fig.savefig(pdir / "piatto.png", dpi=80, bbox_inches="tight")
         plt.close(fig)
         name = f"{testa}_{pl['nome']}"
@@ -420,8 +432,8 @@ def build(folder, slicer=False):
         esatto = taglia(pdir, name) if slicer else None
         pl["_info"] = (names, g, h, zmax, esatto)
         print(f"{name}: {len(items)} pezzi, distanza minima {d:.1f} mm, bordo {lo:.1f}..{hi:.1f}, "
-              f"alt. {zmax:.0f} mm, ~{hm(h)}, ~{g:.0f} g" + (f"; Bambu Studio: {hm(esatto[1])}, {esatto[0]:.0f} g"
-                                                            if esatto else ""))
+              f"alt. {zmax:.0f} mm" + (f", ~{hm(h)}, ~{g:.0f} g" if g else "")
+              + (f"; Bambu Studio: {hm(esatto[1])}, {esatto[0]:.0f} g" if esatto else ""))
     tabella(folder, lay)
     return lay
 
@@ -454,18 +466,24 @@ def tabella(folder, lay):
     """tabella dei piatti in fondo al README.md della cartella (il testo prima del segno resta)."""
     righe = [MARK, "", "| Piatto | Pezzi | Contenuto | Tempo | Filamento | Altezza max |", "|---|---|---|---|---|---|"]
     G = H = 0.0
+    manca = False
     for pl in lay["piatti"]:
         names, g, h, zmax, esatto = pl["_info"]
         if esatto:
             g, h = esatto
             t, w = hm(h), f"{g:.0f} g"
+        elif g is None:
+            t, w, g, h = "—", "—", 0.0, 0.0
+            manca = True
         else:
             t, w = f"~{hm(h)}", f"~{g:.0f} g"
         G += g
         H += h
         righe.append(f"| `{pl['nome']}` | {len(names)} | {contenuto(names)} | {t} | {w} | {zmax:.0f} mm |")
+    tot_t, tot_g = ("—", "—") if manca else (f"~{hm(H)}", f"~{G / 1000:.2f} kg")
+    npl = len(lay["piatti"])
     righe.append(f"| **Totale** | **{sum(len(p['_info'][0]) for p in lay['piatti'])}** | "
-                 f"**{len(lay['piatti'])} piatti** | **~{hm(H)}** | **~{G / 1000:.2f} kg** | |")
+                 f"**{npl} piatt{'o' if npl == 1 else 'i'}** | **{tot_t}** | **{tot_g}** | |")
     righe += ["", "Tempi e grammi con `~` sono stime (media per pezzo misurata nei G-code dei piatti della testa 1, "
               "supporti compresi, senza riscaldamento e calibrazione iniziale): quelli esatti li dà Bambu Studio "
               "dopo *Slice*.", ""]

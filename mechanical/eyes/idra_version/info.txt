@@ -7,7 +7,7 @@ palpebre: servo anteriore, 80 deg di corsa: superiore -35.5 .. +24.3 deg, inferi
 secondo_braccio_squadretta: r = 13.2 mm, 58.8 deg avanti rispetto al braccio di Will
 tirante_B_interasse_mm: 39.3
 squadrette: quelle di Will; quella delle palpebre ha il secondo braccio (a V) e il mozzo originale: sede dello scanalato 2.6 mm + foro passante D2.6 per la vite
-viti: per tirante B: 1 x M2x8 nel PinB (sull'orecchia della palpebra inferiore il giunto e' print-in-place); servo e squadrette come nella guida di Will
+viti: tirante B: nessuna vite, entrambi i giunti (secondo braccio della squadretta e orecchia della palpebra inferiore) sono print-in-place biconici come quelli di Will; servo e squadrette come nella guida di Will
 base: quella di Will tagliata a y = -7.0 (via servo palpebre posteriori e porta-PCB); dietro, linguetta per PCA9685 62.5 x 25.4 mm su 4 distanziali h 5 mm, fori a 55.9 x 19.0 mm per 4 x M2.5x6 autofilettanti (interasse da VERIFICARE sulla scheda)
 pezzi (mm, X x Y x Z come esportati):
   PivotOuter_L: 33 x 66 x 9
@@ -17,11 +17,8 @@ pezzi (mm, X x Y x Z come esportati):
   CoreY_PIP: 44 x 64 x 42
   XAxisA_PIP: 99 x 34 x 10
   XAxisB_PIP: 35 x 99 x 11
-  LidTop_R_PIP: 30 x 67 x 41
-  LidTop_L_PIP: 30 x 67 x 41
-  LidBottom_R_PIP: 30 x 57 x 46
-  LidBottom_L_PIP: 30 x 57 x 46
-  PinB_x2: 9 x 9 x 8
+  Palpebre_R_PIP: 46 x 67 x 46
+  Palpebre_L_PIP: 46 x 67 x 46
   Retainer_Single: 36 x 27 x 10
   Retainer_Lid_x2: 37 x 29 x 12
   Base: 145 x 69 x 16

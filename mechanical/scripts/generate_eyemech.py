@@ -245,7 +245,7 @@ def item_rotations(path=SRC3MF):
 PRINT_ROT = {"Retainer_Single": "4", "Retainer_Lid_x2": "6", "Retainer_Double_A": "6", "Retainer_Double_B": "8",
              "PivotCentral_x2": "10", "PivotOuter_L": "12", "PivotOuter_R": "14",
              "Eyeball_x2": "22", "CoreY_PIP": "28", "XAxisA_PIP": "47", "XAxisB_PIP": "52",
-             "LidTop_R_PIP": "36", "LidTop_L_PIP": "44", "LidBottom_R_PIP": "32", "LidBottom_L_PIP": "40"}
+             "Palpebre_R_PIP": "36", "Palpebre_L_PIP": "44"}
 
 
 def will_parts():
@@ -563,37 +563,69 @@ def mirror_x_mesh(m):
 # =====================================================================================
 JOG = (12.0, 22.0)  # tratto obliquo del tirante B, lungo il tirante (unita' 1:1)
 
-# quote assolute (mm) dei pezzi nuovi (secondo braccio, perno B, tirante B, orecchia della
-# palpebra inferiore). D85: viti M3. Piccola (scala di Will, bulbo 32): circa 3/8, viti M2.
+# mezza larghezza (mm) del tirante B; i suoi giunti sono quelli biconici di Will (BIC), in scala.
 DIM = {
-    "D85": dict(PIN_R=6.0,        # perno sul secondo braccio
-                LINK_T=9.5,       # spessore tirante B
-                BAR_R=6.5,        # mezza larghezza tirante B
-                RING=5.5,         # parete anelli tirante B
-                SPIGOT_R=4.0, SPIGOT_L=5.0,    # codolo del perno B nel braccio della squadretta
-                FLANGE_R=11.0, FLANGE_T=3.0,   # testa del perno B (trattiene il tirante)
-                CLR=0.25,                      # gioco per lato perni/anelli
-                GAP_O=0.6, GAP_P=0.4,          # giochi assiali: braccio, testa
-                R_FREE=1.7, R_TAP=1.25, R_HEAD=3.1, HEAD_D=2.0,
-                PIN_SCREW="M3x20"),
-    "small": dict(PIN_R=2.5, LINK_T=3.6, BAR_R=2.6, RING=1.6,
-                  SPIGOT_R=1.9, SPIGOT_L=2.5, FLANGE_R=4.4, FLANGE_T=1.2,
-                  CLR=0.2, GAP_O=0.4, GAP_P=0.3,
-                  R_FREE=1.15, R_TAP=0.8, R_HEAD=2.1, HEAD_D=1.0,
-                  PIN_SCREW="M2x8"),
+    "D85": dict(BAR_R=6.5),       # mezza larghezza tirante B
+    "small": dict(BAR_R=2.6),
 }
 
 
-def pin_b(hx1, xo1, JB, P):
-    """perno B in assieme: codolo nel braccio, fusto per l'anello del tirante, testa."""
-    x_sh = xo1 + P["GAP_P"]                            # fine fusto (gioco assiale)
-    xf = x_sh + P["FLANGE_T"]
-    m = U([cyl_x(P["SPIGOT_R"], hx1 - P["SPIGOT_L"] + 0.3, hx1 + 0.01, *JB),
-           cyl_x(P["PIN_R"], hx1, x_sh, *JB),
-           cyl_x(P["FLANGE_R"], x_sh, xf, *JB)])
-    # foro passante + sede testa (la vite si filetta nel braccio della squadretta)
-    return D(m, [cyl_x(P["R_FREE"], hx1 - P["SPIGOT_L"] - 1, xf + 1, *JB, n=24),
-                 cyl_x(P["R_HEAD"], xf - P["HEAD_D"], xf + 1, *JB, n=32)])
+# giunto print-in-place biconico di Will, misurato sull'orecchia della palpebra inferiore (unita' 1:1):
+# collo cilindrico dalla faccia del pezzo, poi doppio cono a 30 gradi lungo quanto l'anello; l'anello ha il foro
+# biconico con 0.22 mm di gioco sul raggio ed e' staccato 0.153 mm dalla faccia. Si stampa con l'asse verticale.
+BIC = dict(NECK_R=2.372, HALF=2.0, CL=0.22, GAP=0.153, RING_R=4.4)
+BIC_T = np.tan(np.radians(30.0))
+
+
+def revolve_x(prof, y, z, n=96):
+    """solido di rivoluzione attorno a una retta parallela a x per (y, z); prof = [(x, r), ...] da x min a x max."""
+    pts = [(0.0, prof[0][0])] + [(r, x) for x, r in prof] + [(0.0, prof[-1][0])]
+    m = trimesh.creation.revolve(np.array(pts), sections=n)          # asse z
+    m.apply_transform(trimesh.transformations.rotation_matrix(np.pi / 2, [0, 1, 0]))   # z -> x
+    m.apply_translation([0, y, z])
+    return m
+
+
+def bicone_pin(x_face, JB, s):
+    """perno biconico di Will che esce dalla faccia x_face (verso +x)."""
+    r0, g, h = s * BIC["NECK_R"], s * BIC["GAP"], s * BIC["HALF"]
+    return revolve_x([(x_face - 0.6, r0), (x_face + g, r0), (x_face + g + h, r0 + h * BIC_T),
+                      (x_face + g + 2 * h, r0)], *JB)
+
+
+def bicone_hole(x_face, JB, s):
+    """foro biconico dell'anello attorno a bicone_pin (gioco BIC['CL'] sul raggio)."""
+    r0, g, h, c = s * BIC["NECK_R"], s * BIC["GAP"], s * BIC["HALF"], s * BIC["CL"]
+    return revolve_x([(x_face + g - 1.0, r0 + c), (x_face + g, r0 + c), (x_face + g + h, r0 + h * BIC_T + c),
+                      (x_face + g + 2 * h, r0 + c), (x_face + g + 2 * h + 1.0, r0 + c)], *JB)
+
+
+RING_PIV_R = 4.95   # raggio (1:1) entro cui stanno gli anelli delle palpebre sui perni dei supporti
+
+
+def pip_ring_gap(top, bot, axis_yz, r, gap_min):
+    """allarga a gap_min lo spazio tra le facce affiancate degli anelli (attorno all'asse x per axis_yz, raggio < r)
+    della palpebra superiore e di quella inferiore, togliendo materiale alla superiore. Ritorna la superiore."""
+    def xs(m):
+        v = m.vertices
+        return v[np.linalg.norm(v[:, 1:] - axis_yz, axis=1) < r][:, 0]
+    xt, xb = xs(top), xs(bot)
+    cuts = []
+    xmid = 0.5 * (xt.min() + xt.max())
+    for sgn in (-1, 1):                      # perno centrale (x verso il centro) ed esterno
+        t = xt[np.sign(xt - xmid) == sgn]
+        b = xb[np.sign(xb - xmid) == sgn]
+        if not len(t) or not len(b):
+            continue
+        if b.min() >= t.max() - 1e-6:        # inferiore piu' esterna: faccia della superiore a t.max()
+            g = b.min() - t.max()
+            if g < gap_min:
+                cuts.append(cyl_x(r, t.max() - (gap_min - g), t.max() + 0.02, *axis_yz))
+        elif t.min() >= b.max() - 1e-6:      # superiore piu' esterna: faccia della superiore a t.min()
+            g = t.min() - b.max()
+            if g < gap_min:
+                cuts.append(cyl_x(r, t.min() - 0.02, t.min() + (gap_min - g), *axis_yz))
+    return D(top, cuts) if cuts else top
 
 
 def build(dia=85.0, small=False):
@@ -653,14 +685,12 @@ def build(dia=85.0, small=False):
     # il braccio non tocca il mozzo: resta quello della squadretta (sede dello scanalato fino in
     # fondo + foro passante per la vite, quelli di Will o quelli del codolo rifatto)
     arm = D(arm, [cyl_x(s * 2.6, armx0 - 1, hx1 + 1, *Fs)])
-    xo0, xo1 = hx1 + P["GAP_O"], hx1 + P["GAP_O"] + P["LINK_T"]
-    # sede del perno B (pezzo a parte: nella posa di stampa di Will la faccia esterna della
-    # squadretta e' sul piatto). Codolo nel braccio + foro da filettare, vite dall'esterno.
-    hornA = U([hornA, arm])
-    sl = P["SPIGOT_L"]
-    hornA = D(hornA, [cyl_x(P["SPIGOT_R"] + 0.1, hx1 - sl, hx1 + 1, *JB),
-                      cyl_x(P["R_TAP"], hx1 - 1.8 * sl, hx1, *JB, n=24)])
-    pinB = pin_b(hx1, xo1, JB, P)
+    # anello del tirante B attorno al perno biconico (giunto print-in-place come gli altri di Will)
+    xo0 = hx1 + s * BIC["GAP"]
+    xo1 = xo0 + 2 * s * BIC["HALF"]
+    # perno biconico di Will sulla faccia esterna del secondo braccio: l'anello del tirante B ci si stampa
+    # attorno (print-in-place), niente perno a parte e niente vite
+    hornA = U([hornA, arm, bicone_pin(hx1, JB, s)])
 
     # palpebra inferiore nella posa dphi = 0, con il perno biconico originale di Will sull'orecchia
     MDb = Rx(kin.bot(0.0), E) @ MD
@@ -676,12 +706,12 @@ def build(dia=85.0, small=False):
     # tirante B: anello sul perno del braccio (strato esterno), tratto obliquo, anello sull'orecchia
     u = (PB - JB) / np.linalg.norm(PB - JB)
     Q1, Q2 = JB + u * (JOG[0] * s), JB + u * (JOG[1] * s)
-    br, pr, cl, rg = P["BAR_R"], P["PIN_R"], P["CLR"], P["RING"]
+    br = P["BAR_R"]
     linkB = U([hull([cyl_x(br, xo0, xo1, *JB), cyl_x(br, xo0, xo1, *Q1)]),
                hull([cyl_x(br, xo0, xo1, *Q1), cyl_x(br, xr0, xr1, *Q2)]),
                hull([cyl_x(br, xr0, xr1, *Q2), cyl_x(br, xr0, xr1, *PB)]),
-               cyl_x(pr + cl + rg, xo0, xo1, *JB)])
-    linkB = D(linkB, [cyl_x(pr + cl, xo0 - 1, xo1 + 1, *JB), cyl_x(s * 4.0, xr0 - 1, xr1 + 1, *PB)])
+               cyl_x(s * BIC["RING_R"], xo0, xo1, *JB)])
+    linkB = D(linkB, [bicone_hole(hx1, JB, s), cyl_x(s * 4.0, xr0 - 1, xr1 + 1, *PB)])
     linkB = U([linkB, ring])
     # scarico sulla barra appena fuori dall'anello: verso la chiusura striscerebbe sul bordo rialzato
     # della palpebra attorno all'orecchia. Si toglie il volume spazzato dalla palpebra nel moto
@@ -695,20 +725,21 @@ def build(dia=85.0, small=False):
     sweep = [tf(lid_near, Rx(-a, PB)) for a in np.arange(min(a_all) - 1, max(a_all) + 1.5, 1.0)]
     linkB = D(linkB, [I(U(sweep), zone)])
 
+    # anelli delle due palpebre affiancati sullo stesso perno dei supporti: ora si stampano insieme, quindi tra le
+    # facce affiancate serve almeno il gioco assiale dei giunti print-in-place di Will (s * BIC["GAP"]).
+    # Si assottiglia l'anello della palpebra superiore (sul perno resta solo un po' di gioco in piu')
+    lidT = pip_ring_gap(lidT, lidB, s * E, s * RING_PIV_R, s * BIC["GAP"])
+
     # ritorno alle pose di stampa di Will (scalate)
     backA = S @ np.linalg.inv(MA) @ Si
     backD = S @ np.linalg.inv(MDb) @ Si
-    grpR = {"LidTop": tf(lidT, backA), "LinkA": tf(linkA, backA), "HornLid": tf(hornA, backA)}
-    out["LidTop_R_PIP"] = grpR
-    out["LidTop_L_PIP"] = {k: mirror_x_mesh(v) for k, v in grpR.items()}
-    grpD = {"LidBottom": tf(lidB, backD), "LinkB": tf(linkB, backD)}
-    out["LidBottom_R_PIP"] = grpD
-    out["LidBottom_L_PIP"] = {k: mirror_x_mesh(v) for k, v in grpD.items()}
-    pb = pinB.copy()
-    pb.apply_transform(trimesh.transformations.rotation_matrix(np.pi / 2, [0, 1, 0]))  # testa sul piatto
-    out["PinB_x2"] = pb
-    asm.update({"lidTop_R": lidT, "linkA_R": linkA, "hornA_R": hornA, "lidBot_R": lidB,
-                "linkB_R": linkB, "pinB_R": pinB})
+    # tutto il lato in un pezzo solo, nella posa di stampa della palpebra superiore (asse verticale):
+    # i giunti squadretta/tirante B e tirante B/orecchia sono print-in-place come quelli di Will
+    grpR = {"LidTop": tf(lidT, backA), "LinkA": tf(linkA, backA), "HornLid": tf(hornA, backA),
+            "LinkB": tf(linkB, backA), "LidBottom": tf(lidB, backA)}
+    out["Palpebre_R_PIP"] = grpR
+    out["Palpebre_L_PIP"] = {k: mirror_x_mesh(v) for k, v in grpR.items()}
+    asm.update({"lidTop_R": lidT, "linkA_R": linkA, "hornA_R": hornA, "lidBot_R": lidB, "linkB_R": linkB})
 
     # ---------------- sedi 1:1 dei servo veri ----------------
     # Ogni servo vero ha l'albero sull'asse di quello ingrandito e la faccia superiore alla
@@ -961,7 +992,7 @@ def lid_pose(asm, kin, s, dphi):
     PA0 = pol(E, kin.rA, kin.earA0)
     PA1 = pol(E, kin.rA, kin.earA0 + kin.top(dphi))
     return {
-        "hornA": U([tf(asm["hornA_R"], Rx(dphi, Fs)), tf(asm["pinB_R"], Rx(dphi, Fs))]),
+        "hornA": tf(asm["hornA_R"], Rx(dphi, Fs)),
         "lidT": tf(asm["lidTop_R"], Rx(kin.top(dphi), Es)),
         "linkA": tf(asm["linkA_R"], rigid_yz(s * JA0, s * PA0, s * JA1, s * PA1)),
         "lidB": tf(asm["lidBot_R"], Rx(kin.bot(dphi) - kin.bot(0.0), Es)),
@@ -977,9 +1008,9 @@ def check(asm, kin, s, with_servo=True):
     static = {k: asm[k] for k in ("eye_1", "opiv_R", "cpiv_1", "base", "servo_R", "ret_lid_R") if k in asm}
     if not with_servo:
         del static["servo_R"]
-    # giunti: perni e anelli a contatto voluto. Il giunto print-in-place palpebra inferiore /
-    # tirante B ha gioco, quindi si verifica anche quella coppia
-    allowed = [{"hornA", "linkA"}, {"lidT", "linkA"}, {"hornA", "linkB"}, {"base", "ret_lid_R"}]
+    # giunti: perni e anelli a contatto voluto (giunti di Will del tirante A). I giunti print-in-place
+    # biconici del tirante B (squadretta e orecchia della palpebra inferiore) hanno gioco: si verificano
+    allowed = [{"hornA", "linkA"}, {"lidT", "linkA"}, {"base", "ret_lid_R"}]
     worst = []
     for d in np.linspace(DPHI_OPEN - 4, DPHI_CLOSED, 9):
         m = {**lid_pose(asm, kin, s, d), **static}
@@ -1075,8 +1106,8 @@ def info_text(s, info, kin, files, worst):
         f"secondo_braccio_squadretta: r = {s * ARM_B_R:.1f} mm, {ARM_B_PSI:.1f} deg avanti rispetto al braccio di Will",
         f"tirante_B_interasse_mm: {s * LINK_B_L:.1f}",
     ]
-    tb = (f"per tirante B: 1 x {P['PIN_SCREW']} nel PinB (sull'orecchia della palpebra inferiore il "
-          "giunto e' print-in-place)")
+    tb = ("tirante B: nessuna vite, entrambi i giunti (secondo braccio della squadretta e orecchia della palpebra "
+          "inferiore) sono print-in-place biconici come quelli di Will")
     if small:
         L += ["squadrette: quelle di Will; quella delle palpebre ha il secondo braccio (a V) e il mozzo "
               "originale: sede dello scanalato 2.6 mm + foro passante D2.6 per la vite",

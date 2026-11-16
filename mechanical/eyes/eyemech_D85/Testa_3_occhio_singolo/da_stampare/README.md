@@ -9,9 +9,14 @@ Ogni cartella `Piatto_<X>` contiene:
 
 Impostazioni salvate nel progetto: A1 0.4, `0.20mm Standard @BBL A1`, Bambu PLA Basic, **supporti tree(auto)
 a 30°** (come la testa 1), piatto **Textured PEI** (cambiarlo in alto se si usa un altro piatto). Prima di
-tagliare verificare comunque in Processo → Supporto che *Abilita supporti* sia attivo: senza supporti le
-palpebre danno "sbalzo flottante". Nei pezzi print-in-place (`CoreY`, `XAxisA/B`, `LidTop`, `LidBottom`)
-controllare nell'anteprima che i supporti non finiscano negli spazi tra le parti mobili.
+tagliare verificare comunque in Processo → Supporto che *Abilita supporti* sia attivo. Nei pezzi print-in-place
+(`CoreY`, `XAxisA/B`, `Palpebre`) controllare nell'anteprima che i supporti non finiscano negli spazi tra le parti
+mobili (eventualmente toglierli col pennello).
+
+**Palpebre già montate**: `Palpebre_L_PIP` / `Palpebre_R_PIP` sono tutte le palpebre di un lato in un pezzo solo
+(palpebra superiore + tirante + squadretta + `LinkB` + palpebra inferiore), con i giunti print-in-place come quelli
+di Will: niente `PinB` e niente viti sul tirante. Dopo la stampa togliere i supporti e muovere a mano ogni giunto
+finché gira libero (soprattutto il perno biconico tra squadretta e `LinkB`, che appoggia sul piatto).
 
 **`Piatto_A` e `Piatto_C` contengono anche pezzi della testa 4** (vedi `../README.md`): metterli da parte.
 
@@ -20,9 +25,9 @@ controllare nell'anteprima che i supporti non finiscano negli spazi tra le parti
 | Piatto | Pezzi | Contenuto | Tempo | Filamento | Altezza max |
 |---|---|---|---|---|---|
 | `Piatto_1_basi` | 2 | `Base_L` + `Base_R` | ~6 h 24 min | ~230 g | 67 mm |
-| `Piatto_A` | 10 | `XAxisA_PIP` + `CoreY_PIP` + 2 `Eyeball` + 4 `BaseKey` + 2 `PinB` | ~11 h 01 min | ~299 g | 112 mm |
-| `Piatto_B` | 3 | `XAxisB_PIP` + `LidTop_L_PIP` + `PivotCentral` | ~6 h 19 min | ~159 g | 109 mm |
-| `Piatto_C` | 5 | `PivotOuter_L` + 2 `PivotCentral` + 2 `LidBottom_L_PIP` | ~6 h 13 min | ~178 g | 121 mm |
-| **Totale** | **20** | **4 piatti** | **~29 h 57 min** | **~0.87 kg** | |
+| `Piatto_A` | 7 | `XAxisA_PIP` + `Palpebre_L_PIP` + `Eyeball` + 4 `BaseKey` | ~10 h 29 min | ~272 g | 122 mm |
+| `Piatto_B` | 3 | `XAxisB_PIP` + `CoreY_PIP` + `PivotCentral` | ~7 h 23 min | ~189 g | 112 mm |
+| `Piatto_C` | 4 | 2 `PivotOuter_L` + 2 `PivotCentral` | ~2 h 55 min | ~90 g | 24 mm |
+| **Totale** | **16** | **4 piatti** | **~27 h 12 min** | **~0.78 kg** | |
 
 Tempi e grammi con `~` sono stime (media per pezzo misurata nei G-code dei piatti della testa 1, supporti compresi, senza riscaldamento e calibrazione iniziale): quelli esatti li dà Bambu Studio dopo *Slice*.

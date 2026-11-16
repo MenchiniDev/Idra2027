@@ -1,22 +1,24 @@
 # Piatto Bambu Lab A1 — idra_version (scala di Will)
 
-**Tutti i 19 pezzi su un solo piatto** (`idra_version_Piatto_unico.3mf`), già tagliato con Bambu Studio 2.05:
-A1, ugello 0.4, `0.20mm Standard @BBL A1`, Bambu PLA Basic, supporti `tree(auto)` 30°, 2 pareti,
-riempimento 15%. Si apre con File → Apri progetto.
+**Tutti i pezzi su un solo piatto**: `Piatto_unico/idra_version_Piatto_unico.3mf`, progetto Bambu Studio con i pezzi
+già disposti, **da tagliare** (A1 0.4, `0.20mm Standard @BBL A1`, Bambu PLA Basic, supporti `tree(auto)` 30°,
+piatto Textured PEI). Nella cartella anche gli STL già posizionati e `piatto.png`; disposizione in `layout_piatti.json`
+(rifare: `python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/idra_version/bambu_A1`).
 
-| | |
-|---|---|
-| Tempo | **≈ 4 h 26 min** (senza riscaldamento/calibrazione iniziale) |
-| Filamento | **≈ 98 g** PLA |
-| Altezza massima | 42 mm |
-| Pezzi | base di Will tagliata (con linguetta per il PCA9685), 1 fermo servo Y + 2 fermi palpebre, `XAxisA/B`, `CoreY`, 2 palpebre superiori (con tirante e squadretta a V) e 2 inferiori (con `LinkB`, print-in-place), 2 bulbi, 2 supporti centrali e 2 esterni, 2 `PinB` |
+Pezzi: base di Will tagliata (con linguetta per il PCA9685), 1 fermo servo Y + 2 fermi palpebre, `XAxisA/B`,
+`CoreY`, **palpebre di ogni lato in un pezzo solo, già montate** (`Palpebre_L_PIP`, `Palpebre_R_PIP`: superiore +
+tirante + squadretta a V + `LinkB` + inferiore, giunti print-in-place come quelli di Will, niente `PinB`), 2 bulbi,
+2 supporti centrali e 2 esterni.
 
-Disposizione in `docs/img/idra_version_piatto.png` (6 mm tra i pezzi, margine 3 mm dal bordo).
-Se i supporti si toccano o vuoi più spazio: `python mechanical/scripts/pack_plate.py idra_version --gap 8`
-(se non ci stanno più tutti: `--plates 2`).
-Se un pezzo si stacca durante la stampa si rischia di rovinare anche gli altri: in quel caso dividere
-con `--plates 2`.
+Versioni precedenti: con `PinB` a parte e vite M2×8 (19 pezzi, 4 h 26 min, 98 g); base ridotta con sedi nuove
+(senza fermi), 16 pezzi, 4 h 01 min, 78 g; `LinkB` separati + rondelle, 20 pezzi, 3 h 52 min, 76 g; base intera di
+Will + 3 fermi servo: 4 h 58 min, 117 g.
 
-Versioni precedenti: base ridotta con sedi nuove (senza fermi), 16 pezzi, 4 h 01 min, 78 g; `LinkB` separati +
-rondelle, 20 pezzi, 3 h 52 min, 76 g; base intera di Will + 3 fermi servo:
-4 h 58 min, 117 g.
+<!-- tabella piatti: generata da mechanical/scripts/teste_D85.py -->
+
+| Piatto | Pezzi | Contenuto | Tempo | Filamento | Altezza max |
+|---|---|---|---|---|---|
+| `Piatto_unico` | 15 | `Base` + `XAxisB_PIP` + `Palpebre_L_PIP` + `Palpebre_R_PIP` + `XAxisA_PIP` + `CoreY_PIP` + `PivotOuter_R` + `PivotOuter_L` + 2 `PivotCentral` + 2 `Eyeball` + `Retainer_Single` + 2 `Retainer_Lid` | — | — | 46 mm |
+| **Totale** | **15** | **1 piatto** | **—** | **—** | |
+
+Tempi e grammi con `~` sono stime (media per pezzo misurata nei G-code dei piatti della testa 1, supporti compresi, senza riscaldamento e calibrazione iniziale): quelli esatti li dà Bambu Studio dopo *Slice*.

@@ -28,16 +28,16 @@
      "y": 2.98
     },
     {
-     "pezzo": "CoreY_PIP",
-     "rot_z": 300,
-     "x": 2.96,
-     "y": 86.49
+     "pezzo": "Palpebre_L_PIP",
+     "rot_z": 270,
+     "x": 3.01,
+     "y": 117.01
     },
     {
-     "pezzo": "PivotOuter_L",
-     "rot_z": 285,
-     "x": 54.51,
-     "y": 3.0
+     "pezzo": "Eyeball_x2",
+     "rot_z": 0,
+     "x": 159.98,
+     "y": 3.01
     }
    ]
   },
@@ -51,10 +51,10 @@
      "y": 3.0
     },
     {
-     "pezzo": "LidTop_L_PIP",
+     "pezzo": "CoreY_PIP",
      "rot_z": 240,
-     "x": 81.01,
-     "y": 114.96
+     "x": 70.99,
+     "y": 116.96
     },
     {
      "pezzo": "PivotCentral_x2",

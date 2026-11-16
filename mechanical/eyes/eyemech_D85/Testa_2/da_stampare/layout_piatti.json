@@ -6,51 +6,33 @@
    "pezzi": [
     {
      "pezzo": "XAxisA_PIP",
-     "rot_z": 45,
-     "x": 2.99,
-     "y": 3.01
+     "rot_z": 30,
+     "x": 3.01,
+     "y": 2.98
     },
     {
-     "pezzo": "LidTop_R_PIP",
-     "rot_z": 315,
-     "x": 59.51,
-     "y": 3.01
-    },
-    {
-     "pezzo": "LidTop_L_PIP",
-     "rot_z": 285,
-     "x": 25.01,
-     "y": 149.99
+     "pezzo": "Palpebre_L_PIP",
+     "rot_z": 270,
+     "x": 3.01,
+     "y": 117.01
     },
     {
      "pezzo": "PivotOuter_L",
-     "rot_z": 0,
-     "x": 161.01,
-     "y": 8.0
+     "rot_z": 285,
+     "x": 54.51,
+     "y": 3.0
     },
     {
      "pezzo": "BaseKey_x2",
-     "rot_z": 45,
-     "x": 23.51,
-     "y": 39.01
+     "rot_z": 0,
+     "x": 156.5,
+     "y": 64.51
     },
     {
      "pezzo": "BaseKey_x2",
-     "rot_z": 45,
-     "x": 3.01,
-     "y": 91.01
-    },
-    {
-     "pezzo": "PinB_x2",
-     "rot_z": 0,
-     "x": 116.99,
-     "y": 116.49
-    },
-    {
-     "pezzo": "PinB_x2",
-     "rot_z": 0,
-     "x": 2.99,
-     "y": 123.99
+     "rot_z": 30,
+     "x": 128.51,
+     "y": 97.01
     }
    ]
   },
@@ -58,22 +40,16 @@
    "nome": "Piatto_B",
    "pezzi": [
     {
-     "pezzo": "XAxisB_PIP",
-     "rot_z": 45,
-     "x": 3.0,
+     "pezzo": "Palpebre_R_PIP",
+     "rot_z": 120,
+     "x": 3.01,
      "y": 3.0
     },
     {
-     "pezzo": "CoreY_PIP",
-     "rot_z": 225,
-     "x": 80.49,
-     "y": 108.5
-    },
-    {
-     "pezzo": "LidBottom_R_PIP",
+     "pezzo": "XAxisB_PIP",
      "rot_z": 60,
-     "x": 3.01,
-     "y": 3.01
+     "x": 15.01,
+     "y": 62.5
     }
    ]
   },
@@ -81,28 +57,28 @@
    "nome": "Piatto_C",
    "pezzi": [
     {
+     "pezzo": "CoreY_PIP",
+     "rot_z": 90,
+     "x": 2.96,
+     "y": 2.98
+    },
+    {
      "pezzo": "PivotOuter_R",
-     "rot_z": 15,
-     "x": 2.95,
-     "y": 3.0
+     "rot_z": 210,
+     "x": 95.01,
+     "y": 19.51
     },
     {
      "pezzo": "PivotCentral_x2",
-     "rot_z": 195,
-     "x": 49.98,
-     "y": 18.49
+     "rot_z": 270,
+     "x": 32.48,
+     "y": 105.98
     },
     {
      "pezzo": "PivotCentral_x2",
-     "rot_z": 195,
-     "x": 88.48,
-     "y": 56.99
-    },
-    {
-     "pezzo": "LidBottom_L_PIP",
-     "rot_z": 60,
-     "x": 98.51,
-     "y": 180.5
+     "rot_z": 270,
+     "x": 2.98,
+     "y": 152.48
     }
    ]
   }

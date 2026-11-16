@@ -9,9 +9,9 @@ sono solo **3 piatti**; il resto esce dai piatti della testa 3:
 | Da dove | Pezzi per la testa 4 |
 |---|---|
 | `da_stampare/Piatto_1_basi` | `Base_L` + `Base_R` |
-| `da_stampare/Piatto_D` | `XAxisA`, `CoreY`, `PivotOuter_L` |
-| `da_stampare/Piatto_E` | `XAxisB`, `LidTop_L`, 1 `PivotCentral` |
-| `../Testa_3_occhio_singolo/da_stampare/Piatto_A` | 1 `Eyeball`, 2 `BaseKey`, 1 `PinB` |
-| `../Testa_3_occhio_singolo/da_stampare/Piatto_C` | 1 `PivotCentral`, 1 `LidBottom_L` |
+| `da_stampare/Piatto_D` | `XAxisA`, `Palpebre_L_PIP`, 1 `Eyeball` |
+| `da_stampare/Piatto_E` | `XAxisB`, `CoreY`, 1 `PivotCentral` |
+| `../Testa_3_occhio_singolo/da_stampare/Piatto_A` | 2 `BaseKey` |
+| `../Testa_3_occhio_singolo/da_stampare/Piatto_C` | 1 `PivotOuter_L`, 1 `PivotCentral` |
 
 Come aprire e stampare i progetti, contenuto, tempi e grammi: [`da_stampare/README.md`](da_stampare/README.md).
