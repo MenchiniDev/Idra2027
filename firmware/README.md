@@ -1,4 +1,14 @@
-# Firmware — EyeNode_random
+# Firmware
+
+| Sketch | Scheda | Uso |
+|---|---|---|
+| `EyeD85_random/` | ESP8266 (ESP-12F, NodeMCU) + PCA9685 | **movimento casuale degli occhi D85** (canali 4 = X, 6 = Y, 10/11 = palpebre); dettagli e taratura nel suo `README.md` |
+| `EyeD85_zero/` | come sopra | tutti i servo a 90° per montare le squadrette; taratura via seriale (`p` stampa le righe `CAL_*` per `config.h`) |
+| `EyeNode_random/` | Arduino Nano sulla scheda EyeNode | movimento casuale, uno sketch per tutte le teste (descritto qui sotto) |
+
+Caricare EyeD85 su ESP8266: Arduino IDE (core esp8266 3.1.2), scheda **NodeMCU 1.0 (ESP-12E Module)**.
+
+# EyeNode_random
 
 Movimento **autonomo e casuale** degli occhi, uno sketch unico per tutte le teste.
 Nessuna sincronizzazione: ogni testa vive per conto suo.
@@ -8,7 +18,6 @@ firmware/
   EyeNode_random/
     EyeNode_random.ino   logica (non serve toccarla)
     config.h             taratura: calibrazione servo, range, tempi, soglie
-  sim/                   simulatore per PC (facoltativo, per provare modifiche senza hardware)
 ```
 
 ## Come rende diverse le teste
@@ -74,13 +83,4 @@ connettore AUX (J11, pin 4), 10 kΩ verso GND; poi `#define BATT_SENSE_ENABLED 1
 Soglie (piombo 12 V sotto carico): < 11.9 V umore assonnato, < 11.3 V per 10 s occhi chiusi e servo
 staccati, riparte sopra 12.4 V. Non sostituisce il modulo LVD (la logica continua a consumare).
 
-## Simulatore (facoltativo)
-`sim/` compila lo stesso sketch sul PC con finti `Servo`/`EEPROM` e scrive le posizioni dei servo in CSV,
-così si possono provare modifiche a `config.h` senza hardware. Serve un compilatore C++ (g++, clang o
-`pip install ziglang`):
-```bash
-cd firmware/sim
-python -m ziglang c++ -std=c++17 -O2 -w -I. -I../EyeNode_random -x c++ sim.cpp -o sim.exe
-./sim.exe 1 123 300 > testa1.csv      # indirizzo, seme di prova, secondi simulati
-python plot.py                         # rifà docs/img/simulazione_movimento_teste.png
-```
+Il simulatore per PC (`firmware/sim/`) è sul ramo `archivio`.

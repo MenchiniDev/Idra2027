@@ -55,7 +55,7 @@ arduino-cli upload  -b esp8266:esp8266:nodemcuv2 -p COM4 firmware/EyeD85_random
 
 ## Taratura (una volta, a meccanica montata)
 1. Caricare `EyeD85_zero`, accendere l'alimentazione dei servo: vanno a 90° uno alla volta.
-   In questa posizione montare le squadrette (`docs/mechanical_eyes.md` → Montaggio, punto 0):
+   In questa posizione montare le squadrette (`docs/mechanical_eyes.md` → Montaggio, punto 0, sul ramo `archivio`):
    X e Y con gli occhi dritti davanti, palpebre chiuse.
 2. Monitor seriale a 115200, un comando per riga:
    - `x`, `y`, `s`, `d` selezionano il servo (X, Y, palpebre Sinistra, palpebre Destra);
