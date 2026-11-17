@@ -1,15 +1,10 @@
-# Testa 2 — coppia di occhi — 🟡 IN STAMPA
+# Testa 2 — coppia di occhi — ✅ COMPLETA (montata)
 
-| Cosa | Stato |
+| Cartella | Cosa |
 |---|---|
-| `gia_stampati/Piatto_1_basi/` — `Base_L` + `Base_R` incastrate (è lo stesso piatto 1 della testa 1) | ✅ stampato |
-| 2 bulbi (`Eyeball`) | ✅ già pronti: **non sono nei piatti da stampare** |
-| `da_stampare/` — tutto il resto: **3 piatti** (`Piatto_A`, `Piatto_B`, `Piatto_C`) | ⏳ da stampare, ~23 h 10 min, ~0.59 kg |
+| `gia_stampati/Piatto_1_basi/` | `Base_L` + `Base_R` incastrate (lo stesso piatto 1 della testa 1) |
+| `piatti/` | gli altri 3 piatti della testa (senza i bulbi, che erano già pronti), nell'ultima versione: palpebre di ogni lato in un pezzo solo, già montate |
 
-Nei 3 piatti di `da_stampare/` c'è tutto il resto della testa **tranne i 2 bulbi**, incastrato sulle impronte
-reali (≥ 4 mm tra i pezzi, 3 mm dal bordo), con le **palpebre nuove**: tutte le palpebre di un lato in un pezzo
-solo, già montate (`Palpebre_L_PIP`, `Palpebre_R_PIP`), con i giunti print-in-place come quelli di Will, senza
-`PinB` né viti sul tirante. Rispetto alla testa 1 cambiano solo palpebre, tiranti e squadrette delle palpebre. Contenuto, tempi e grammi di ogni piatto in
-[`da_stampare/README.md`](da_stampare/README.md).
-
-Se poi i bulbi servissero: `../pezzi/Eyeball_x2.stl`, da stampare 2 volte (~1 h 40 min e ~55 g l'uno).
+Se la testa 2 è stata stampata con i piatti del 10/11 (palpebre superiore e inferiore separate, `LinkB` unito alla
+squadretta con il `PinB` e una vite da 3 × 19–20 mm) è come la testa 1 e funziona così; per averla uguale alle
+teste nuove basta il piatto facoltativo [`../Testa_1/aggiornamento_palpebre/`](../Testa_1/aggiornamento_palpebre/).

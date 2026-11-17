@@ -8,10 +8,13 @@ Stampante: **Bambu Lab A1** (piatto 256 × 256), PLA, 0.20 mm. In ogni piatto ci
 | Testa | Occhi | Stato | Cosa resta da stampare | Cartella |
 |---|---|---|---|---|
 | 1 | coppia | ✅ completa (palpebre versione precedente, con `PinB` e vite) | niente (facoltativo: 1 piatto per le palpebre nuove) | [`Testa_1/`](Testa_1/) |
-| 2 | coppia | 🟡 basi stampate, bulbi già pronti | **3 piatti**, ~23 h 10 min, ~0.59 kg | [`Testa_2/da_stampare/`](Testa_2/da_stampare/) |
-| 3 | singolo (sx) | ⏳ da stampare | **3 piatti**, ~21 h 20 min, ~0.60 kg (solo pezzi dell'occhio sinistro) | [`Testa_3_occhio_singolo/da_stampare/`](Testa_3_occhio_singolo/da_stampare/) |
-| 4 | singolo (sx) | ⏳ da stampare | **3 piatti**, ~21 h 20 min, ~0.60 kg (uguale alla 3) | [`Testa_4_occhio_singolo/da_stampare/`](Testa_4_occhio_singolo/da_stampare/) |
-| | | | **Totale: 9 piatti, ~66 h, ~1.8 kg** | |
+| 2 | coppia | ✅ completa (montata) | niente | [`Testa_2/`](Testa_2/) |
+| 3 | singolo (sx) | ⏳ da stampare | **3 file/piatti**, ~21 h 20 min, ~0.60 kg (solo pezzi dell'occhio sinistro) | [`Testa_3_occhio_singolo/`](Testa_3_occhio_singolo/) |
+| 4 | singolo (sx) | ⏳ da stampare | **3 file/piatti**, ~21 h 20 min, ~0.60 kg (uguale alla 3) | [`Testa_4_occhio_singolo/`](Testa_4_occhio_singolo/) |
+| | | | **Totale: 6 piatti, ~43 h, ~1.2 kg** | |
+
+**Per stampare**: nelle cartelle delle teste 3 e 4 ogni piatto è **un file `.3mf`** (es. `Testa3_1di3_base-sx_palpebre.3mf`):
+si apre in Bambu Studio, *Taglia piatto*, *Stampa piatto*. Istruzioni e lista da spuntare nel `README.md` di ogni testa.
 
 **Palpebre (teste 2, 3, 4)**: tutte le palpebre di un lato in **un pezzo solo, già montate** (`Palpebre_L_PIP`,
 `Palpebre_R_PIP`): palpebra superiore + tirante + squadretta + `LinkB` + palpebra inferiore, con i giunti
@@ -29,10 +32,9 @@ compresi): quelli esatti li dà Bambu Studio dopo *Slice*.
 | `pezzi/` | un STL per pezzo, nell'orientamento di stampa (li genera `mechanical/scripts/generate_eyemech.py`) |
 | `info.txt` | quote, servo, viteria, ingombri dei pezzi |
 | `Testa_1/` | i 5 piatti (già tagliati) con cui è stata stampata la testa 1; `aggiornamento_palpebre/` = 1 piatto facoltativo con le palpebre nuove |
-| `Testa_2/gia_stampati/` | il piatto delle basi della testa 2, già stampato (lo stesso piatto 1 della testa 1) |
-| `Testa_2/da_stampare/` | i 3 piatti con tutto il resto della testa 2, **senza i bulbi** (già pronti) |
-| `Testa_3_occhio_singolo/da_stampare/` | 3 piatti: la testa 3 completa, solo pezzi dell'occhio sinistro |
-| `Testa_4_occhio_singolo/da_stampare/` | 3 piatti: la testa 4 completa (uguale alla 3) |
+| `Testa_2/` | testa 2 completa: `gia_stampati/` (basi) e `piatti/` (il resto) |
+| `Testa_3_occhio_singolo/` | **3 file `.3mf`, uno per piatto**: la testa 3 completa, solo pezzi dell'occhio sinistro (+ `anteprime/`, `stl/`) |
+| `Testa_4_occhio_singolo/` | **3 file `.3mf`, uno per piatto**: la testa 4 completa, uguale alla 3 |
 
 Ogni cartella `Piatto_<X>` ha il progetto Bambu Studio (`.3mf`), gli STL già posizionati e `piatto.png` con la
 disposizione; ogni cartella di piatti ha `layout_piatti.json` (pezzo, rotazione e posizione su ogni piatto) e un
@@ -73,8 +75,8 @@ In tutto **12 pezzi in 3 piatti** (~21 h 20 min, ~0.60 kg) invece dei 15 pezzi, 
 Dopo aver rigenerato i pezzi (`generate_eyemech.py`), rimettere gli STL nuovi nelle stesse posizioni:
 ```bash
 pip install trimesh shapely scipy matplotlib
-python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_2/da_stampare            # STL, 3MF, png, tabella
-python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_2/da_stampare --taglia   # sul PC: anche lo slicing
+python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_3_occhio_singolo        # 3MF, png, STL, tabella
+python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_3_occhio_singolo --taglia   # sul PC: anche lo slicing
 ```
 Se un pezzo cambia ingombro e la distanza minima stampata scende sotto ~3 mm, la disposizione va rifatta:
 ```bash

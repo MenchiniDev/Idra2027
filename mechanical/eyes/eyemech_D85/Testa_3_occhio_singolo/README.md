@@ -1,26 +1,35 @@
 # Testa 3 — occhio singolo — ⏳ DA STAMPARE
 
-In questa cartella ci sono **solo i pezzi della testa 3**: 3 piatti in [`da_stampare/`](da_stampare/), che stampati
-tutti e 3 danno la testa completa (le teste 3 e 4 sono uguali, ognuna ha i suoi piatti).
+**3 piatti = 3 file**, qui sotto. Stampati tutti e 3 danno la testa 3 completa (solo i pezzi dell'occhio
+sinistro; la testa 4 ha i suoi file uguali nella sua cartella).
 
-![Coppia e occhio singolo](../../../../docs/img/coppia_vs_singolo.png)
+## Come mandare in stampa un piatto
+1. Aprire il file `.3mf` del piatto in **Bambu Studio** (doppio clic, o File → Apri progetto): i pezzi sono già
+   disposti e le impostazioni già scelte (A1 0.4, 0.20 mm, Bambu PLA Basic, supporti tree(auto) 30°, piatto
+   Textured PEI).
+2. Controllare in alto il tipo di piatto e in Processo → Supporto che *Abilita supporti* sia attivo.
+3. **Taglia piatto** (Slice), poi **Stampa piatto** per mandarlo alla A1, oppure *Esporta G-code del piatto* su
+   microSD e sceglierlo dallo schermo della stampante.
+4. Spuntare la riga nella tabella.
 
-**Cosa c'è e cosa no rispetto a una testa a coppia** (meccanismo D85 con il solo occhio sinistro, 3 servo:
-X, Y e palpebre sinistre):
+Dopo la stampa: nei pezzi print-in-place (palpebre, `CoreY`, assi X) togliere i supporti e muovere a mano i giunti
+finché girano liberi; le palpebre (`Palpebre_L_PIP`, piatto 1) escono già montate.
 
-| | Coppia | Occhio singolo |
-|---|---|---|
-| Bulbi | 2 | **1** |
-| Palpebre (già montate) | `Palpebre_L_PIP` + `Palpebre_R_PIP` | **solo `Palpebre_L_PIP`** |
-| Supporti esterni | `PivotOuter_L` + `PivotOuter_R` | **solo `PivotOuter_L`** |
-| Supporti centrali | 2 `PivotCentral` | 2 `PivotCentral` (il destro regge il perno destro del `CoreY`) |
-| Asse X, telaio | `XAxisA_PIP`, 264 mm | **`XAxisA_singolo`, 155 mm**: via braccio e adattatore destri |
-| Asse X, tirante | `XAxisB_PIP`, 264 mm | **`XAxisB_singolo`, 143 mm**: via braccio e adattatore destri |
-| Telaio Y | `CoreY_PIP` | `CoreY_PIP` (uguale) |
-| Base | `Base_L` + `Base_R` (194 mm) + 2 chiavette | `Base_L` + **`Base_R_singolo` (75 mm)** + 2 chiavette: via la sede del servo delle palpebre destre e del supporto esterno destro; restano mezza sede del servo Y, il supporto centrale destro, mezza linguetta PCA9685 e il foro Ø12 per il supporto della mandibola |
+Cosa contiene la testa e cosa è stato tolto rispetto a una testa a coppia: [`../README.md`](../README.md#testa-a-occhio-singolo-teste-3-e-4).
+Nella cartella: `anteprime/` = immagini dei piatti, `stl/` = gli stessi pezzi già posizionati (di riserva),
+`layout_piatti.json` = disposizione (per rifare i file con `mechanical/scripts/teste_D85.py costruisci`).
 
-In tutto **12 pezzi in 3 piatti** (~21 h 20 min, ~0.60 kg) invece dei 15 pezzi, più lunghi, di una testa a coppia.
+<!-- tabella piatti: generata da mechanical/scripts/teste_D85.py -->
 
-Montaggio: come la coppia (`docs/mechanical_eyes.md`), senza i pezzi del lato destro; la sede del servo Y sta a
-cavallo delle due metà della base, che si uniscono con le 2 chiavette come nella coppia. L'occhio sta a 100 mm a
-sinistra del centro del meccanismo. Contenuto, tempi e grammi dei piatti: [`da_stampare/README.md`](da_stampare/README.md).
+| Stampato | File da aprire in Bambu Studio | Pezzi | Contenuto | Tempo | Filamento | Altezza max |
+|---|---|---|---|---|---|---|
+| ☐ | [`Testa3_1di3_base-sx_palpebre.3mf`](Testa3_1di3_base-sx_palpebre.3mf) | 4 | `Base_L` + `Palpebre_L_PIP` + 2 `BaseKey` | ~8 h 32 min | ~249 g | 122 mm |
+| ☐ | [`Testa3_2di3_base-dx_CoreY_assiX.3mf`](Testa3_2di3_base-dx_CoreY_assiX.3mf) | 4 | `Base_R_singolo` + `CoreY_PIP` + `XAxisA_singolo` + `XAxisB_singolo` | ~9 h 01 min | ~231 g | 112 mm |
+| ☐ | [`Testa3_3di3_bulbo_supporti.3mf`](Testa3_3di3_bulbo_supporti.3mf) | 4 | `Eyeball` + `PivotOuter_L` + 2 `PivotCentral` | ~3 h 49 min | ~125 g | 53 mm |
+| | **Totale** | **12** | **3 piatti** | **~21 h 22 min** | **~0.60 kg** | |
+
+![Testa3_1di3_base-sx_palpebre](anteprime/Testa3_1di3_base-sx_palpebre.png)
+![Testa3_2di3_base-dx_CoreY_assiX](anteprime/Testa3_2di3_base-dx_CoreY_assiX.png)
+![Testa3_3di3_bulbo_supporti](anteprime/Testa3_3di3_bulbo_supporti.png)
+
+Tempi e grammi con `~` sono stime (media per pezzo misurata nei G-code dei piatti della testa 1, supporti compresi, senza riscaldamento e calibrazione iniziale): quelli esatti li dà Bambu Studio dopo *Slice*.

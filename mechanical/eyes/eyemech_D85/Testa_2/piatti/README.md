@@ -1,4 +1,4 @@
-# Testa 2 — piatti da stampare (3)
+# Testa 2 — piatti (3, già stampati)
 
 Ogni cartella `Piatto_<X>` contiene:
 - `Testa2_Piatto_<X>.3mf` — **progetto Bambu Studio con i pezzi già disposti, non ancora tagliato**: aprirlo

@@ -19,7 +19,8 @@ Uso:
         basi incastrate, gia' occupato, e i pezzi piccoli finiscono negli spazi liberi) e la stampa in JSON,
         da mettere in <cartella>/layout_piatti.json (poi cambiare "testa" e, se serve, i nomi dei piatti)
   python teste_D85.py costruisci <cartella> [--taglia]
-        rifa' le sottocartelle dei piatti da <cartella>/layout_piatti.json (STL, 3MF, png) e la tabella dei
+        rifa' i piatti da <cartella>/layout_piatti.json (STL, 3MF, png; con "file_piatti": true nel JSON un .3mf
+        per piatto direttamente nella cartella, anteprime in anteprime/, STL in stl/) e la tabella dei
         piatti in fondo a <cartella>/README.md; con --taglia (solo sul PC con Bambu Studio) i 3MF escono gia'
         tagliati, con tempi e grammi esatti
 Kit: coppia (testa a 2 occhi completa), coppia_senza_basi_occhi (testa 2), singolo (testa a 1 occhio, lato sx,
@@ -403,11 +404,16 @@ def build(folder, slicer=False):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     testa = lay["testa"]
+    flat = lay.get("file_piatti", False)     # un file .3mf per piatto direttamente nella cartella
     for pl in lay["piatti"]:
-        pdir = folder / pl["nome"]
+        name = f"{testa}_{pl['nome']}"
+        pdir = (folder / "stl" / pl["nome"]) if flat else (folder / pl["nome"])
         if pdir.exists():
             shutil.rmtree(pdir)
         pdir.mkdir(parents=True)
+        png = (folder / "anteprime" / f"{name}.png") if flat else (pdir / "piatto.png")
+        out3 = (folder / f"{name}.3mf") if flat else (pdir / f"{name}.3mf")
+        png.parent.mkdir(parents=True, exist_ok=True)
         items = pl["pezzi"]
         meshes = [placed(it) for it in items]
         d, lo, hi, fps = check(items)
@@ -431,11 +437,10 @@ def build(folder, slicer=False):
         ax.set_aspect("equal")
         ax.axis("off")
         ax.set_title(f"{testa} - {pl['nome']}: {len(items)} pezzi" + (f", ~{hm(h)}, ~{g:.0f} g" if g else ""))
-        fig.savefig(pdir / "piatto.png", dpi=80, bbox_inches="tight")
+        fig.savefig(png, dpi=80, bbox_inches="tight")
         plt.close(fig)
-        name = f"{testa}_{pl['nome']}"
-        write_3mf(pdir / f"{name}.3mf", items, meshes, name, png=pdir / "piatto.png")
-        esatto = taglia(pdir, name) if slicer else None
+        write_3mf(out3, items, meshes, name, png=png)
+        esatto = taglia(pdir, out3, name) if slicer else None
         pl["_info"] = (names, g, h, zmax, esatto)
         print(f"{name}: {len(items)} pezzi, distanza minima {d:.1f} mm, bordo {lo:.1f}..{hi:.1f}, "
               f"alt. {zmax:.0f} mm" + (f", ~{hm(h)}, ~{g:.0f} g" if g else "")
@@ -444,7 +449,7 @@ def build(folder, slicer=False):
     return lay
 
 
-def taglia(pdir, name):
+def taglia(pdir, out3, name):
     """taglia il piatto con Bambu Studio da riga di comando (solo sul PC, vedi pack_plate.BAMBU):
     il 3MF non tagliato viene sostituito da quello tagliato; ritorna (grammi, ore)."""
     import subprocess
@@ -457,8 +462,8 @@ def taglia(pdir, name):
                "--load-settings", f"{m_};{p_}", "--load-filaments", f_, "--outputdir", tmp,
                "--export-3mf", f"{name}.3mf", *map(str, sorted(pdir.glob("*.stl")))]
         subprocess.run(cmd, capture_output=True, check=True)
-        shutil.copy(Path(tmp) / f"{name}.3mf", pdir / f"{name}.3mf")
-    with zipfile.ZipFile(pdir / f"{name}.3mf") as z:
+        shutil.copy(Path(tmp) / f"{name}.3mf", out3)
+    with zipfile.ZipFile(out3) as z:
         si = z.read("Metadata/slice_info.config").decode()
     t = int(re.search(r'key="prediction" value="(\d+)"', si).group(1))
     w = float(re.search(r'key="weight" value="([\d.]+)"', si).group(1))
@@ -470,7 +475,12 @@ MARK = "<!-- tabella piatti: generata da mechanical/scripts/teste_D85.py -->"
 
 def tabella(folder, lay):
     """tabella dei piatti in fondo al README.md della cartella (il testo prima del segno resta)."""
-    righe = [MARK, "", "| Piatto | Pezzi | Contenuto | Tempo | Filamento | Altezza max |", "|---|---|---|---|---|---|"]
+    flat = lay.get("file_piatti", False)
+    if flat:
+        righe = [MARK, "", "| Stampato | File da aprire in Bambu Studio | Pezzi | Contenuto | Tempo | Filamento | Altezza max |",
+                 "|---|---|---|---|---|---|---|"]
+    else:
+        righe = [MARK, "", "| Piatto | Pezzi | Contenuto | Tempo | Filamento | Altezza max |", "|---|---|---|---|---|---|"]
     G = H = 0.0
     manca = False
     for pl in lay["piatti"]:
@@ -485,11 +495,17 @@ def tabella(folder, lay):
             t, w = f"~{hm(h)}", f"~{g:.0f} g"
         G += g
         H += h
-        righe.append(f"| `{pl['nome']}` | {len(names)} | {contenuto(names)} | {t} | {w} | {zmax:.0f} mm |")
+        if flat:
+            righe.append(f"| ☐ | [`{lay['testa']}_{pl['nome']}.3mf`]({lay['testa']}_{pl['nome']}.3mf) | {len(names)} | "
+                         f"{contenuto(names)} | {t} | {w} | {zmax:.0f} mm |")
+        else:
+            righe.append(f"| `{pl['nome']}` | {len(names)} | {contenuto(names)} | {t} | {w} | {zmax:.0f} mm |")
     tot_t, tot_g = ("—", "—") if manca else (f"~{hm(H)}", f"~{G / 1000:.2f} kg")
     npl = len(lay["piatti"])
-    righe.append(f"| **Totale** | **{sum(len(p['_info'][0]) for p in lay['piatti'])}** | "
+    righe.append(("| " if flat else "") + f"| **Totale** | **{sum(len(p['_info'][0]) for p in lay['piatti'])}** | "
                  f"**{npl} piatt{'o' if npl == 1 else 'i'}** | **{tot_t}** | **{tot_g}** | |")
+    if flat:
+        righe += [""] + [f"![{lay['testa']}_{p['nome']}](anteprime/{lay['testa']}_{p['nome']}.png)" for p in lay["piatti"]]
     righe += ["", "Tempi e grammi con `~` sono stime (media per pezzo misurata nei G-code dei piatti della testa 1, "
               "supporti compresi, senza riscaldamento e calibrazione iniziale): quelli esatti li dà Bambu Studio "
               "dopo *Slice*.", ""]

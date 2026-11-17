@@ -1,8 +1,9 @@
 {
- "testa": "Testa4",
+ "testa": "Testa3",
+ "file_piatti": true,
  "piatti": [
   {
-   "nome": "Piatto_A",
+   "nome": "1di3_base-sx_palpebre",
    "pezzi": [
     {
      "pezzo": "Base_L",
@@ -31,7 +32,7 @@
    ]
   },
   {
-   "nome": "Piatto_B",
+   "nome": "2di3_base-dx_CoreY_assiX",
    "pezzi": [
     {
      "pezzo": "Base_R_singolo",
@@ -60,7 +61,7 @@
    ]
   },
   {
-   "nome": "Piatto_C",
+   "nome": "3di3_bulbo_supporti",
    "pezzi": [
     {
      "pezzo": "Eyeball_x2",

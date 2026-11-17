@@ -24,5 +24,5 @@ Licenza dei modelli di partenza **CC BY-NC-SA 4.0** → vedi `docs/mechanical_ey
 pip install trimesh manifold3d numpy scipy shapely pyvista
 python mechanical/scripts/generate_eyemech.py            # D85 (STL in eyemech_D85/pezzi)
 python mechanical/scripts/generate_eyemech.py --small    # versione di prova
-python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_2/da_stampare   # rifà i piatti di una cartella
+python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_3_occhio_singolo   # rifà i piatti di una cartella
 ```
