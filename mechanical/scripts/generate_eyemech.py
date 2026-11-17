@@ -245,7 +245,7 @@ def item_rotations(path=SRC3MF):
 PRINT_ROT = {"Retainer_Single": "4", "Retainer_Lid_x2": "6", "Retainer_Double_A": "6", "Retainer_Double_B": "8",
              "PivotCentral_x2": "10", "PivotOuter_L": "12", "PivotOuter_R": "14",
              "Eyeball_x2": "22", "CoreY_PIP": "28", "XAxisA_PIP": "47", "XAxisB_PIP": "52",
-             "Palpebre_R_PIP": "36", "Palpebre_L_PIP": "44"}
+             "Palpebre_R_PIP": "36", "Palpebre_L_PIP": "44", "XAxisA_singolo": "47", "XAxisB_singolo": "52"}
 
 
 def will_parts():
@@ -845,6 +845,7 @@ def build(dia=85.0, small=False):
         out["Base"] = base
     else:
         out.update(split_base(base, s))
+        out.update(singolo(out))
 
     info = dict(s=s, P=P, small=small, hx=(hx0, hx1), xo=(xo0, xo1), xr=(xr0, xr1), JB=JB, PB=PB, Fs=Fs,
                 MA=MA, MDb=MDb, seats=seats, linkB_len=float(np.linalg.norm(PB - JB)))
@@ -949,6 +950,45 @@ def short_retainer(ret):
     out = U([half, other])
     out.apply_translation([0, -m, 0])
     return out
+
+
+# testa a OCCHIO SINGOLO (il sinistro): via tutto quello che serve solo all'occhio destro.
+BASE_R_SINGOLO_X = 75.0   # mm (D85): la meta' destra della base resta fino qui: sede Y, supporto centrale dx,
+                          # meta' linguetta PCA9685 e foro D12 per il supporto della mandibola
+
+
+def singolo(out):
+    """pezzi accorciati per la testa a occhio singolo (coordinate x come nell'assieme: occhio sx a x < 0).
+    XAxisA: telaio tagliato a filo del blocco centrale (sede del servo X), via braccio e adattatore destri.
+    XAxisB: telaio tagliato appena dopo l'anello del giunto con la squadretta del servo X, via adattatore destro.
+    Base destra tagliata a BASE_R_SINGOLO_X (via la sede del servo palpebre dx e il supporto esterno dx)."""
+    big = 2000.0
+
+    def keep_left(m, x):
+        return I(m, box([-big, -big, -big], [x, big, big]))
+
+    xa = out["XAxisA_PIP"]
+    fr = xa["EyeCorePivotHolder"]
+    v = fr.vertices
+    y_bar = v[:, 1].max()                                   # il traverso alto del telaio sta tra y_bar-16 e y_bar
+    blk = v[(v[:, 1] < y_bar - 20.0) & (np.abs(v[:, 0]) < 50.0)]
+    xa_cut = blk[:, 0].max() + 0.05                         # fianco destro del blocco centrale
+    xb = out["XAxisB_PIP"]
+    lf = xb["LateralFrame"]
+    v = lf.vertices
+    y_bar = v[:, 1].max()
+    leg = v[(v[:, 1] < y_bar - 20.0) & (np.abs(v[:, 0]) < 40.0)]
+    xb_cut = leg[:, 0].max() + 1.0                          # oltre l'anello del giunto centrale
+    res = {
+        "XAxisA_singolo": {k: keep_left(m, xa_cut) for k, m in xa.items()},
+        "XAxisB_singolo": {k: keep_left(m, xb_cut) for k, m in xb.items() if k != "EyeAdaptor"},
+        "Base_R_singolo": keep_left(out["Base_R"], BASE_R_SINGOLO_X),
+    }
+    for k in ("XAxisA_singolo", "XAxisB_singolo"):
+        res[k] = {n: m for n, m in res[k].items() if len(m.faces)}
+    print(f"occhio singolo: XAxisA tagliato a x = {xa_cut:.1f}, XAxisB a x = {xb_cut:.1f}, "
+          f"base destra a x = {BASE_R_SINGOLO_X:.0f}")
+    return res
 
 
 def split_base(base, s):

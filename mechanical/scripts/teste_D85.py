@@ -22,7 +22,8 @@ Uso:
         rifa' le sottocartelle dei piatti da <cartella>/layout_piatti.json (STL, 3MF, png) e la tabella dei
         piatti in fondo a <cartella>/README.md; con --taglia (solo sul PC con Bambu Studio) i 3MF escono gia'
         tagliati, con tempi e grammi esatti
-Kit: coppia (testa a 2 occhi completa), coppia_senza_basi_occhi (testa 2), singolo (testa a 1 occhio, lato sx),
+Kit: coppia (testa a 2 occhi completa), coppia_senza_basi_occhi (testa 2), singolo (testa a 1 occhio, lato sx,
+     con XAxisA/XAxisB/base destra accorciati),
      singolo_senza_basi; --copie 2 = due teste uguali incastrate insieme (teste 3 e 4).
 
 Tempi e grammi nel README sono stime: per ogni pezzo la media misurata nel G-code dei piatti della testa 1
@@ -57,13 +58,14 @@ KIT = {
     "coppia": ["Base_L", "Base_R", "BaseKey_x2", "BaseKey_x2", "Eyeball_x2", "Eyeball_x2",
                "Palpebre_L_PIP", "Palpebre_R_PIP", "PivotOuter_L", "PivotOuter_R",
                "PivotCentral_x2", "PivotCentral_x2", "CoreY_PIP", "XAxisA_PIP", "XAxisB_PIP"],
-    # occhio singolo (sinistro): tutto il meccanismo centrale, i pezzi del solo lato sx
-    "singolo": ["Base_L", "Base_R", "BaseKey_x2", "BaseKey_x2", "Eyeball_x2",
+    # occhio singolo (sinistro): solo i pezzi che servono all'occhio sinistro; base destra, XAxisA e XAxisB
+    # accorciati (via braccio, adattatore, sede palpebre e supporto esterno del lato destro)
+    "singolo": ["Base_L", "Base_R_singolo", "BaseKey_x2", "BaseKey_x2", "Eyeball_x2",
                 "Palpebre_L_PIP", "PivotOuter_L", "PivotCentral_x2", "PivotCentral_x2",
-                "CoreY_PIP", "XAxisA_PIP", "XAxisB_PIP"],
+                "CoreY_PIP", "XAxisA_singolo", "XAxisB_singolo"],
 }
 KIT["coppia_senza_basi_occhi"] = [n for n in KIT["coppia"] if n not in ("Base_L", "Base_R", "Eyeball_x2")]
-KIT["singolo_senza_basi"] = [n for n in KIT["singolo"] if n not in ("Base_L", "Base_R")]
+KIT["singolo_senza_basi"] = [n for n in KIT["singolo"] if n not in ("Base_L", "Base_R_singolo")]
 
 # piatto delle due basi incastrate (come Piatto_1 della testa 1): pezzo, rotazione, angolo minimo
 BASE_PLATE = [dict(pezzo="Base_L", rot_z=0, x=3.0, y=3.0), dict(pezzo="Base_R", rot_z=195, x=24.0, y=114.0)]
@@ -77,6 +79,8 @@ STIMA = {
     "XAxisA_PIP": (79.0, 3.32), "XAxisB_PIP": (71.1, 2.93),
     # palpebre di un lato in un pezzo (sup. + inf. + tiranti + squadretta): somma dei due gruppi + supporti piu' alti
     "Palpebre_L_PIP": (125.0, 5.0), "Palpebre_R_PIP": (125.0, 5.0),
+    # occhio singolo: pezzi interi in proporzione al volume rimasto
+    "XAxisA_singolo": (59.0, 2.50), "XAxisB_singolo": (43.0, 1.76), "Base_R_singolo": (36.0, 1.00),
 }
 NOME = {  # descrizione breve per i README
     "Base_L": "base sx", "Base_R": "base dx", "BaseKey_x2": "chiavetta base", "PinB_x2": "perno PinB",
@@ -85,6 +89,8 @@ NOME = {  # descrizione breve per i README
     "PivotOuter_R": "supporto esterno dx", "PivotCentral_x2": "supporto centrale", "CoreY_PIP": "telaio Y (CoreY)",
     "XAxisA_PIP": "asse X A (sede servo X)", "XAxisB_PIP": "asse X B (squadretta X)",
     "Palpebre_L_PIP": "palpebre sx complete", "Palpebre_R_PIP": "palpebre dx complete",
+    "XAxisA_singolo": "asse X A, solo lato sx", "XAxisB_singolo": "asse X B, solo lato sx",
+    "Base_R_singolo": "base dx accorciata",
 }
 
 

@@ -84,17 +84,21 @@ incastrati sulle impronte reali (`mechanical/scripts/teste_D85.py`), ≥ 4 mm tr
 - `Testa_1/`: i 5 piatti già tagliati con cui è stata stampata la testa 1 (**≈ 32 h 30 min, ≈ 0.92 kg**; aprendoli
   in Bambu Studio vanno riattivati i supporti prima di tagliare di nuovo);
 - `Testa_2/`: basi già stampate, bulbi già pronti, il resto in 3 piatti (~22 h 45 min, ~0.58 kg);
-- `Testa_3_occhio_singolo/`, `Testa_4_occhio_singolo/`: le due teste a un occhio, incastrate insieme in 7 piatti
-  (~50 h 30 min, ~1.45 kg).
+- `Testa_3_occhio_singolo/`, `Testa_4_occhio_singolo/`: le due teste a un occhio, 3 piatti ciascuna, solo con i pezzi
+  dell'occhio sinistro (~21 h 20 min e ~0.60 kg a testa).
 
 I piatti nuovi sono progetti Bambu Studio non tagliati, con supporti tree(auto) 30° già impostati.
 
 ### Testa a occhio singolo (teste 3 e 4)
-Stessi pezzi e stesso meccanismo della coppia, montati con **un solo occhio (il sinistro)**: base intera con le
-chiavette, i 2 `PivotCentral` (perni del `CoreY`), `CoreY`, `XAxisA`, `XAxisB`, e del lato sinistro 1 `Eyeball`,
-`PivotOuter_L`, `Palpebre_L_PIP`. Non si stampano `PivotOuter_R`, `Palpebre_R_PIP` e il secondo bulbo. **3 servo** (X, Y, palpebre sx): la sede delle palpebre dx resta vuota; il
-parallelogramma dell'asse X lavora col solo occhio sinistro e le estremità destre di `XAxisA`/`XAxisB` restano
-libere. Ingombro uguale alla coppia (base 388 mm), occhio a 100 mm dal centro del meccanismo.
+Stesso meccanismo della coppia con **un solo occhio (il sinistro)** e solo i pezzi che gli servono (`singolo()` nello
+script): `Base_L` + `Base_R_singolo` (metà destra tagliata a x = 75: restano mezza sede del servo Y, il supporto
+centrale destro, mezza linguetta PCA9685 e il foro Ø12 per la mandibola; via la sede del servo palpebre destre e il
+supporto esterno destro) + 2 chiavette, i 2 `PivotCentral` (perni del `CoreY`), `CoreY` intero, `XAxisA_singolo`
+(telaio tagliato a filo del blocco del servo X: via braccio e adattatore destri, 155 mm invece di 264),
+`XAxisB_singolo` (tirante tagliato appena dopo l'anello della squadretta X: via braccio e adattatore destri, 143 mm),
+1 `Eyeball`, `PivotOuter_L`, `Palpebre_L_PIP`: 12 pezzi. **3 servo** (X, Y, palpebre sx); il parallelogramma
+dell'asse X lavora con la squadretta del servo X e l'adattatore dell'occhio sinistro. L'occhio sta a 100 mm a
+sinistra del centro del meccanismo. Si tolgono solo pezzi o loro parti: nessuna interferenza nuova.
 
 ### Montaggio
 Come nella guida di Will (`mechanical/eyes/original/eyemech_e3.2/src/Assembly.pdf`), con queste differenze:

@@ -1,21 +1,26 @@
 # Testa 3 — occhio singolo — ⏳ DA STAMPARE
 
-Meccanismo D85 montato con **un solo occhio (il sinistro)**: come funziona e cosa non si monta in
-[`../README.md`](../README.md#testa-a-occhio-singolo-teste-3-e-4).
+In questa cartella ci sono **solo i pezzi della testa 3**: 3 piatti in [`da_stampare/`](da_stampare/), che stampati
+tutti e 3 danno la testa completa (le teste 3 e 4 sono uguali, ognuna ha i suoi piatti).
 
-Pezzi della testa (12): `Base_L` + `Base_R` + 2 chiavette `BaseKey`, 2 `PivotCentral`, `PivotOuter_L`, 1 `Eyeball`,
-`CoreY_PIP`, `XAxisA_PIP`, `XAxisB_PIP`, `Palpebre_L_PIP` (palpebre sinistre già montate, giunti print-in-place).
+![Coppia e occhio singolo](../../../../docs/img/coppia_vs_singolo.png)
 
-**Piatti condivisi con la testa 4.** Le teste 3 e 4 sono uguali, quindi i loro pezzi sono incastrati insieme:
-**7 piatti in tutto invece di 8**. Stampando i **4 piatti di questa cartella la testa 3 è completa**; due piatti
-contengono anche pezzi della testa 4, da **mettere da parte**:
+**Cosa c'è e cosa no rispetto a una testa a coppia** (meccanismo D85 con il solo occhio sinistro, 3 servo:
+X, Y e palpebre sinistre):
 
-| Piatto | Per la testa 3 | In più, per la testa 4 (da mettere da parte) |
+| | Coppia | Occhio singolo |
 |---|---|---|
-| `Piatto_1_basi` | `Base_L` + `Base_R` | — |
-| `Piatto_A` | `XAxisA`, `Palpebre_L_PIP`, 1 `Eyeball`, 2 `BaseKey` | 2 `BaseKey` |
-| `Piatto_B` | `XAxisB`, `CoreY`, 1 `PivotCentral` | — |
-| `Piatto_C` | 1 `PivotOuter_L`, 1 `PivotCentral` | 1 `PivotOuter_L`, 1 `PivotCentral` |
+| Bulbi | 2 | **1** |
+| Palpebre (già montate) | `Palpebre_L_PIP` + `Palpebre_R_PIP` | **solo `Palpebre_L_PIP`** |
+| Supporti esterni | `PivotOuter_L` + `PivotOuter_R` | **solo `PivotOuter_L`** |
+| Supporti centrali | 2 `PivotCentral` | 2 `PivotCentral` (il destro regge il perno destro del `CoreY`) |
+| Asse X, telaio | `XAxisA_PIP`, 264 mm | **`XAxisA_singolo`, 155 mm**: via braccio e adattatore destri |
+| Asse X, tirante | `XAxisB_PIP`, 264 mm | **`XAxisB_singolo`, 143 mm**: via braccio e adattatore destri |
+| Telaio Y | `CoreY_PIP` | `CoreY_PIP` (uguale) |
+| Base | `Base_L` + `Base_R` (194 mm) + 2 chiavette | `Base_L` + **`Base_R_singolo` (75 mm)** + 2 chiavette: via la sede del servo delle palpebre destre e del supporto esterno destro; restano mezza sede del servo Y, il supporto centrale destro, mezza linguetta PCA9685 e il foro Ø12 per il supporto della mandibola |
 
-Poi alla testa 4 bastano i 3 piatti di `../Testa_4_occhio_singolo/da_stampare/`.
-Come aprire e stampare i progetti, contenuto, tempi e grammi: [`da_stampare/README.md`](da_stampare/README.md).
+In tutto **12 pezzi in 3 piatti** (~21 h 20 min, ~0.60 kg) invece dei 15 pezzi, più lunghi, di una testa a coppia.
+
+Montaggio: come la coppia (`docs/mechanical_eyes.md`), senza i pezzi del lato destro; la sede del servo Y sta a
+cavallo delle due metà della base, che si uniscono con le 2 chiavette come nella coppia. L'occhio sta a 100 mm a
+sinistra del centro del meccanismo. Contenuto, tempi e grammi dei piatti: [`da_stampare/README.md`](da_stampare/README.md).

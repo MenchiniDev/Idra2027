@@ -2,66 +2,31 @@
  "testa": "Testa3",
  "piatti": [
   {
-   "nome": "Piatto_1_basi",
+   "nome": "Piatto_A",
    "pezzi": [
     {
      "pezzo": "Base_L",
      "rot_z": 0,
-     "x": 3.0,
-     "y": 3.0
-    },
-    {
-     "pezzo": "Base_R",
-     "rot_z": 195,
-     "x": 24.0,
-     "y": 114.0
-    }
-   ]
-  },
-  {
-   "nome": "Piatto_A",
-   "pezzi": [
-    {
-     "pezzo": "XAxisA_PIP",
-     "rot_z": 30,
      "x": 3.01,
-     "y": 2.98
+     "y": 2.99
     },
     {
      "pezzo": "Palpebre_L_PIP",
-     "rot_z": 270,
-     "x": 3.01,
-     "y": 117.01
+     "rot_z": 240,
+     "x": 61.51,
+     "y": 117.5
     },
     {
-     "pezzo": "Eyeball_x2",
+     "pezzo": "BaseKey_x2",
      "rot_z": 0,
-     "x": 159.98,
+     "x": 201.0,
      "y": 3.01
     },
     {
      "pezzo": "BaseKey_x2",
      "rot_z": 0,
-     "x": 58.0,
-     "y": 3.01
-    },
-    {
-     "pezzo": "BaseKey_x2",
-     "rot_z": 0,
-     "x": 109.5,
-     "y": 3.01
-    },
-    {
-     "pezzo": "BaseKey_x2",
-     "rot_z": 165,
-     "x": 43.01,
-     "y": 37.01
-    },
-    {
-     "pezzo": "BaseKey_x2",
-     "rot_z": 120,
-     "x": 129.01,
-     "y": 71.01
+     "x": 204.5,
+     "y": 32.01
     }
    ]
   },
@@ -69,22 +34,28 @@
    "nome": "Piatto_B",
    "pezzi": [
     {
-     "pezzo": "XAxisB_PIP",
-     "rot_z": 60,
+     "pezzo": "Base_R_singolo",
+     "rot_z": 90,
      "x": 3.01,
-     "y": 3.0
+     "y": 3.01
     },
     {
      "pezzo": "CoreY_PIP",
-     "rot_z": 240,
-     "x": 70.99,
-     "y": 116.96
+     "rot_z": 225,
+     "x": 77.49,
+     "y": 3.0
     },
     {
-     "pezzo": "PivotCentral_x2",
-     "rot_z": 75,
-     "x": 2.99,
-     "y": 3.0
+     "pezzo": "XAxisA_singolo",
+     "rot_z": 195,
+     "x": 3.01,
+     "y": 118.01
+    },
+    {
+     "pezzo": "XAxisB_singolo",
+     "rot_z": 90,
+     "x": 70.51,
+     "y": 151.49
     }
    ]
   },
@@ -92,28 +63,28 @@
    "nome": "Piatto_C",
    "pezzi": [
     {
-     "pezzo": "PivotOuter_L",
-     "rot_z": 105,
-     "x": 3.01,
+     "pezzo": "Eyeball_x2",
+     "rot_z": 0,
+     "x": 2.98,
      "y": 3.01
     },
     {
      "pezzo": "PivotOuter_L",
-     "rot_z": 90,
-     "x": 36.51,
-     "y": 32.51
+     "rot_z": 270,
+     "x": 76.0,
+     "y": 16.01
     },
     {
      "pezzo": "PivotCentral_x2",
-     "rot_z": 180,
-     "x": 164.48,
-     "y": 5.01
-    },
-    {
-     "pezzo": "PivotCentral_x2",
-     "rot_z": 285,
+     "rot_z": 240,
      "x": 3.01,
-     "y": 57.48
+     "y": 56.01
+    },
+    {
+     "pezzo": "PivotCentral_x2",
+     "rot_z": 210,
+     "x": 84.01,
+     "y": 60.51
     }
    ]
   }

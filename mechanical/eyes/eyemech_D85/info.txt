@@ -24,4 +24,7 @@ pezzi (mm, X x Y x Z come esportati):
   Base_L: 194 x 137 x 67
   Base_R: 194 x 137 x 67
   BaseKey_x2: 48 x 26 x 7
+  XAxisA_singolo: 155 x 90 x 30
+  XAxisB_singolo: 93 x 143 x 30
+  Base_R_singolo: 75 x 137 x 67
 interferenze_rilevate: nessuna
