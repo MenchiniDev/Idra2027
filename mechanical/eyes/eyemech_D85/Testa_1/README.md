@@ -3,6 +3,11 @@
 I 5 piatti con cui è stata stampata la testa 1 (prima stavano in `bambu_A1/`). Restano come riferimento o
 per ristampare un pezzo rotto: **da qui non c'è più niente da stampare**.
 
+**Palpebre**: la testa 1 ha la versione precedente (palpebre superiore e inferiore stampate a parte, `LinkB` unito
+alla squadretta con il `PinB` e una vite da 3 × 19–20 mm). Le altre teste hanno le palpebre di un lato in un pezzo
+solo, già montate, con i giunti print-in-place come quelli di Will. Per aggiornare anche la testa 1:
+[`aggiornamento_palpebre/`](aggiornamento_palpebre/) (1 piatto, facoltativo).
+
 Progetti già tagliati con Bambu Studio 2.05 (A1, ugello 0.4, `0.20mm Standard @BBL A1`, Bambu PLA Basic),
 supporti `tree(auto)` a 30° come nel 3MF di Will, 2 pareti, riempimento 15%. Ogni cartella `Piatto_<n>` ha il
 progetto `Piatto_<n>.3mf`, gli STL già posizionati sul piatto (per rifare lo slicing a mano) e `piatto.png`.

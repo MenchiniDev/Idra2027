@@ -1,0 +1,22 @@
+{
+ "testa": "Testa1",
+ "piatti": [
+  {
+   "nome": "Piatto_palpebre",
+   "pezzi": [
+    {
+     "pezzo": "Palpebre_L_PIP",
+     "rot_z": 60,
+     "x": 3.01,
+     "y": 3.0
+    },
+    {
+     "pezzo": "Palpebre_R_PIP",
+     "rot_z": 105,
+     "x": 63.96,
+     "y": 83.0
+    }
+   ]
+  }
+ ]
+}

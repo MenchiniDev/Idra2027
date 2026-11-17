@@ -7,11 +7,20 @@ Stampante: **Bambu Lab A1** (piatto 256 × 256), PLA, 0.20 mm. In ogni piatto ci
 
 | Testa | Occhi | Stato | Cosa resta da stampare | Cartella |
 |---|---|---|---|---|
-| 1 | coppia | ✅ completa | niente | [`Testa_1/`](Testa_1/) |
-| 2 | coppia | 🟡 basi stampate, bulbi già pronti | **3 piatti**, ~22 h 45 min, ~0.58 kg | [`Testa_2/da_stampare/`](Testa_2/da_stampare/) |
-| 3 | singolo (sx) | ⏳ da stampare | **4 piatti**, ~30 h, ~0.87 kg (con 5 pezzi della testa 4) | [`Testa_3_occhio_singolo/da_stampare/`](Testa_3_occhio_singolo/da_stampare/) |
-| 4 | singolo (sx) | ⏳ da stampare | **3 piatti**, ~20 h 30 min, ~0.58 kg | [`Testa_4_occhio_singolo/da_stampare/`](Testa_4_occhio_singolo/da_stampare/) |
-| | | | **Totale: 10 piatti, ~73 h, ~2.0 kg** | |
+| 1 | coppia | ✅ completa (palpebre versione precedente, con `PinB` e vite) | niente (facoltativo: 1 piatto per le palpebre nuove) | [`Testa_1/`](Testa_1/) |
+| 2 | coppia | ✅ completa (montata) | niente | [`Testa_2/`](Testa_2/) |
+| 3 | singolo (sx) | ⏳ da stampare | **3 file/piatti**, ~21 h 20 min, ~0.60 kg (solo pezzi dell'occhio sinistro) | [`Testa_3_occhio_singolo/`](Testa_3_occhio_singolo/) |
+| 4 | singolo (sx) | ⏳ da stampare | **3 file/piatti**, ~21 h 20 min, ~0.60 kg (uguale alla 3) | [`Testa_4_occhio_singolo/`](Testa_4_occhio_singolo/) |
+| | | | **Totale: 6 piatti, ~43 h, ~1.2 kg** | |
+
+**Per stampare**: nelle cartelle delle teste 3 e 4 ogni piatto è **un file `.3mf`** (es. `Testa3_1di3_base-sx_palpebre.3mf`):
+si apre in Bambu Studio, *Taglia piatto*, *Stampa piatto*. Istruzioni e lista da spuntare nel `README.md` di ogni testa.
+
+**Palpebre (teste 2, 3, 4)**: tutte le palpebre di un lato in **un pezzo solo, già montate** (`Palpebre_L_PIP`,
+`Palpebre_R_PIP`): palpebra superiore + tirante + squadretta + `LinkB` + palpebra inferiore, con i giunti
+print-in-place biconici come quelli di Will (anche quello tra squadretta e `LinkB`, che prima era un `PinB` con
+la vite). Dopo la stampa: togliere i supporti e muovere a mano i giunti finché girano liberi. Disegni in
+`docs/img/giunto_biconico_sezione.png` e `docs/img/palpebre_PIP_pezzo.png`.
 
 Tempi e grammi con `~` sono stime (per ogni pezzo la media misurata nei G-code dei piatti della testa 1, supporti
 compresi): quelli esatti li dà Bambu Studio dopo *Slice*.
@@ -22,11 +31,10 @@ compresi): quelli esatti li dà Bambu Studio dopo *Slice*.
 |---|---|
 | `pezzi/` | un STL per pezzo, nell'orientamento di stampa (li genera `mechanical/scripts/generate_eyemech.py`) |
 | `info.txt` | quote, servo, viteria, ingombri dei pezzi |
-| `Testa_1/` | i 5 piatti (già tagliati) con cui è stata stampata la testa 1 |
-| `Testa_2/gia_stampati/` | il piatto delle basi della testa 2, già stampato (lo stesso piatto 1 della testa 1) |
-| `Testa_2/da_stampare/` | i 3 piatti con tutto il resto della testa 2, **senza i bulbi** (già pronti) |
-| `Testa_3_occhio_singolo/da_stampare/` | 4 piatti: testa 3 completa + 5 pezzi per la testa 4 |
-| `Testa_4_occhio_singolo/da_stampare/` | 3 piatti: il resto della testa 4 |
+| `Testa_1/` | i 5 piatti (già tagliati) con cui è stata stampata la testa 1; `aggiornamento_palpebre/` = 1 piatto facoltativo con le palpebre nuove |
+| `Testa_2/` | testa 2 completa: `gia_stampati/` (basi) e `piatti/` (il resto) |
+| `Testa_3_occhio_singolo/` | **3 file `.3mf`, uno per piatto**: la testa 3 completa, solo pezzi dell'occhio sinistro (+ `anteprime/`, `stl/`) |
+| `Testa_4_occhio_singolo/` | **3 file `.3mf`, uno per piatto**: la testa 4 completa, uguale alla 3 |
 
 Ogni cartella `Piatto_<X>` ha il progetto Bambu Studio (`.3mf`), gli STL già posizionati e `piatto.png` con la
 disposizione; ogni cartella di piatti ha `layout_piatti.json` (pezzo, rotazione e posizione su ogni piatto) e un
@@ -35,35 +43,44 @@ si aprono in Bambu Studio, si controlla piatto e supporti (già attivi, tree(aut
 
 ## Testa a occhio singolo (teste 3 e 4)
 
-Stesso meccanismo D85 e **stessi STL** della coppia, montato con **un solo occhio, il sinistro**: nessun pezzo
-nuovo da verificare.
+Stesso meccanismo D85 con **un solo occhio, il sinistro**, e **solo i pezzi che gli servono**: i pezzi del lato
+destro non si stampano e quelli che servono a tutti e due gli occhi sono accorciati.
 
-- **Si stampa**: tutta la parte centrale — base intera (`Base_L` + `Base_R` + 2 chiavette: la sede del servo Y è
-  a cavallo della giunzione), i 2 `PivotCentral` (reggono i perni del `CoreY`), `CoreY`, `XAxisA`, `XAxisB` — più
-  i pezzi del solo lato sinistro: 1 `Eyeball`, `PivotOuter_L`, `LidTop_L`, `LidBottom_L`, 1 `PinB`.
-- **Non si stampa**: `PivotOuter_R`, `LidTop_R`, `LidBottom_R`, il secondo bulbo e il secondo `PinB`.
-- **3 servo**: X, Y e palpebre sinistre. La sede delle palpebre destre in `Base_R` resta vuota.
-- `XAxisB` (squadretta del servo X + tirante + adattatori) fa il parallelogramma con il solo occhio sinistro;
-  gli adattatori dell'estremità destra di `XAxisA` e `XAxisB` restano liberi, senza bulbo.
-- Ingombro uguale alla coppia (base 388 mm): l'occhio sta a 100 mm a sinistra del centro del meccanismo.
-- Occhio a destra invece che a sinistra: stessi piatti, sostituendo `PivotOuter_L`, `LidTop_L`, `LidBottom_L`
-  con i `_R` (si rifà la disposizione con lo script, vedi sotto).
+![Coppia e occhio singolo](../../../docs/img/coppia_vs_singolo.png)
 
-Le teste 3 e 4 sono uguali, quindi i loro pezzi sono incastrati insieme: **7 piatti per tutte e due invece di 8**,
-e la testa 3 è completa già dopo i suoi 4 piatti (i pezzi della testa 4 che escono dai piatti `A` e `C` della
-testa 3 sono elencati in `Testa_3_occhio_singolo/README.md`).
+**Cosa c'è e cosa no rispetto a una testa a coppia** (meccanismo D85 con il solo occhio sinistro, 3 servo:
+X, Y e palpebre sinistre):
+
+| | Coppia | Occhio singolo |
+|---|---|---|
+| Bulbi | 2 | **1** |
+| Palpebre (già montate) | `Palpebre_L_PIP` + `Palpebre_R_PIP` | **solo `Palpebre_L_PIP`** |
+| Supporti esterni | `PivotOuter_L` + `PivotOuter_R` | **solo `PivotOuter_L`** |
+| Supporti centrali | 2 `PivotCentral` | 2 `PivotCentral` (il destro regge il perno destro del `CoreY`) |
+| Asse X, telaio | `XAxisA_PIP`, 264 mm | **`XAxisA_singolo`, 155 mm**: via braccio e adattatore destri |
+| Asse X, tirante | `XAxisB_PIP`, 264 mm | **`XAxisB_singolo`, 143 mm**: via braccio e adattatore destri |
+| Telaio Y | `CoreY_PIP` | `CoreY_PIP` (uguale) |
+| Base | `Base_L` + `Base_R` (194 mm) + 2 chiavette | `Base_L` + **`Base_R_singolo` (75 mm)** + 2 chiavette: via la sede del servo delle palpebre destre e del supporto esterno destro; restano mezza sede del servo Y, il supporto centrale destro, mezza linguetta PCA9685 e il foro Ø12 per il supporto della mandibola |
+
+In tutto **12 pezzi in 3 piatti** (~21 h 20 min, ~0.60 kg) invece dei 15 pezzi, più lunghi, di una testa a coppia.
+
+- Il tirante dell'asse X (`XAxisB_singolo`) fa il parallelogramma tra la squadretta del servo X e l'adattatore
+  dell'occhio sinistro, come nella coppia: basta un occhio.
+- Il `CoreY` resta uguale: gira tra i due supporti centrali, quindi anche quello destro serve.
+- Occhio a destra invece che a sinistra: bisognerebbe tagliare i pezzi al contrario (`singolo()` in
+  `generate_eyemech.py`) e usare i `_R`.
 
 ## Rifare i piatti
 
 Dopo aver rigenerato i pezzi (`generate_eyemech.py`), rimettere gli STL nuovi nelle stesse posizioni:
 ```bash
 pip install trimesh shapely scipy matplotlib
-python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_2/da_stampare            # STL, 3MF, png, tabella
-python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_2/da_stampare --taglia   # sul PC: anche lo slicing
+python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_3_occhio_singolo        # 3MF, png, STL, tabella
+python mechanical/scripts/teste_D85.py costruisci mechanical/eyes/eyemech_D85/Testa_3_occhio_singolo --taglia   # sul PC: anche lo slicing
 ```
 Se un pezzo cambia ingombro e la distanza minima stampata scende sotto ~3 mm, la disposizione va rifatta:
 ```bash
 python mechanical/scripts/teste_D85.py impacchetta coppia_senza_basi_occhi 3        # testa 2
-python mechanical/scripts/teste_D85.py impacchetta singolo_senza_basi 5 --copie 2    # teste 3 + 4 (basi a parte)
+python mechanical/scripts/teste_D85.py impacchetta singolo 3                         # una testa a occhio singolo
 ```
 e il JSON stampato va in `layout_piatti.json` (un piatto per elenco, con un nome).

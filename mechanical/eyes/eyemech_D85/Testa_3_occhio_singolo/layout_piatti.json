@@ -1,0 +1,93 @@
+{
+ "testa": "Testa3",
+ "file_piatti": true,
+ "piatti": [
+  {
+   "nome": "1di3_base-sx_palpebre",
+   "pezzi": [
+    {
+     "pezzo": "Base_L",
+     "rot_z": 0,
+     "x": 3.01,
+     "y": 2.99
+    },
+    {
+     "pezzo": "Palpebre_L_PIP",
+     "rot_z": 240,
+     "x": 61.51,
+     "y": 117.5
+    },
+    {
+     "pezzo": "BaseKey_x2",
+     "rot_z": 0,
+     "x": 201.0,
+     "y": 3.01
+    },
+    {
+     "pezzo": "BaseKey_x2",
+     "rot_z": 0,
+     "x": 204.5,
+     "y": 32.01
+    }
+   ]
+  },
+  {
+   "nome": "2di3_base-dx_CoreY_assiX",
+   "pezzi": [
+    {
+     "pezzo": "Base_R_singolo",
+     "rot_z": 90,
+     "x": 3.01,
+     "y": 3.01
+    },
+    {
+     "pezzo": "CoreY_PIP",
+     "rot_z": 225,
+     "x": 77.49,
+     "y": 3.0
+    },
+    {
+     "pezzo": "XAxisA_singolo",
+     "rot_z": 195,
+     "x": 3.01,
+     "y": 118.01
+    },
+    {
+     "pezzo": "XAxisB_singolo",
+     "rot_z": 90,
+     "x": 70.51,
+     "y": 151.49
+    }
+   ]
+  },
+  {
+   "nome": "3di3_bulbo_supporti",
+   "pezzi": [
+    {
+     "pezzo": "Eyeball_x2",
+     "rot_z": 0,
+     "x": 2.98,
+     "y": 3.01
+    },
+    {
+     "pezzo": "PivotOuter_L",
+     "rot_z": 270,
+     "x": 76.0,
+     "y": 16.01
+    },
+    {
+     "pezzo": "PivotCentral_x2",
+     "rot_z": 240,
+     "x": 3.01,
+     "y": 56.01
+    },
+    {
+     "pezzo": "PivotCentral_x2",
+     "rot_z": 210,
+     "x": 84.01,
+     "y": 60.51
+    }
+   ]
+  }
+ ]
+}

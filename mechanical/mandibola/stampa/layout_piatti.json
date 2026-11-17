@@ -1,0 +1,70 @@
+{
+ "testa": "Mandibola",
+ "piatti": [
+  {
+   "nome": "Piatto_2_set",
+   "pezzi": [
+    {
+     "pezzo": "Traversa",
+     "rot_z": 0,
+     "x": 5.0,
+     "y": 3.0
+    },
+    {
+     "pezzo": "Traversa",
+     "rot_z": 0,
+     "x": 5.0,
+     "y": 50.0
+    },
+    {
+     "pezzo": "Braccio",
+     "rot_z": 0,
+     "x": 5.0,
+     "y": 100.0
+    },
+    {
+     "pezzo": "Braccio",
+     "rot_z": 0,
+     "x": 44.0,
+     "y": 100.0
+    },
+    {
+     "pezzo": "Culla_DS3225",
+     "rot_z": 0,
+     "x": 84.0,
+     "y": 100.0
+    },
+    {
+     "pezzo": "Culla_DS3225",
+     "rot_z": 0,
+     "x": 84.0,
+     "y": 176.0
+    },
+    {
+     "pezzo": "Rondella_x2",
+     "rot_z": 0,
+     "x": 165.0,
+     "y": 100.0
+    },
+    {
+     "pezzo": "Rondella_x2",
+     "rot_z": 0,
+     "x": 192.0,
+     "y": 100.0
+    },
+    {
+     "pezzo": "Rondella_x2",
+     "rot_z": 0,
+     "x": 165.0,
+     "y": 127.0
+    },
+    {
+     "pezzo": "Rondella_x2",
+     "rot_z": 0,
+     "x": 192.0,
+     "y": 127.0
+    }
+   ]
+  }
+ ]
+}

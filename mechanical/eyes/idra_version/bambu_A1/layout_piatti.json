@@ -1,0 +1,101 @@
+{
+ "testa": "idra_version",
+ "cartella_pezzi": "..",
+ "piatti": [
+  {
+   "nome": "Piatto_unico",
+   "pezzi": [
+    {
+     "pezzo": "idra_version_Base",
+     "rot_z": 0,
+     "x": 3.01,
+     "y": 3.01
+    },
+    {
+     "pezzo": "idra_version_XAxisB_PIP",
+     "rot_z": 90,
+     "x": 152.51,
+     "y": 3.0
+    },
+    {
+     "pezzo": "idra_version_Palpebre_L_PIP",
+     "rot_z": 240,
+     "x": 181.01,
+     "y": 41.51
+    },
+    {
+     "pezzo": "idra_version_Palpebre_R_PIP",
+     "rot_z": 90,
+     "x": 113.51,
+     "y": 42.48
+    },
+    {
+     "pezzo": "idra_version_XAxisA_PIP",
+     "rot_z": 0,
+     "x": 3.01,
+     "y": 76.51
+    },
+    {
+     "pezzo": "idra_version_CoreY_PIP",
+     "rot_z": 90,
+     "x": 151.49,
+     "y": 84.5
+    },
+    {
+     "pezzo": "idra_version_PivotOuter_R",
+     "rot_z": 60,
+     "x": 77.44,
+     "y": 95.0
+    },
+    {
+     "pezzo": "idra_version_PivotOuter_L",
+     "rot_z": 285,
+     "x": 3.01,
+     "y": 114.46
+    },
+    {
+     "pezzo": "idra_version_PivotCentral_x2",
+     "rot_z": 180,
+     "x": 219.5,
+     "y": 70.51
+    },
+    {
+     "pezzo": "idra_version_PivotCentral_x2",
+     "rot_z": 270,
+     "x": 112.5,
+     "y": 112.5
+    },
+    {
+     "pezzo": "idra_version_Eyeball_x2",
+     "rot_z": 0,
+     "x": 182.99,
+     "y": 129.99
+    },
+    {
+     "pezzo": "idra_version_Eyeball_x2",
+     "rot_z": 15,
+     "x": 87.5,
+     "y": 131.5
+    },
+    {
+     "pezzo": "idra_version_Retainer_Single",
+     "rot_z": 195,
+     "x": 15.01,
+     "y": 133.01
+    },
+    {
+     "pezzo": "idra_version_Retainer_Lid_x2",
+     "rot_z": 270,
+     "x": 219.01,
+     "y": 140.01
+    },
+    {
+     "pezzo": "idra_version_Retainer_Lid_x2",
+     "rot_z": 0,
+     "x": 123.51,
+     "y": 149.51
+    }
+   ]
+  }
+ ]
+}
