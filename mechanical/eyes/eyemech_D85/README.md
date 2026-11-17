@@ -9,11 +9,11 @@ Stampante: **Bambu Lab A1** (piatto 256 × 256), PLA, 0.20 mm. In ogni piatto ci
 |---|---|---|---|---|
 | 1 | coppia | ✅ completa (palpebre versione precedente, con `PinB` e vite) | niente (facoltativo: 1 piatto per le palpebre nuove) | [`Testa_1/`](Testa_1/) |
 | 2 | coppia | ✅ completa (montata) | niente | [`Testa_2/`](Testa_2/) |
-| 3 | singolo (sx) | ⏳ da stampare | **3 file/piatti**, ~21 h 20 min, ~0.60 kg (solo pezzi dell'occhio sinistro) | [`Testa_3_occhio_singolo/`](Testa_3_occhio_singolo/) |
-| 4 | singolo (sx) | ⏳ da stampare | **3 file/piatti**, ~21 h 20 min, ~0.60 kg (uguale alla 3) | [`Testa_4_occhio_singolo/`](Testa_4_occhio_singolo/) |
-| | | | **Totale: 6 piatti, ~43 h, ~1.2 kg** | |
+| 3 | singolo (sx) | 🟡 base stampata | **2 file/piatti**, ~17 h, ~0.45 kg (solo pezzi dell'occhio sinistro) | [`Testa_3_occhio_singolo/`](Testa_3_occhio_singolo/) |
+| 4 | singolo (sx) | 🟡 base stampata | **2 file/piatti**, ~17 h, ~0.45 kg (uguale alla 3) | [`Testa_4_occhio_singolo/`](Testa_4_occhio_singolo/) |
+| | | | **Totale: 4 piatti, ~34 h, ~0.9 kg** | |
 
-**Per stampare**: nelle cartelle delle teste 3 e 4 ogni piatto è **un file `.3mf`** (es. `Testa3_1di3_base-sx_palpebre.3mf`):
+**Per stampare**: nelle cartelle delle teste 3 e 4 ogni piatto è **un file `.3mf`** (es. `Testa3_1di2_palpebre_CoreY_assiX.3mf`):
 si apre in Bambu Studio, *Taglia piatto*, *Stampa piatto*. Istruzioni e lista da spuntare nel `README.md` di ogni testa.
 
 **Palpebre (teste 2, 3, 4)**: tutte le palpebre di un lato in **un pezzo solo, già montate** (`Palpebre_L_PIP`,
@@ -33,8 +33,8 @@ compresi): quelli esatti li dà Bambu Studio dopo *Slice*.
 | `info.txt` | quote, servo, viteria, ingombri dei pezzi |
 | `Testa_1/` | i 5 piatti (già tagliati) con cui è stata stampata la testa 1; `aggiornamento_palpebre/` = 1 piatto facoltativo con le palpebre nuove |
 | `Testa_2/` | testa 2 completa: `gia_stampati/` (basi) e `piatti/` (il resto) |
-| `Testa_3_occhio_singolo/` | **3 file `.3mf`, uno per piatto**: la testa 3 completa, solo pezzi dell'occhio sinistro (+ `anteprime/`, `stl/`) |
-| `Testa_4_occhio_singolo/` | **3 file `.3mf`, uno per piatto**: la testa 4 completa, uguale alla 3 |
+| `Testa_3_occhio_singolo/` | **2 file `.3mf`, uno per piatto**: il resto della testa 3 (base già stampata), solo pezzi dell'occhio sinistro (+ `anteprime/`, `stl/`) |
+| `Testa_4_occhio_singolo/` | **2 file `.3mf`, uno per piatto**: il resto della testa 4, uguale alla 3 |
 
 Ogni cartella `Piatto_<X>` ha il progetto Bambu Studio (`.3mf`), gli STL già posizionati e `piatto.png` con la
 disposizione; ogni cartella di piatti ha `layout_piatti.json` (pezzo, rotazione e posizione su ogni piatto) e un

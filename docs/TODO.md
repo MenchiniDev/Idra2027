@@ -24,7 +24,8 @@ Dettagli: `docs/mechanical_eyes.md`.
 - [ ] Prima: provare una sede 1:1 e una squadretta col servo vero
 - [x] Testa 1 stampata (5 piatti in `eyemech_D85/Testa_1/`)
 - [x] Testa 2 stampata e montata (`eyemech_D85/Testa_2/`)
-- [ ] Teste 3 e 4 (occhio singolo, pezzi accorciati): 3 + 3 file `.3mf` (uno per piatto) in `eyemech_D85/Testa_3_occhio_singolo/` e `Testa_4_occhio_singolo/`
+- [x] Teste 3 e 4: basi stampate
+- [ ] Teste 3 e 4 (occhio singolo, pezzi accorciati): 2 + 2 file `.3mf` (uno per piatto) in `eyemech_D85/Testa_3_occhio_singolo/` e `Testa_4_occhio_singolo/`
 - [ ] Palpebre in un pezzo (`Palpebre_L/R_PIP`, giunti print-in-place): alla prima stampa controllare che i giunti
       si sblocchino a mano (soprattutto il perno biconico squadretta / `LinkB`, che appoggia sul piatto)
 - [ ] (facoltativo) Testa 1: palpebre nuove da `eyemech_D85/Testa_1/aggiornamento_palpebre/`
