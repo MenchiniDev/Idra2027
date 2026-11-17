@@ -3,6 +3,7 @@
 | Sketch | Scheda | Uso |
 |---|---|---|
 | `EyeD85_random/` | ESP8266 (ESP-12F, NodeMCU) + PCA9685 | **movimento casuale degli occhi D85** (canali 4 = X, 6 = Y, 10/11 = palpebre); dettagli e taratura nel suo `README.md` |
+| `EyeD85_mandibola/` | come sopra + **servo mandibola DS3225 sul canale 0** | come `EyeD85_random` più la **mandibola** che si muove a caso (morsi, ruggiti, sbadigli, borbottii, scatti); taratura `m45`, demo `n`; dettagli nel suo `README.md` |
 | `EyeD85_zero/` | come sopra | tutti i servo a 90° per montare le squadrette; taratura via seriale (`p` stampa le righe `CAL_*` per `config.h`) |
 | `EyeNode_random/` | Arduino Nano sulla scheda EyeNode | movimento casuale, uno sketch per tutte le teste (descritto qui sotto) |
 
