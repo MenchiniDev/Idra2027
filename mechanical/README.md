@@ -9,7 +9,7 @@ derivati: **CC BY-NC-SA 4.0**.
 | Cartella | Contenuto |
 |---|---|
 | `eyes/eyemech_D85/` | **versione in uso**: occhi a 200 mm tra i centri (bulbo Ø85.3), 4 servo SG90/MG90S in sedi 1:1, base tagliata con linguetta PCA9685 1:1, `info.txt` con quote e viteria; `pezzi/` = un STL per pezzo; **`Testa_1` … `Testa_4` = i piatti Bambu A1 di ogni testa** (stato e cosa stampare in `eyemech_D85/README.md`) |
-| `mandibola/` | **supporto regolabile del servo della mandibola** (DS3225 25 kg) appeso alla base degli occhi D85: pezzi, piatto A1 con 2 set, viti e montaggio nel suo `README.md` |
+| `mandibola/` | **supporto del servo della mandibola** (DS3225 25 kg): guida imbullonata sotto la base degli occhi con 4 bulloni M4 + slitta col servo regolabile in altezza (2 viti); pezzi, piatti A1 (1 set, 4 set), fori, viti e montaggio nel suo `README.md` |
 
 Gli script che generano pezzi e piatti (`mechanical/scripts/…`, citati nei README delle teste)
 sono sul ramo `archivio`.

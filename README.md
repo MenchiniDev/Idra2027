@@ -6,7 +6,7 @@ mossi da servo con movimento autonomo e casuale.
 ## Struttura
 ```
 mechanical/eyes/eyemech_D85/   occhi in uso (bulbo Ø85): Testa_1 … Testa_4 = piatti di stampa di ogni testa, pezzi/ = un STL per pezzo
-mechanical/mandibola/          supporto regolabile del servo mandibola (DS3225)
+mechanical/mandibola/          supporto del servo mandibola (DS3225): guida imbullonata sotto la base + slitta regolabile in altezza
 firmware/EyeD85_random/        movimento casuale degli occhi D85 (ESP8266 ESP-12F + PCA9685)
 firmware/EyeD85_mandibola/     come EyeD85_random + mandibola (DS3225, canale 0 della PCA9685) che si muove a caso
 firmware/EyeD85_zero/          tutti i servo a 90° + taratura via seriale (da usare per montare le squadrette)
