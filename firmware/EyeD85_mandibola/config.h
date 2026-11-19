@@ -4,7 +4,7 @@
 //  Come EyeD85_random (stessi valori degli occhi) + la MANDIBOLA:
 //  Occhi EyeMech D85 (mechanical/eyes/eyemech_D85): 4 servo SG90/MG90S
 //  e il servo grande della mandibola (DS3225, 25 kg) sulla stessa PCA9685,
-//  comandata da un ESP8266 (ESP-12F).
+//  comandata da un ESP8266 (ESP-12F) oppure da un ESP32 (DevKit).
 //    mandibola: canale 0, 0 = chiusa, 1 = tutta aperta
 //    X        : i due bulbi insieme, sinistra/destra
 //    Y        : i due bulbi insieme, su/giu'
@@ -26,8 +26,13 @@
 // ---------------------------------------------------------------------
 //  Hardware
 // ---------------------------------------------------------------------
+#if defined(ESP32)
+const uint8_t PIN_SDA = 21;                // ESP32 DevKit: I2C standard GPIO21 = SDA
+const uint8_t PIN_SCL = 22;                //               GPIO22 = SCL
+#else
 const uint8_t PIN_SDA = 4;                 // GPIO4 = D2 (NodeMCU, Wemos D1 mini)
 const uint8_t PIN_SCL = 5;                 // GPIO5 = D1
+#endif
 const uint8_t PCA_ADDR = 0x40;             // indirizzo I2C della PCA9685 (default)
 const float   PCA_OSC_HZ = 25000000.0f;    // oscillatore interno (tarare se il centro e' spostato)
 const uint8_t CH_X = 4, CH_Y = 6, CH_LID_L = 10, CH_LID_R = 11;   // canali PCA9685 (0-based)

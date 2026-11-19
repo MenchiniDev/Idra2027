@@ -9,7 +9,7 @@
 //  dall'umore; col ruggito gli occhi si sgranano, con lo sbadiglio le
 //  palpebre calano (JAW_SYNC_EYES in config.h).
 //
-//  Scheda: ESP8266 (modulo ESP-12F, es. NodeMCU o Wemos D1 mini) con una
+//  Scheda: ESP8266 (ESP-12F, NodeMCU/Wemos D1 mini) o ESP32 (DevKit) con una
 //  PCA9685 su I2C. 4 servo: X e Y muovono insieme i due bulbi, ogni occhio
 //  ha il suo servo palpebre (superiore + inferiore insieme); 1 servo mandibola.
 //  Taratura e range in config.h (occhi: valori trovati con EyeD85_zero).
@@ -45,6 +45,9 @@
 #include <math.h>
 #if defined(ESP8266)
   #include <ESP8266WiFi.h>
+#endif
+#if defined(ESP32) && !defined(LED_BUILTIN)
+  #define LED_BUILTIN 2                      // ESP32 DevKit: LED blu sul GPIO2
 #endif
 #include "config.h"
 
@@ -551,6 +554,8 @@ void setup() {
 #if defined(ESP8266)
   WiFi.mode(WIFI_OFF);                       // niente WiFi: meno consumo e niente riconnessioni
   randomSeed(ESP.random());                  // generatore hardware: ogni accensione e' diversa
+#elif defined(ESP32)
+  randomSeed(esp_random());                  // generatore hardware dell'ESP32
 #else
   randomSeed(analogRead(A0) ^ micros());
 #endif

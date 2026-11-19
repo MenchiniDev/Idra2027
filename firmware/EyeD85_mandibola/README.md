@@ -67,3 +67,8 @@ Compilato per **NodeMCU 1.0 (ESP-12E Module)**, core esp8266 3.1.2: 250 KB di fl
 avviso. Simulato sul PC (stesso codice con PCA9685 finta), 4 × 30 minuti: mandibola sempre tra 0 e 60°, ogni
 morso arriva in fondo anche con un servo rallentato dal peso (200°/s), occhi spalancati durante i ruggiti,
 comandi `m`, `m45`, `n`, `r` provati. **Non ancora provato col servo vero.**
+
+## Su ESP32 (DevKit)
+Lo stesso sketch compila anche per ESP32 (core esp32 di Espressif, scheda **ESP32 Dev Module**):
+PCA9685 con **SDA = GPIO21**, **SCL = GPIO22**, VCC = 3V3, GND in comune; LED di stato sul GPIO2.
+Compilato con esp32 4.0.0: 325 KB di flash (24 %), RAM 7 %.
