@@ -1,4 +1,3 @@
-#line 1 "C:\\Users\\loren\\Desktop\\Idra2027\\firmware\\EyeD85_random\\config.h"
 // =====================================================================
 //  EyeD85_random — configurazione (unico file da toccare per tarare)
 // =====================================================================
