@@ -1,25 +1,28 @@
 """
 Supporto del servo della mandibola (DS3225, 25 kg) sotto la base degli occhi D85: 2 pezzi stampati.
 
-  1. Guida   - flangia avvitata SOTTO la base con 4 bulloni M4 (fori da fare nella base, la flangia fa da
-               dima) e un canale verticale a U, aperto verso il lato dell'albero del servo e in basso.
+  1. Guida   - flangia avvitata SOTTO l'estremita' SINISTRA della base (Base_L) con 4 bulloni M4 (fori da fare
+               nella base, la flangia fa da dima) e un canale verticale a U, aperto verso l'esterno (lato
+               dell'albero del servo) e in basso, con una fessura verticale su tutti e due i fianchi.
   2. Slitta  - l'incasso preciso del DS3225 (corpo nella tasca, orecchie appoggiate sulla faccia, 4 viti del
-               servo); scorre nel canale per regolare l'ALTEZZA e si blocca con 2 viti M4 che passano nella
-               fessura verticale della parete laterale della guida e si avvitano nei dadi della slitta.
+               servo); scorre nel canale per regolare l'ALTEZZA (corsa 80 mm) e si blocca con 2 viti M4 che
+               passano nella fessura di un fianco della guida e si avvitano nei dadi della slitta.
 
-Albero del servo orizzontale, parallelo all'asse degli occhi (asse x): la squadretta del servo si avvita alla
-mandibola, che gira come una cerniera attorno all'albero.
+Albero del servo orizzontale, parallelo all'asse degli occhi (asse x) e rivolto verso l'esterno: il servo sta
+all'estremita' della base, vicino alla cerniera della mandibola, e la squadretta si avvita alla mandibola con un
+braccio corto.
 
 Coordinate della base assemblata (x verso destra, y verso dietro, z in su, fondo della base a z = 0; i piedi
-dei supporti a L sporgono fino a z = -21.5 a x = +-28.7..43.6 e +-157..168).
-Posizione di serie: centrata sulla giunzione delle due meta' della base (x = 0), fori a y = -43 (5 mm dietro il
-bordo anteriore della base al centro) e y = +36.5 (3.5 mm prima del gradino della linguetta PCA9685), a
-x = +-12: in tutti e 4 i punti la base e' piena e spessa 12.8 mm.
+dei supporti a L sporgono fino a z = -21.5 a x = +-28.7..43.6 e +-157.3..168.3).
+Posizione di serie: sotto il blocco pieno all'estremita' sinistra della base (x = -193.9..-169, spesso 20.8 mm),
+parete di fondo della guida a 1.5 mm dal piede del supporto esterno; fori a x = -175.8 e -186.8, y = -50 e +22.
+La guida e' simmetrica davanti/dietro: girata di 180 gradi va anche all'estremita' destra (se la base la' e'
+intera, Base_R).
 
 Servo DS3225 (datasheet Dsservo): corpo 40 x 20 x 40.5, orecchie 54.5, fori 49.5 x 10, faccia inferiore
 delle orecchie a 27.7 dal fondo, albero a ~10 mm da un'estremita' del corpo.
 
-Uso:  python supporto_mandibola.py     -> pezzi/*.stl, stampa/*.3mf (+ anteprime), immagini in ../../docs/img
+Uso:  python supporto_mandibola.py     -> pezzi/*.stl, stampa/*.3mf (+ anteprime)
 Dipendenze: pip install trimesh manifold3d numpy matplotlib
 """
 import json
@@ -52,12 +55,14 @@ SL = dict(D=32.0, W=32.6, H=72.0, FLOOR=3.8,
           LOCK_X=22.0, LOCK_Z=30.0, LOCK_DEPTH=14.0,      # 2 viti di blocco (lungo y, dalla faccia +y)
           CABLE_W=8.0, CABLE_X1=12.0)                     # passaggio del cavo alle due estremita'
 
-# ------------------------------------------------------------------ guida (coordinate della base)
-GD = dict(cx=0.0, cy=-3.25,                               # centro del canale
-          bolts=[(-12.0, -43.0), (12.0, -43.0), (-12.0, 36.5), (12.0, 36.5)],
-          fl_x=24.0, fl_y=(-48.0, 43.0), fl_t=6.0,        # flangia (bordo davanti a filo del bordo della base al centro)
-          wall=6.0, L=220.0, cav_top=-30.0,               # pareti, lunghezza canale, inizio della cavita'
-          slot_top=-36.0, slot_w=4.6)
+# ------------------------------------------------------------------ guida
+# Coordinate locali della guida: u = distanza dalla faccia esterna della parete di fondo verso l'esterno (lato
+# aperto), v = di fianco (centro del canale a 0), z = come la base. Nella base: x = x_back - u, y = cy - v.
+GD = dict(x_back=-169.8, cy=-14.0,                         # parete di fondo a 1.5 mm dal piede esterno (x -168.3)
+          bolt_u=(6.0, 17.0), bolt_v=36.0,                # 4 fori: x = -175.8 / -186.8, y = -50 / +22
+          fl_v=42.0, fl_t=6.0,                            # flangia: mezza lunghezza (v), spessore
+          wall=6.0, cable_gap=8.0,                        # pareti; spazio per il cavo sopra la slitta in alto
+          travel=80.0, slot_w=4.6)                        # corsa della slitta (regolazione in altezza)
 
 
 def box(lo, hi):
@@ -121,48 +126,66 @@ def slitta():
 
 
 # ======================================================================== guida
-def frame():
-    """posizione della slitta nella guida: faccia posteriore della slitta a x_b, centro in y = cy."""
+def dims():
+    """quote della guida (locali) e della corsa, ricavate da GD, SL e SV."""
     g = GD
-    width_x = CL_SLIDE + g["wall"] + SL["D"]
-    x0 = g["cx"] - width_x / 2
-    return x0, x0 + g["wall"] + CL_SLIDE        # x esterno della parete di fondo, x_b
+    u_b = g["wall"] + CL_SLIDE                     # faccia posteriore della slitta
+    u1 = u_b + SL["D"]                             # lato aperto (a filo della faccia delle orecchie)
+    vi = SL["W"] / 2 + CL_SLIDE                    # cavita'
+    vo = vi + g["wall"]                            # esterno dei fianchi
+    cav_top = -g["fl_t"] - g["cable_gap"]
+    hi = cav_top - SL["H"] / 2                     # centro della slitta: tutta in alto ...
+    lo = hi - g["travel"]                          # ... e tutta in basso
+    slot_top = hi + SL["LOCK_Z"] + g["slot_w"] / 2
+    slot_bot = lo - SL["LOCK_Z"] - g["slot_w"] / 2
+    zb = slot_bot - 6.0                            # fondo della guida
+    return dict(u_b=u_b, u1=u1, vi=vi, vo=vo, cav_top=cav_top, hi=hi, lo=lo,
+                slot_top=slot_top, slot_bot=slot_bot, zb=zb, u_lock=u_b + SL["LOCK_X"])
 
 
-def guida():
-    g = GD
-    x0, xb = frame()
-    x1 = xb + SL["D"]
-    cy = g["cy"]
-    yi = SL["W"] / 2 + CL_SLIDE
-    yo = yi + g["wall"]
+def to_base(m):
+    """guida in coordinate locali -> base (giro di 180 gradi attorno a z: x = x_back - u, y = cy - v)."""
+    return m.rotate((0, 0, 180)).translate((GD["x_back"], GD["cy"], 0))
+
+
+def bolts():
+    """i 4 fori nella base (x, y)."""
+    return [(GD["x_back"] - u, GD["cy"] - v) for v in (GD["bolt_v"], -GD["bolt_v"]) for u in GD["bolt_u"]]
+
+
+def guida_locale():
+    g, d = GD, dims()
     zt = -g["fl_t"]
-    zb = zt - g["L"]
     m = Manifold.batch_boolean([
-        box((-g["fl_x"], g["fl_y"][0], zt), (g["fl_x"], g["fl_y"][1], 0.0)),           # flangia
-        box((x0, cy - yo, zb), (x1, cy + yo, zt + 0.01)),                               # canale
+        box((0, -g["fl_v"], zt), (d["u1"], g["fl_v"], 0.0)),                     # flangia
+        box((0, -d["vo"], d["zb"]), (d["u1"], d["vo"], zt + 0.01)),               # canale
     ], ADD)
-    m = m - box((xb - CL_SLIDE, cy - yi, zb - 1), (x1 + 1, cy + yi, g["cav_top"]))     # cavita' (aperta davanti e sotto)
-    for (bx, by) in g["bolts"]:
-        m = m - cyl(M4_FREE / 2, (bx, by, zt - 1), (bx, by, 1))
-    xs = xb + SL["LOCK_X"]                                                              # fessura delle viti di blocco
-    m = m - slot(g["slot_w"], (xs, 0, g["slot_top"]), (xs, 0, zb + 6), 1, cy + yi - 1, cy + yo + 1)
+    m = m - box((d["u_b"] - CL_SLIDE, -d["vi"], d["zb"] - 1), (d["u1"] + 1, d["vi"], d["cav_top"]))   # cavita'
+    for u in g["bolt_u"]:
+        for v in (-g["bolt_v"], g["bolt_v"]):
+            m = m - cyl(M4_FREE / 2, (u, v, zt - 1), (u, v, 1))
+    # fessura delle viti di blocco su tutti e due i fianchi (la guida resta simmetrica davanti/dietro)
+    m = m - slot(g["slot_w"], (d["u_lock"], 0, d["slot_top"]), (d["u_lock"], 0, d["slot_bot"]), 1,
+                 -d["vo"] - 1, d["vo"] + 1)
     return m
 
 
+def guida():
+    return to_base(guida_locale())
+
+
 def slider_range():
-    """centro della slitta (z) possibile: viti di blocco dentro la fessura e slitta sotto l'inizio della cavita'."""
-    g = GD
-    zb = -g["fl_t"] - g["L"]
-    hi = min(g["slot_top"] - g["slot_w"] / 2 - SL["LOCK_Z"], g["cav_top"] - SL["H"] / 2)
-    lo = zb + 6 + g["slot_w"] / 2 + SL["LOCK_Z"]
-    return lo, hi
+    """centro della slitta (z) possibile: viti di blocco dentro la fessura, cavo libero sopra la slitta."""
+    d = dims()
+    return d["lo"], d["hi"]
 
 
 def place_slider(zc):
-    """trasformazione slitta (locale) -> base, con il centro a z = zc."""
-    _, xb = frame()
-    return trimesh.transformations.translation_matrix((xb, GD["cy"], zc))
+    """trasformazione slitta (locale) -> base, con il centro a z = zc (giro di 180 gradi attorno a z: l'orecchia
+    del servo guarda verso -x, i dadi delle viti di blocco verso il davanti)."""
+    T = trimesh.transformations.rotation_matrix(np.pi, (0, 0, 1))
+    T[:3, 3] = (GD["x_back"] - dims()["u_b"], GD["cy"], zc)
+    return T
 
 
 def servo_model(albero_su=True):
@@ -333,7 +356,11 @@ def export():
         piatto(nome, n, P)
         print("piatto", nome)
     lo, hi = slider_range()
-    print(f"albero del servo da {-(hi + 10):.0f} a {-(lo - 10):.0f} mm sotto il fondo della base (slitta da z = {hi:.0f} a {lo:.0f})")
+    d = dims()
+    print(f"corsa della slitta {hi - lo:.0f} mm (centro da z = {hi:.0f} a {lo:.0f}); albero del servo da "
+          f"{-(hi + 10):.0f} a {-(lo + 10):.0f} mm sotto il fondo della base (albero in alto) o da "
+          f"{-(hi - 10):.0f} a {-(lo - 10):.0f} (albero in basso); guida alta {-d['zb']:.1f} mm")
+    print("fori nella base:", [(round(x, 1), round(y, 1)) for x, y in bolts()])
 
 
 if __name__ == "__main__":
