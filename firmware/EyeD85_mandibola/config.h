@@ -112,7 +112,7 @@ const uint16_t ATTACH_STEP_MS = 250;
 const uint8_t CH_JAW = 0;
 const float   JAW_US_MIN = 500.0f, JAW_US_MAX = 2500.0f, JAW_DEG_SPAN = 180.0f;
 struct JawCal { float closed, open; };     // gradi a 0 (chiusa) e 1 (tutta aperta)
-const JawCal CAL_JAW = { 0.0f, 60.0f };    // DA TARARE (bocca da mostro: anche 70)
+const JawCal CAL_JAW = { 10.0f, 60.0f };   // 10 = chiusa (0 era troppo), 60 = aperta; da tarare sul pezzo
 const float  JAW_MAX_TRAVEL = 90.0f;       // sicurezza: mai piu' di 90 gradi dalla chiusura (anche col comando m)
 
 // Ritmo e velocita'
