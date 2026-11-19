@@ -25,6 +25,9 @@ la vite). Dopo la stampa: togliere i supporti e muovere a mano i giunti finché 
 Tempi e grammi con `~` sono stime (per ogni pezzo la media misurata nei G-code dei piatti della testa 1, supporti
 compresi): quelli esatti li dà Bambu Studio dopo *Slice*.
 
+**Ultime stampe** (19/11): [`Ultime_stampe/`](Ultime_stampe/) = 3 file con le palpebre che mancano (`Palpebre_R_PIP`,
+nel primo, da stampare subito) e tutto l'ultimo occhio singolo con le 2 metà della base (~21 h, ~0.6 kg).
+
 ## Cartelle
 
 | Cartella | Contenuto |
